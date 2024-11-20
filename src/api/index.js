@@ -1,0 +1,4 @@
+export {
+    getSalaryAPI
+}
+from './salary';
