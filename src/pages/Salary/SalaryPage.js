@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getSalaryAPI } from '../../api/index.js';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 
 const SalaryPage = () => {
     const [salaries, setSalaries] = useState([]);
@@ -25,7 +29,7 @@ const SalaryPage = () => {
         <div className="">
             <h2 className="">급여 목록</h2>
             <div>
-                <table className="">
+                <Table className="">
                     <thead>
                     <tr>
                         <th>직위</th>
@@ -48,15 +52,7 @@ const SalaryPage = () => {
                             </tr>
                         ))}
                     </tbody>
-                </table>
-            </div>
-            <div>
-                <button
-                    className="btn-black mt-3"
-                    onClick={() => showModal()}
-                >
-                    상품 생성
-                </button>
+                </Table>
             </div>
         </div>
     );
