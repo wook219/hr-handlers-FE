@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllSalaryAPI, createSalaryAPI } from '../../../api/admin/index.js';
+import { getAllSalaryAPI, createSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
@@ -259,6 +259,28 @@ const AdminSalaryPage = () => {
         setSalaries(response.data.data);
     };
 
+    // 엑셀 업로드 api
+    const handleDrop = async (event) => {
+        const file = event.target.files[0]; // 첫 번째 파일만 처리
+        if (!file) {
+            console.log("파일이 선택되지 않았습니다.");
+            return;
+        }
+
+        // FormData로 파일 전달
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const { response, error } = await excelUploadSalaryAPI(formData);
+        if (error) {
+            console.log("에러 발생");
+            return;
+        }
+
+        console.log("response:", response);
+        getSalaries();
+    };
+
     return (
         <div className="">
             <h2 className="">급여 목록</h2>
@@ -294,6 +316,12 @@ const AdminSalaryPage = () => {
                 <Button variant="primary" onClick={handleCreate}>
                     추가
                 </Button>
+                <h2>Excel 파일 업로드</h2>
+                    <input
+                        type="file"
+                        accept=".xlsx, .xls, .csv"
+                        onChange={(e) => handleDrop(e)}
+                    />
             </div>
             <MyVerticallyCenteredModal
                 show={modalShow}
