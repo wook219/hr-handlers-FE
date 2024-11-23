@@ -1,38 +1,22 @@
+/* 전체 레이아웃 설정 */
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh; /* 화면 전체 높이 */
+  font-family: Arial, sans-serif;
+  flex-direction: row; /* 사이드바와 콘텐츠를 나란히 배치 */
 }
 
-.App-link {
-  color: #61dafb;
+/* 콘텐츠 영역 */
+.content {
+  margin-left: 300px; /* 사이드바 너비만큼 여백 */
+  flex-grow: 1; /* 남은 공간을 모두 차지 */
+  padding: 20px;
+  background-color: #f8f9fa; /* 콘텐츠 영역 배경색 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .content {
+    margin-left: 200px; /* 작은 화면에서 사이드바 너비 축소에 맞춰 조정 */
   }
 }
