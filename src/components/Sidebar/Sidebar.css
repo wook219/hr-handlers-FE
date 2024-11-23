@@ -10,6 +10,7 @@
     flex-direction: column;
     justify-content: space-between; /* 하단 로그아웃 버튼 포함 */
     box-sizing: border-box;
+    box-shadow: 3px 0 7px rgba(0, 0, 0, 0.3); /* 오른쪽 그림자 추가 */
   }
   
   .sidebar .profile {
