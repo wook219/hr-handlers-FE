@@ -1,0 +1,9 @@
+.container {
+  margin-top: 40px;
+}
+
+.chatroom-title {
+  font-size: 20px;
+  font-weight: bold;
+  word-wrap: break-word; /* 긴 제목도 화면에 맞게 줄 바꿈 */
+}
