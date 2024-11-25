@@ -1,0 +1,18 @@
+.custom-modal .modal-dialog {
+    max-width: 1000px; /* 모달 가로 너비를 조금 더 넓게 */
+    width: 95%; /* 반응형 너비 */
+}
+
+.custom-modal .modal-content {
+    border-radius: 10px; /* 모서리 둥글게 */
+    padding: 20px; /* 내부 여백 */
+}
+
+.custom-modal .modal-body .ck-editor__editable {
+    min-height: 300px; /* CKEditor 텍스트 입력 영역의 최소 높이 */
+    height: 400px; /* CKEditor 텍스트 입력 영역 높이 */
+}
+
+.custom-modal .form-control {
+    font-size: 1rem; /* 텍스트 입력 폰트 크기 조정 */
+}
