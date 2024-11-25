@@ -12,12 +12,12 @@
   cursor: pointer;
   font-weight: bold;
   text-decoration: none; /* 링크의 기본 스타일 제거 */
-  color: #333; /* 텍스트 색상 */
+  color: #333;
   transition: background-color 0.3s, color 0.3s; /* 효과 추가 */
 }
 
 .tab:hover {
-  background-color: #eeeeee; /* hover 시 배경색 변화 */
+  background-color: #eeeeee;
 }
 
 .tab.active {

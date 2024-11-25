@@ -29,12 +29,12 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
     <>
       <Modal show={show} onHide={onClose} centered>
         <Modal.Header closeButton>
-          <Modal.Title className="text-center">채팅방 생성</Modal.Title>
+          <Modal.Title className="text-center">채팅방 개설하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group controlId="chatroomTitle" className="text-center">
-              <Form.Label>채팅방 제목</Form.Label>
+              <Form.Label className="chatroom-label">제목</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="채팅방 제목을 입력하세요"
@@ -61,7 +61,7 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
           <Modal.Title className="text-center">채팅방 생성 완료</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <p>채팅방 생성이 완료되었습니다.</p>
+          <p className="success-text">채팅방 생성이 완료되었습니다.</p>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
           <Button className="button-color" onClick={handleCloseCreatedModal} size="lg">

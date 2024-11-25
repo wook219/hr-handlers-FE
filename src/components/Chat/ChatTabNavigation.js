@@ -4,7 +4,7 @@ import './ChatTabNavigation.css';
 import CreateChatRoomButton from './CreateChatRoomButton';
 
 const TabNavigation = () => {
-  const location = useLocation(); // 현재 URL 경로를 가져옵니다.
+  const location = useLocation(); // 현재 URL 경로
 
   return (
     <div>
