@@ -1,0 +1,33 @@
+/* CreateChatRoomModal.css */
+
+/* 추가적인 스타일이 필요할 경우 여기서 정의 */
+.modal-content {
+  border-radius: 10px; /* 모달 테두리 둥글게 */
+}
+
+.modal-header {
+  background-color: #f1f1f1; /* 헤더 배경색 */
+  border-bottom: 1px solid #ddd; /* 헤더와 본문 구분선 */
+}
+
+.modal-footer {
+  border-top: 1px solid #ddd; /* 푸터와 본문 구분선 */
+}
+
+button {
+  font-size: 1.1rem; /* 버튼 텍스트 크기 */
+}
+
+.button-color {
+  background-color: #1a2b50;
+  border: none; /* 버튼 테두리 제거 */
+  outline: none; /* 포커스 상태에서 나타나는 외곽선 제거 */
+}
+
+.button-color:focus {
+  box-shadow: none; /* 포커스 상태에서 그림자 제거 */
+}
+
+.button-color:hover {
+  background-color: #111b32; /* hover 시 색상 */
+}
