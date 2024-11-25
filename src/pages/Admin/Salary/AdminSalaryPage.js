@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { getAllSalaryAPI, createSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
+import React, { useEffect, useState, useRef } from 'react';
+import { getAllSalaryAPI, createSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
-import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -22,16 +20,42 @@ const AdminSalaryPage = () => {
         { key: 'netSalary', value: '', label: '실지급액', type: 'input', isDisable: false },
         { key: 'payDate', value: '', label: '급여일', type: 'custom', isDisable: false },
     ]);
-
     const [selectedDate, setSelectedDate] = useState([
         { key: 'year', value: '', label: '급여연도', type: 'select', options: [2024], isDisable: true },
         { key: 'month', value: '', label: '급여월', type: 'select', options: [1,2,3,4,5,6,7,8,9,10,11,12], isDisable: false },
         { key: 'day', value: '', label: '급여일', type: 'select', options: [13], isDisable: true },
     ]);
+    const [checkItems, setCheckItems] = useState([]); // 체크된 아이템을 담을 배열
+    const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
 
     useEffect(() => {
         getSalaries()
     }, []);
+
+    // 체크박스 단일 선택
+    const handleSingleCheck = (checked, id) => {
+        if (checked) {
+            // 단일 선택 시 체크된 아이템을 배열에 추가
+            setCheckItems(prev => [...prev, id]);
+        } else {
+            // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
+            setCheckItems(checkItems.filter((el) => el !== id));
+        }
+    };
+
+    // 체크박스 전체 선택
+    const handleAllCheck = (checked) => {
+        if(checked) {
+            // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
+            const idArray = [];
+            salaries.forEach((el) => idArray.push(el.salayId));
+            setCheckItems(idArray);
+        }
+        else {
+            // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
+            setCheckItems([]);
+        }
+    }
 
     // 추가 버튼 클릭시 실행되는 함수
     const handleCreate = () => {
@@ -52,6 +76,22 @@ const AdminSalaryPage = () => {
 
         setModalType('create');
         setModalShow(true);
+    };
+
+    // 엑셀 업로드 버튼 클릭시 실행되는 함수
+    const triggerFileInput = () => {
+        fileInputRef.current.click(); // 숨겨진 input을 클릭
+    };
+
+    // 조회 api
+    const getSalaries = async () => {
+        const { response, error } = await getAllSalaryAPI();
+        console.log("response : ", response);
+        if (error) {
+            console.log('에러 발생');
+            return;
+        }
+        setSalaries(response.data.data);
     };
 
     // 추가, 수정 api
@@ -91,15 +131,17 @@ const AdminSalaryPage = () => {
         getSalaries();
     };
 
-    // 조회 api
-    const getSalaries = async () => {
-        const { response, error } = await getAllSalaryAPI();
+    // 삭제 api
+    const handleDelete = async () => {
+        console.log('checkItems : ', checkItems);
+        const { response, error } = await deleteSalaryAPI(checkItems);
         console.log("response : ", response);
         if (error) {
             console.log('에러 발생');
             return;
         }
-        setSalaries(response.data.data);
+
+        getSalaries();
     };
 
     // 엑셀 업로드 api
@@ -127,9 +169,33 @@ const AdminSalaryPage = () => {
         <div className="">
             <h2 className="">급여 목록</h2>
             <div>
+                <Button variant="primary" onClick={handleCreate}>
+                    추가
+                </Button>
+                <Button variant="danger" onClick={handleDelete}>
+                    삭제
+                </Button>
+                <Button variant="success" onClick={triggerFileInput}>
+                    엑셀 업로드
+                    <input
+                        type="file"
+                        accept=".xlsx, .xls, .csv"
+                        ref={fileInputRef}
+                        onChange={(e) => handleDrop(e)}
+                        style={{ display: "none" }}
+                    />
+                </Button>
+            </div>
+            <div>
                 <Table className="">
                     <thead>
                     <tr>
+                        <th>
+                            <input type='checkbox' name='select-all'
+                            onChange={(e) => handleAllCheck(e.target.checked)}
+                            // 데이터 개수와 체크된 아이템의 개수가 다를 경우 선택 해제 (하나라도 해제 시 선택 해제)
+                            checked={checkItems.length === salaries.length ? true : false} />
+                        </th>
                         <th>직위</th>
                         <th>부서</th>
                         <th>이름</th>
@@ -142,6 +208,12 @@ const AdminSalaryPage = () => {
                     <tbody>
                         {salaries.map(salary => (
                             <tr key={salary.salayId}>
+                                <td>
+                                    <input type='checkbox' name={`select-${salary.salayId}`}
+                                        onChange={(e) => handleSingleCheck(e.target.checked, salary.salayId)}
+                                        // 체크된 아이템 배열에 해당 아이템이 있을 경우 선택 활성화, 아닐 시 해제
+                                        checked={checkItems.includes(salary.salayId) ? true : false} />
+                                </td>
                                 <td>{salary.position || 'N/A'}</td>
                                 <td>{salary.deptName || 'N/A'}</td>
                                 <td>{salary.name || 'N/A'}</td>
@@ -153,17 +225,6 @@ const AdminSalaryPage = () => {
                         ))}
                     </tbody>
                 </Table>
-            </div>
-            <div>
-                <Button variant="primary" onClick={handleCreate}>
-                    추가
-                </Button>
-                <h2>Excel 파일 업로드</h2>
-                    <input
-                        type="file"
-                        accept=".xlsx, .xls, .csv"
-                        onChange={(e) => handleDrop(e)}
-                    />
             </div>
             <AdminSalaryModalPage
                 show={modalShow}
