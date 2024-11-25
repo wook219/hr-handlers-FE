@@ -8,7 +8,6 @@ const TabNavigation = () => {
 
   return (
     <div>
-      <h2>채팅방 목록</h2>
       <div className="create-chatroom-container">
         <CreateChatRoomButton />
       </div>
