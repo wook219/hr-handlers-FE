@@ -11,9 +11,6 @@ export const loginAPI = async (empNo, password) => {
     if (!token) {
       throw new Error("헤더에서 JWT 토큰을 가져올 수 없습니다.");
     }
-
-    console.log("로그인 성공: JWT 토큰 저장 완료", token);
-
     // 토큰 반환
     return token;
   } catch (error) {
@@ -22,3 +19,25 @@ export const loginAPI = async (empNo, password) => {
     throw error;
   }
 };
+
+// 마이페이지 API
+export const getMyPageAPI = async () => {
+    try {
+      const token = localStorage.getItem("access_token"); 
+  
+      if (!token) {
+        throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+      }
+  
+      const response = await axios.get("http://localhost:8080/emp", {
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+      });
+  
+      return response.data;
+    } catch (error) {
+      console.error("마이페이지 데이터 가져오기 오류:", error.response?.data || error.message);
+      throw error;
+    }
+  };
