@@ -6,8 +6,9 @@ import PostListPage from '../pages/Post/PostListPage'; // 게시글 목록 페�
 import PostDetailPage from '../pages/Post/PostDetailPage'; // 게시글 상세 페이지
 import ChatRoomList from '../pages/Chat/ChatRoomList'; // 채팅방 목록
 import TodoPage from '../pages/Todo/TodoPage';
-import Login from '../pages/Employee/Login'; // 로그인 페이지
+import Login from '../pages/Employee/Login'; // 로그인 페이지 
 import ChatComponent from '../pages/Chat/ChatComponent';
+import MyPage from '../pages/Employee/MyPage';
 
 // 공통 레이아웃이 필요한 라우트 라면 조건 처리
 function AppRouter() {
@@ -21,6 +22,7 @@ function AppRouter() {
       <Route path="/chatroom" element={<ChatRoomList />} />
       <Route path="/todo" element = { <TodoPage /> } />
       <Route path="/login" element={<Login />} />
+      <Route path="/mypage" element={<MyPage />} />
     </Routes>
   );
 }
