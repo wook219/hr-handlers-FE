@@ -22,7 +22,7 @@ const ChatRoomList = () => {
   }, []);
 
   return (
-    <div className="container mt-5">
+    <div className="chatroom-list-all-container mt-5">
       <TabNavigation />
       <div className="chatroom-list-container">
         <div className="chatroom-list">
@@ -33,7 +33,7 @@ const ChatRoomList = () => {
               </div>
 
               <div className="col-7">
-                <span className="chatroom-title">{chatroom.title}</span>
+                <span className="chatroom-list-title">{chatroom.title}</span>
               </div>
 
               <div className="col-3 text-center">
