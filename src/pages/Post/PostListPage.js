@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllPostsAPI, createPostAPI } from "../../api/post";
-import "bootstrap/dist/css/bootstrap.min.css"; // 부트스트랩 CSS import
 import "./PostListPage.css"; // 커스텀 CSS import
+import "bootstrap/dist/css/bootstrap.min.css"; // 부트스트랩 CSS import
 import PostModal from "./PostModal"; // PostModal 컴포넌트 임포트
 
 const PostListPage = () => {
@@ -60,26 +60,26 @@ const PostListPage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">게시판</h2>
-      <div className="mb-3 d-flex justify-content-between">
+    <div className="post-container container mt-5">
+      <h2 className="post-title mb-4">게시판</h2>
+      <div className="post-controls mb-3 d-flex justify-content-between">
         <input
           type="text"
-          className="form-control w-75"
+          className="form-control post-search-input w-75"
           placeholder="검색어를 입력해주세요"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
-          className="btn custom-button ms-2" // custom-button 클래스 사용
-          onClick={() => setShowModal(true)} // 모달 열기
+          className="btn post-create-btn ms-2"
+          onClick={() => setShowModal(true)}
         >
           게시글 작성
         </button>
       </div>
-      <div className="table-responsive">
-        <table className="table table-hover align-middle">
-          <thead className="table-light">
+      <div className="post-table-responsive">
+        <table className="table post-table table-hover align-middle">
+          <thead className="post-table-light">
             <tr>
               <th scope="col">글 번호</th>
               <th scope="col">제목</th>
@@ -93,13 +93,13 @@ const PostListPage = () => {
               <tr key={post.id}>
                 <td>{post.id}</td>
                 <td>
-                  <Link to={`/post/${post.id}`} className="text-decoration-none">
+                  <Link to={`/post/${post.id}`} className="text-decoration-none post-link">
                     {post.title}
                   </Link>
                 </td>
                 <td>
                   {post.hashtagContent.map((tag, index) => (
-                    <span key={index} className="badge bg-primary me-1">
+                    <span key={index} className="badge bg-primary post-tag me-1">
                       #{tag}
                     </span>
                   ))}
@@ -111,7 +111,6 @@ const PostListPage = () => {
           </tbody>
         </table>
       </div>
-      {/* PostModal 컴포넌트 */}
       <PostModal
         show={showModal}
         handleClose={handleCloseModal}
