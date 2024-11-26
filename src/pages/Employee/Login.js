@@ -13,6 +13,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // 유효성 검사
     if (!empNo.trim()) {
       alert("사원 번호를 입력해주세요.");
       return;
@@ -70,12 +71,16 @@ const Login = () => {
             />
           </div>
           <button type="submit" className="login-button">
-            Login
+            <label className="login-button-label">Login</label>
           </button>
         </form>
-        <button className="find-password" onClick={() => setModalOpen(true)}> 
-          비밀번호 찾기 &gt;
-        </button>
+        <div className="find-password-container">
+            <button 
+                className="find-password-link" 
+                onClick={() => setModalOpen(true)}>
+                비밀번호 찾기 &gt;
+            </button>
+        </div>
       </div>
 
       {/* 모달 컴포넌트 */}
