@@ -1,4 +1,4 @@
-.enter-button {
+.chat-enter-button {
   background-color: #1a2b50;
   color: white;
   font-size: 18px;
@@ -9,6 +9,6 @@
   transition: background-color 0.3s ease; /* 배경색 변화 애니메이션 */
 }
 
-.enter-button:hover {
+.chat-enter-button:hover {
   background-color: #0f182e; /* 마우스 오버 시 배경색 변화 */
 }
