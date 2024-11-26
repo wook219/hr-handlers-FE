@@ -1,10 +1,10 @@
-.tabs {
+.chat-tabs {
   display: flex;
   margin-bottom: 3px;
   font-size: 18px;
 }
 
-.tab {
+.chat-tab {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -16,17 +16,17 @@
   transition: background-color 0.3s, color 0.3s; /* 효과 추가 */
 }
 
-.tab:hover {
+.chat-tab:hover {
   background-color: #eeeeee;
 }
 
-.tab.active {
+.chat-tab.active {
   background-color: #d8d8d87c;
   color: #000000;
   box-shadow: 0 -2px 5px rgba(65, 65, 65, 0.2);
 }
 
-.tab-content {
+.chat-tab-content {
   background-color: #ffffff;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -38,13 +38,13 @@
   justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
 }
 
-.tabs-container {
+.chat-tabs-container {
   display: flex;
   justify-content: space-between; /* 왼쪽 탭들과 오른쪽 버튼을 양쪽 끝에 배치 */
   align-items: center; /* 세로 정렬 */
 }
 
-.tabs-header {
+.chat-tabs-header {
   display: flex;
   flex-direction: column; /* 세로로 배치 */
   align-items: flex-start; /* 왼쪽 정렬 */
