@@ -32,6 +32,7 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
           }
         });
 
+        // 메시지 수정
         stompClient.subscribe(`/topic/message/update/${chatRoomId}`, (message) => {
           const updatedMessage = JSON.parse(message.body);
           console.log('수정한 메시지:', updatedMessage);
@@ -40,6 +41,7 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
           }
         });
 
+        // 메시지 삭제
         stompClient.subscribe(`/topic/message/delete/${chatRoomId}`, (message) => {
           const deletedMessage = JSON.parse(message.body);
           console.log('삭제한 메시지:', deletedMessage);
