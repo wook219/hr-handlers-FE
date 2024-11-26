@@ -1,18 +1,37 @@
-.custom-modal .modal-dialog {
+/* 모달 스타일 */
+.post-modal .modal-dialog {
     max-width: 1000px; /* 모달 가로 너비를 조금 더 넓게 */
     width: 95%; /* 반응형 너비 */
 }
 
-.custom-modal .modal-content {
+.post-modal .modal-content {
     border-radius: 10px; /* 모서리 둥글게 */
     padding: 20px; /* 내부 여백 */
 }
 
-.custom-modal .modal-body .ck-editor__editable {
+.post-modal-body .ck-editor__editable {
     min-height: 300px; /* CKEditor 텍스트 입력 영역의 최소 높이 */
     height: 400px; /* CKEditor 텍스트 입력 영역 높이 */
 }
 
-.custom-modal .form-control {
-    font-size: 1rem; /* 텍스트 입력 폰트 크기 조정 */
+.post-modal-title-input,
+.post-modal-hashtags-input {
+    font-size: 1rem; /* 입력 필드 텍스트 크기 조정 */
+}
+
+.post-modal-footer .post-modal-cancel {
+    background-color: #b7b7b7; /* 취소 버튼 색상 */
+    color: #fff;
+    border: none;
+}
+
+.post-modal-footer .post-modal-submit {
+    background-color: #1a2b50; /* 등록 버튼 색상 */
+    color: #fff;
+    border: none;
+}
+
+.post-modal-footer .post-modal-cancel:hover,
+.post-modal-footer .post-modal-submit:hover {
+    opacity: 0.9; /* 호버 시 약간의 투명도 적용 */
 }
