@@ -46,10 +46,10 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-modal-button-color" onClick={handleCreate} size="lg">
+          <Button className="chatroom-button chatroom-modal-button-color" onClick={handleCreate} size="lg">
             생성
           </Button>
-          <Button variant="secondary" onClick={onClose} size="lg" className="ml-2">
+          <Button className="chatroom-button ml-2" variant="secondary" onClick={onClose} size="lg">
             취소
           </Button>
         </Modal.Footer>
@@ -64,7 +64,7 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
           <p className="chatroom-modal-success-text">채팅방 생성이 완료되었습니다.</p>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-modal-button-color" onClick={handleCloseCreatedModal} size="lg">
+          <Button className="chatroom-modal-button-color chatroom-button" onClick={handleCloseCreatedModal} size="lg">
             확인
           </Button>
         </Modal.Footer>
