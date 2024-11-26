@@ -1,9 +1,9 @@
 import axios from '../axios';
 
 // 게시글 목록 조회 API
-export const getAllPostsAPI = async () => {
+export const getAllPostsAPI = async (page = 0, size = 10) => {
     try {
-        const response = await axios.get('/post');
+        const response = await axios.get(`/post?page=${page}&size=${size}`);
         return response.data;
     } catch (error) {
         console.error('Failed to fetch all posts:', error);
