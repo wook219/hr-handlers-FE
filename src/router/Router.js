@@ -19,7 +19,7 @@ function AppRouter() {
       <Route path="/post" element={<PostListPage />} />
       <Route path="/post/:postId" element={<PostDetailPage />} />
       <Route path="/chatroom" element={<ChatRoomList />} />
-      <Route path="/todo" element={<TodoPage />} />
+      <Route path="/todo" element = { <TodoPage /> } />
       <Route path="/login" element={<Login />} />
     </Routes>
   );
