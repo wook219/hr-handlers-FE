@@ -10,7 +10,7 @@ const PostDetailPage = () => {
         const fetchPostDetail = async () => {
             try {
                 const response = await getPostDetailAPI(postId);
-                setPost(response);
+                setPost(response.data);
             } catch (error) {
                 console.error('Failed to fetch post detail:', error);
             }
@@ -26,8 +26,9 @@ const PostDetailPage = () => {
     return (
         <div>
             <h2>{post.title}</h2>
-            <p>{post.content}</p>
-            <p>작성자: {post.author || '알 수 없음'}</p>
+            <p>{post.content}</p> 
+            <p>{post.imageUrl}</p>
+            <p>작성자: {post.employeeName || '알 수 없음'}</p>
             <p>작성일: {post.createdAt}</p>
         </div>
     );
