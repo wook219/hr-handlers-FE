@@ -21,7 +21,7 @@ const CreateChatRoomButton = () => {
   return (
     <div>
       <Button onClick={handleShowModal} className="create-chatroom-btn">
-        <SendFill className="icon" />
+        <SendFill className="chat-icon" />
         채팅방 개설하기
       </Button>
 

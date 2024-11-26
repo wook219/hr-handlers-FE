@@ -10,7 +10,7 @@ const EnterChatRoomButton = ({ chatRoomId }) => {
   };
 
   return (
-    <button className="enter-button" onClick={handleEnterChatRoomClick}>
+    <button className="chat-enter-button" onClick={handleEnterChatRoomClick}>
       참여
     </button>
   );

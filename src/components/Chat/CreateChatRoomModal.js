@@ -27,14 +27,14 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
 
   return (
     <>
-      <Modal show={show} onHide={onClose} centered>
+      <Modal show={show} onHide={onClose} centered className="chatroom-modal-content">
         <Modal.Header closeButton>
           <Modal.Title className="text-center">채팅방 개설하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group controlId="chatroomTitle" className="text-center">
-              <Form.Label className="chatroom-label">제목</Form.Label>
+              <Form.Label className="chatroom-modal-label">제목</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="채팅방 제목을 입력하세요"
@@ -46,7 +46,7 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="button-color" onClick={handleCreate} size="lg">
+          <Button className="chatroom-modal-button-color" onClick={handleCreate} size="lg">
             생성
           </Button>
           <Button variant="secondary" onClick={onClose} size="lg" className="ml-2">
@@ -56,15 +56,15 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
       </Modal>
 
       {/* 채팅방 생성 완료 모달 */}
-      <Modal show={isCreated} onHide={() => setIsCreated(false)} centered>
+      <Modal show={isCreated} onHide={() => setIsCreated(false)} centered className="chatroom-modal-content">
         <Modal.Header closeButton>
           <Modal.Title className="text-center">채팅방 생성 완료</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
-          <p className="success-text">채팅방 생성이 완료되었습니다.</p>
+          <p className="chatroom-modal-success-text">채팅방 생성이 완료되었습니다.</p>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="button-color" onClick={handleCloseCreatedModal} size="lg">
+          <Button className="chatroom-modal-button-color" onClick={handleCloseCreatedModal} size="lg">
             확인
           </Button>
         </Modal.Footer>
