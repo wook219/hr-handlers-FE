@@ -71,6 +71,11 @@
   .sidebar nav ul li span {
     font-size: 18px; /* 메뉴 글씨 크기 확대 */
   }
+
+  .sidebar-link {
+    text-decoration : 'none';
+    color : 'inherit'
+  }
   
   .sidebar .logout {
     text-align: center;

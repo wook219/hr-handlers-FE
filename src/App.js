@@ -8,20 +8,12 @@ import { UserProvider } from "./context/UserContext";
 
 
 function App() {
-  const [hidata, setHello] = useState('')
- 
-  useEffect(() => {
-    axios.get('/api/hello')
-      .then(response => setHello(response.data))
-      .catch(error => console.log(error))
-  }, []);
  
   return (
     <UserProvider>
       <div className="app">
         <Sidebar />
         <div className="content">
-          백엔드 스프링 부트 데이터 : {hidata}
           <AppRouter />
         </div>
       </div>
