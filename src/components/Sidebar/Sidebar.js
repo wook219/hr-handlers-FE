@@ -4,12 +4,18 @@ import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalenda
 import { useUser } from "../../context/UserContext"; // 유저 Context 가져오기
 
 function Sidebar() {
-  const { user } = useUser(); // Context에서 유저 정보 가져오기
-  const navigation = useNavigation();
+    const { user } = useUser(); // Context에서 유저 정보 가져오기
+    const navigation = useNavigation();
+
+  // 로그아웃
+  const handleLogout = () => {
+    localStorage.removeItem("access_token"); // 토큰 제거
+    navigation.toLogin(); 
+  };
     
   return (
     <div className="sidebar">
-      <div className="profile">
+      <div className="profile" onClick={navigation.toMyPage} style={{ cursor: "pointer" }}>
         <img
           className="profile-img"
           src="https://via.placeholder.com/80"
@@ -55,7 +61,19 @@ function Sidebar() {
         </ul>
       </nav>
       <div className="logout">
-        <a href="#">로그아웃</a>
+      <button
+        onClick={handleLogout}
+        className="logout-button"
+        style={{
+          background: "none",
+          border: "none",
+          color: "white",
+          marginLeft: "150px",
+          fontSize: "14px"
+        }}
+      >
+        로그아웃
+      </button>
       </div>
     </div>
   );
