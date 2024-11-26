@@ -1,0 +1,87 @@
+/* 로그인 페이지 스타일 */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f7fa;
+  }
+  
+  .login-box {
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 40px;
+    width: 360px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-logo {
+    margin-bottom: 20px;
+  }
+
+  .login-image-logo{
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .login-form {
+    margin-top: 20px;
+  }
+  
+  .login-form-group {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .login-label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    margin-right: 20px;
+  }
+  
+  .login-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  .login-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+  }
+  
+  .login-button {
+    background-color: #1a2b50;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .login-button:hover {
+    background-color: #1a2f6d;
+  }
+  
+  .find-password {
+    margin-right: 100;
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    color: black;
+    text-decoration: none;
+  }
+  
+  .find-password:hover {
+    text-decoration: underline;
+  }  

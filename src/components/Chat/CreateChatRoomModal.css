@@ -11,7 +11,7 @@
   border-top: 1px solid #ddd; /* 푸터와 본문 구분선 */
 }
 
-button {
+.chatroom-button {
   font-size: 1.1rem; /* 버튼 텍스트 크기 */
 }
 

@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import './App.css'; // App.js에 스타일 적용
 import AppRouter from './router/Router';
 import Sidebar from "./components/Sidebar/Sidebar";
@@ -8,7 +6,6 @@ import { UserProvider } from "./context/UserContext";
 
 
 function App() {
- 
   return (
     <UserProvider>
       <div className="app">
