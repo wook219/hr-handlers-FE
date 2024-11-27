@@ -1,0 +1,126 @@
+.post-detail-container {
+    margin: 20px auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.post-meta {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.post-content {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+.post-image {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    display: block;
+}
+
+.comment-buttons {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    gap: 5px; /* 버튼 간 간격 */
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.comment-input {
+    width: 100%;
+    height: 100px; /* 높이를 약간 늘려 더 여유롭게 */
+    background-color: #f9f9f9; /* 밝은 회색으로 변경 */
+    border: 1px solid #ccc; /* 얇은 테두리 추가 */
+    border-radius: 8px; /* 둥근 모서리로 부드럽게 */
+    padding: 12px; /* 내부 여백을 조금 더 추가 */
+    font-size: 16px; /* 글자 크기 증가 */
+    color: #333; /* 글자 색상 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
+    resize: none; /* 사용자가 크기 조정 못하도록 고정 */
+    outline: none; /* 클릭 시 파란 테두리 제거 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* 애니메이션 */
+}
+
+.comment-input:focus {
+    border-color: #162951; /* 포커스 시 테두리 색 변경 */
+    box-shadow: 0 4px 8px rgba(12, 31, 71, 0.1); /* 포커스 시 그림자 강조 */
+    background-color: #fff; /* 포커스 시 배경 색상 변경 */
+}
+
+.comment-submit-button {
+    align-self: flex-end;
+    padding: 5px 10px;
+    font-size: small;
+    background-color: #1a2b50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-cancel-button {
+    align-self: flex-end;
+    font-size: small;
+    padding: 5px 10px;
+    background-color: #a2a2a2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+
+.comment-submit-button:hover {
+    background-color: #162442;
+}
+
+.comment-cancel-button:hover {
+    background-color: #979797;
+}
+
+.comments-section {
+    margin-top: 20px;
+}
+
+.comments-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comment-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.comment-content {
+    font-size: 16px;
+    color: #333;
+}
