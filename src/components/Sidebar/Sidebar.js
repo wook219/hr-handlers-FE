@@ -48,7 +48,7 @@ function Sidebar() {
             <span>사내메신저</span>
           </li>
 
-          <li>
+          <li onClick={navigation.toBoard}>
             <FaClipboardList className="icon" />
             <span>사내게시판</span>
           </li>

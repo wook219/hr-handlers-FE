@@ -9,5 +9,6 @@ export const useNavigation = () => {
     toHome: () => navigate(PATHS.HOME),
     toMyPage: () => navigate(PATHS.MYPAGE),
     toLogin: () => navigate(PATHS.LOGIN),
+    toBoard: () => navigate(PATHS.BOARD),
   };
 };
