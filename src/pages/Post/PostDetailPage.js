@@ -54,7 +54,10 @@ const PostDetailPage = () => {
                 작성자: {post.employeeName || '알 수 없음'} | 작성일: {new Date(post.createdAt).toLocaleString()}
             </p>
             <div className="post-content">
-                <p>{post.content}</p>
+                <div
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                    className="ckeditor-content"
+                />
                 {post.imageUrl && (
                     <img
                         src={post.imageUrl}
