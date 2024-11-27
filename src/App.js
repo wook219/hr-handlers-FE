@@ -3,14 +3,18 @@ import AppRouter from './router/Router';
 import Sidebar from "./components/Sidebar/Sidebar";
 import './components/Sidebar/Sidebar.css';
 import { UserProvider } from "./context/UserContext";
-
+import { useLocation } from "react-router-dom";
+import HiddenUtils from "./utils/HiddenUtils"; 
 
 function App() {
+  const location = useLocation(); 
+  const isSidebarHidden = HiddenUtils.isSidebarHidden(location.pathname);
+
   return (
     <UserProvider>
       <div className="app">
-        <Sidebar />
-        <div className="content">
+      {!isSidebarHidden && <Sidebar />} 
+        <div className={`content ${isSidebarHidden ? "full-width" : ""}`}>
           <AppRouter />
         </div>
       </div>

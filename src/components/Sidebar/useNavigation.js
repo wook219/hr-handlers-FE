@@ -7,5 +7,10 @@ export const useNavigation = () => {
   return {
     toTodo: () => navigate(PATHS.TODO),
     toHome: () => navigate(PATHS.HOME),
+    toMyPage: () => navigate(PATHS.MYPAGE),
+    toLogin: () => navigate(PATHS.LOGIN),
+    toBoard: () => navigate(PATHS.BOARD),
+    toChatRoom: () => navigate(PATHS.CHATROOM),
+    toSalary: () => navigate(PATHS.SALARY),
   };
 };
