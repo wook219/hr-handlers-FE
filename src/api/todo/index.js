@@ -4,9 +4,19 @@ import * as api from '../path';
 const TODO = api.todoPath.TODO;
 
 // 모든 Todo 조회
-export const getAllTodosAPI = async () => {
+export const getAllTodosAPI = async (start, end) => {
   try {
-    const response = await axios.get(`${TODO}/1`); // 서버 엔드포인트: GET /todo
+
+    // 날짜 형식을 'YYYY-MM-DD' 형식으로 변환
+    const startDate = start.split('T')[0];
+    const endDate = end.split('T')[0];
+
+    const response = await axios.get(`${TODO}/1`, {
+        params : {
+            start : startDate,
+            end : endDate
+        }
+    });
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch todos:', error);

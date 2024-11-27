@@ -18,8 +18,16 @@ const TodoEnrollModal = ({ isOpen, onClose, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({ title: '', content: '', startTime: '', endTime: '' }); // 폼 초기화
+
+    // 시간대 조정을 위한 데이터 변환
+    const adjustedFormData = {
+      ...formData,
+      startTime: new Date(formData.startTime).toISOString(),
+      endTime: new Date(formData.endTime).toISOString()
+    };
+
+    onSubmit(adjustedFormData);
+    setFormData({ title: '', content: '', startTime: '', endTime: '' });
   };
 
   if (!isOpen) return null;
