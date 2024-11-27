@@ -3,4 +3,5 @@ export const PATHS = {
     HOME: '/',
     MYPAGE: '/mypage',
     LOGIN: '/login',
+    BOARD: '/post',
 };
