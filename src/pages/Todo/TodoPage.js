@@ -19,26 +19,26 @@ const TodoPage = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     // 일정 전체 조회
-    const fetchTodos = async () => {
+    const handleEvents = async (fetchInfo, successCallback, failureCallback) => {
       try {
-        const todos = await getAllTodosAPI();
-        // FullCalendar 형식으로 데이터 변환
-        const formattedEvents = todos.map((todo) => ({
-          id: todo.id,
-          title: todo.title,
-          start: todo.startTime,
-          end: todo.endTime,
-        }));
-        setEvents(formattedEvents);
+          const start = fetchInfo.startStr;
+          const end = fetchInfo.endStr;
+          
+          const todos = await getAllTodosAPI(start, end);
+          const formattedEvents = todos.map((todo) => ({
+              id: todo.id,
+              title: todo.title,
+              start: todo.startTime,
+              end: todo.endTime,
+          }));
+          
+          successCallback(formattedEvents);
       } catch (error) {
-        console.error('Failed to load todos:', error);
+          console.error('Failed to load todos:', error);
+          failureCallback(error);
+          showToast.error('일정 조회에 실패했습니다.');
       }
     };
-
-    // 컴포넌트 마운트 시 데이터 가져오기
-    useEffect(() => {
-      fetchTodos(); // 컴포넌트 마운트 시 데이터 로드
-    }, []);
 
     // 일정 상세 조회
     const handleEventClick = async (info) => {
@@ -56,9 +56,8 @@ const TodoPage = () => {
     const handleCreateSubmit = async (formData) => {
       try {
         await enrollTodoAPI(formData);
-        fetchTodos(); // 일정 목록 새로고침
-        setIsCreateModalOpen(false);
         showToast.success('새 일정이 등록되었습니다.');
+        setIsCreateModalOpen(false);
       } catch (error) {
         console.error('Failed to create todo:', error);
         showToast.error('일정 등록에 실패했습니다.');
@@ -69,7 +68,6 @@ const TodoPage = () => {
     const handleModify = async (todoId, formData) => {
       try {
         await modifyTodoAPI(todoId, formData);
-        await fetchTodos(); // 일정 목록 새로고침
         setIsDetailModalOpen(false);
         showToast.success('일정이 수정되었습니다.');
       } catch (error) {
@@ -85,7 +83,6 @@ const TodoPage = () => {
         if (!isConfirmed) return;
 
         await deleteTodoAPI(todoId);
-        await fetchTodos();
         setIsDetailModalOpen(false);
         showToast.success('일정이 삭제되었습니다.');
       } catch (error) {
@@ -101,7 +98,7 @@ const TodoPage = () => {
             plugins = {[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView = "dayGridMonth"
             height = "1000px"
-            events = {events}
+            events = {handleEvents}
             eventClick = {handleEventClick}
             selectable = {true}
             editable = {true}
