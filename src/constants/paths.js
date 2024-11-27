@@ -5,4 +5,5 @@ export const PATHS = {
   LOGIN: '/login',
   BOARD: '/post',
   CHATROOM: '/chatroom',
+  SALARY: '/admin/salary',
 };

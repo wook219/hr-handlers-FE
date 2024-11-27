@@ -11,5 +11,6 @@ export const useNavigation = () => {
     toLogin: () => navigate(PATHS.LOGIN),
     toBoard: () => navigate(PATHS.BOARD),
     toChatRoom: () => navigate(PATHS.CHATROOM),
+    toSalary: () => navigate(PATHS.SALARY),
   };
 };
