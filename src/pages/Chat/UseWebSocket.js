@@ -14,10 +14,16 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
   useEffect(() => {
     if (!chatRoomId) return; // chatRoomId가 없으면 WebSocket 연결하지 않음
 
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      console.error('JWT 토큰 없음');
+      return;
+    }
+
     const stompClient = new Client({
       webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
       connectHeaders: {
-        Authorization: `Bearer 5jJoA0TrpY+O9vlr9v/yb6Mg+rebOHzPcc148clBa0E=`,
+        Authorization: `Bearer ${token}`,
         chatRoomId: chatRoomId,
       },
       onConnect: () => {
