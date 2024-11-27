@@ -48,7 +48,7 @@ function Sidebar() {
             <span>사내게시판</span>
           </li>
 
-          <li>
+          <li onClick={navigation.toSalary}>
             <FaDollarSign className="icon" />
             <span>급여관리</span>
           </li>

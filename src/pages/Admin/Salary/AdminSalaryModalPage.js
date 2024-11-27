@@ -7,6 +7,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const AdminSalaryModalPage = (props) => {
     const [formData, setFormData] = useState([
+        { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
         { key: 'position', value: '', label: '직위', type: 'select', isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'select', isDisable: false },
@@ -22,12 +23,14 @@ const AdminSalaryModalPage = (props) => {
         { key: 'day', value: '', label: '급여일', type: 'select', isDisable: true },
     ]);
 
+    const [modalType, setModalType] = useState('');
+
     useEffect(() => {
         if (props.formData) {
             setFormData(prevFormData =>
                 prevFormData.map(field => {
                     const updatedField = props.formData.find(item => item.key === field.key);
-                    return updatedField ? { ...field, value: updatedField.value, options: updatedField.options } : field;
+                    return updatedField;
                 })
             );
         }
@@ -38,11 +41,17 @@ const AdminSalaryModalPage = (props) => {
             setSelectedDate(prevSelectedDate =>
                 prevSelectedDate.map(field => {
                     const updatedField = props.selectedDate.find(item => item.key === field.key);
-                    return updatedField ? { ...field, value: updatedField.value, options: updatedField.options } : field;
+                    return updatedField;
                 })
             );
         }
     }, [props.selectedDate]);
+
+    useEffect(() => {
+        if (props.modalType) {
+            setModalType(props.modalType);
+        }
+    }, [props.modalType]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -77,7 +86,7 @@ const AdminSalaryModalPage = (props) => {
             <Modal.Body>
                 {formData.map((field) => (
                     <div key={field.key}>
-                        <Form.Label htmlFor={field.key}>{field.label}</Form.Label>
+                        {field.type != 'custom' ? ( <Form.Label htmlFor={field.key}>{field.label}</Form.Label> ) : null}
                         {field.type === 'select' ? (
                             <Form.Select
                                 id={field.key}
@@ -127,7 +136,7 @@ const AdminSalaryModalPage = (props) => {
                 <Button variant="secondary" onClick={props.onHide}>
                     닫기
                 </Button>
-                <Button variant="primary" onClick={() => props.handleSubmit(formData, selectedDate)}>
+                <Button variant="primary" onClick={() => props.handleSubmit(formData, selectedDate, modalType)}>
                     저장
                 </Button>
             </Modal.Footer>
