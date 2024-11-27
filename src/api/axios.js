@@ -11,7 +11,7 @@ const instance = axios.create({
 
 // 요청 인터셉터 (토큰 추가 등)
 instance.interceptors.request.use(config => {
-    const token = sessionStorage.getItem('accessToken');
+    const token = localStorage.getItem('access_token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
