@@ -1,17 +1,20 @@
 import axios from '../axios'; // axios 인스턴스 가져오기
 import * as api from '../path';
+import { getEmpNoFromToken } from '../../utils/tokenUtils';
 
 const TODO = api.todoPath.TODO;
 
 // 모든 Todo 조회
 export const getAllTodosAPI = async (start, end) => {
   try {
+    const empNo = getEmpNoFromToken();
+    if (!empNo) throw new Error ('EmpNo not authenticated');
 
     // 날짜 형식을 'YYYY-MM-DD' 형식으로 변환
     const startDate = start.split('T')[0];
     const endDate = end.split('T')[0];
 
-    const response = await axios.get(`${TODO}/1`, {
+    const response = await axios.get(`${TODO}/${empNo}`, {
         params : {
             start : startDate,
             end : endDate
@@ -38,8 +41,11 @@ export const getTodoDetailAPI = async (todoId) => {
 // Todo 등록
 export const enrollTodoAPI = async (todoData) => {
     try {
+        const empNo = getEmpNoFromToken();
+        if (!empNo) throw new Error ('EmpNo not authenticated');
+
         const response = await axios.post(`${TODO}`, {
-            employeeId: 1, 
+            empNo: empNo, 
             title: todoData.title,
             content: todoData.content,
             startTime: todoData.startTime,
