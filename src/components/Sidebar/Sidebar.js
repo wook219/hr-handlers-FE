@@ -1,15 +1,16 @@
 import React from 'react';
 import { useNavigation } from './useNavigation';
 import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt } from 'react-icons/fa';
-import { useUser } from '../../context/UserContext'; // 유저 Context 가져오기
+import { useUser } from '../../context/UserContext'; 
 
 function Sidebar() {
-  const { user } = useUser(); // Context에서 유저 정보 가져오기
+  const { user, logout } = useUser();
   const navigation = useNavigation();
 
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem('access_token'); // 토큰 제거
+    logout(); // Context 상태 초기화 
     navigation.toLogin();
   };
 
@@ -17,13 +18,13 @@ function Sidebar() {
     <div className="sidebar">
       <div className="profile" onClick={navigation.toMyPage} style={{ cursor: 'pointer' }}>
         <img className="profile-img" src="https://via.placeholder.com/80" alt="프로필 사진" />
-        <div className="profile-name">홍길동</div>
-        <div className="profile-team">개발 1팀</div>
+        <div className="profile-name">{user.name}</div>
+        <div className="profile-team">{user.deptName}</div>
       </div>
       <div className="divider"></div>
       <nav>
         <ul>
-          <li>
+          <li onClick={navigation.toHome}>
             <FaHome className="icon" />
             <span>홈</span>
           </li>
