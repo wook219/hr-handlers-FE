@@ -146,8 +146,10 @@ const ChatRoom = () => {
     if (selectedMessageId) {
       try {
         await deleteMessage(selectedMessageId);
-        // 메시지가 삭제된 후, 상태에서 해당 메시지를 삭제
         setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== selectedMessageId));
+
+        // 선택된 메시지ID 초기화
+        setSelectedMessageId(null);
       } catch (error) {
         console.error('메시지 삭제 중 오류: ', error);
       }
