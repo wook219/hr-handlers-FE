@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getEmpNoFromToken } from '../../utils/tokenUtils';
+import './ChatMessage.css';
 
-// 보낸 메시지 받은 메시지 구분
-
-const ChatMessage = ({ message, name, messageId, onEdit, onDelete, setSelectedMessageId }) => {
+const ChatMessage = ({
+  message,
+  name,
+  empNo,
+  messageId,
+  onEdit,
+  onDelete,
+  selectedMessageId,
+  setSelectedMessageId,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newMessage, setNewMessage] = useState(message);
   const [contextMenu, setContextMenu] = useState(null); // 우클릭 메뉴 상태
+  const [tokenEmpNo, setTokenEmpNo] = useState('');
+
+  const token = localStorage.getItem('access_token');
+  useEffect(() => {
+    if (token) {
+      const tokenEmpNo = getEmpNoFromToken();
+      setTokenEmpNo(tokenEmpNo);
+      if (!tokenEmpNo) throw new Error('EmpNo not authenticated');
+    }
+  }, [token]); // token이 변경될 때마다 실행
+
+  useEffect(() => {
+    // 화면의 다른 곳을 클릭하면 우클릭 메뉴를 닫음
+    const handleClickOutside = (e) => {
+      if (e.target.closest('.chat-message')) return; // ChatMessage 컴포넌트 안에서 클릭된 경우는 제외
+      setContextMenu(null); // 메뉴 숨기기
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   // 우클릭 이벤트 핸들러
   const handleRightClick = (e) => {
     e.preventDefault();
-    setContextMenu({
-      mouseX: e.clientX - 2,
-      mouseY: e.clientY - 4,
-    });
-    setSelectedMessageId(messageId);
+    if (empNo === tokenEmpNo) {
+      setContextMenu({
+        mouseX: e.clientX - 2,
+        mouseY: e.clientY - 4,
+      });
+      setSelectedMessageId(messageId);
+    }
   };
 
   const handleCloseMenu = () => {
@@ -36,33 +69,47 @@ const ChatMessage = ({ message, name, messageId, onEdit, onDelete, setSelectedMe
     setIsEditing(false);
   };
 
-  return (
-    <div onContextMenu={handleRightClick}>
-      <div>
-        <span>{name} : </span>
-        {isEditing ? (
-          <div>
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onBlur={handleSaveEdit} // 블러 시 저장
-            />
+  useEffect(() => {
+    if (selectedMessageId !== messageId) {
+      setContextMenu(null); // 다른 메시지를 선택하면 기존 메뉴 숨기기
+    }
+  }, [selectedMessageId, messageId]);
 
-            <button onClick={handleSaveEdit}>저장</button>
+  let messageClass = empNo !== tokenEmpNo ? 'chat-message-received' : 'chat-message-sent';
+
+  return (
+    <div>
+      {empNo !== tokenEmpNo ? <div>{name} </div> : null}
+      <div onContextMenu={handleRightClick} className={messageClass}>
+        <div>
+          {isEditing ? (
+            <div>
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onBlur={handleSaveEdit} // 블러 시 저장
+              />
+
+              <button onClick={handleSaveEdit}>저장</button>
+            </div>
+          ) : (
+            message
+          )}
+        </div>
+
+        {/* 우클릭 메뉴 */}
+        {contextMenu && (
+          <div style={{ position: 'absolute', top: contextMenu.mouseY, left: contextMenu.mouseX }}>
+            <div onClick={handleEditClick} className="message-change-button">
+              수정
+            </div>
+            <div onClick={handleDeleteClick} className="message-change-button">
+              삭제
+            </div>
           </div>
-        ) : (
-          message
         )}
       </div>
-
-      {/* 우클릭 메뉴 */}
-      {contextMenu && (
-        <div style={{ position: 'absolute', top: contextMenu.mouseY, left: contextMenu.mouseX }}>
-          <div onClick={handleEditClick}>수정</div>
-          <div onClick={handleDeleteClick}>삭제</div>
-        </div>
-      )}
     </div>
   );
 };

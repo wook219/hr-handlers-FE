@@ -1,8 +1,12 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { SendFill } from 'react-bootstrap-icons';
+import './ChatRoom.css';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
@@ -10,6 +14,8 @@ const ChatRoom = () => {
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [empNo, setEmpNo] = useState('');
   const [messageInput, setMessageInput] = useState([]);
+  const [title, setTitle] = useState('');
+  const location = useLocation(); // useLocation 훅을 사용하여 state에 접근
 
   const chatBodyRef = useRef(null);
 
@@ -23,6 +29,10 @@ const ChatRoom = () => {
   }, [token]); // token이 변경될 때마다 실행
 
   useEffect(() => {
+    if (location.state) {
+      setTitle(location.state.title);
+    }
+
     const pathParts = window.location.pathname.split('/');
     const roomId = pathParts[pathParts.length - 1];
     if (roomId) {
@@ -30,6 +40,13 @@ const ChatRoom = () => {
       loadChatMessages(roomId);
     }
   }, [window.location.search]);
+
+  // 메시지가 변경될 때마다 스크롤을 가장 아래로 이동
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const handleMessageReceived = useCallback((message) => {
     console.log('Received message: ', message);
@@ -94,7 +111,9 @@ const ChatRoom = () => {
           id: msg.messageId,
           text: msg.message,
           name: msg.employeeName,
+          empNo: msg.empNo,
           sent: msg.empNo === empNo,
+          received: msg.empNo !== empNo,
           timestamp: new Date(msg.timestamp),
         }));
 
@@ -129,6 +148,10 @@ const ChatRoom = () => {
       });
 
       setMessageInput('');
+
+      if (chatBodyRef.current) {
+        chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+      }
     }
   };
 
@@ -157,32 +180,40 @@ const ChatRoom = () => {
   };
 
   return (
-    <div>
-      <h2>채팅방 {chatRoomId}</h2>
-      <div ref={chatBodyRef} style={{ maxHeight: '400px', overflowY: 'auto' }}>
-        {messages.map((message) => (
-          <ChatMessage
-            key={message.id}
-            message={message.text}
-            name={message.name}
-            messageId={message.id}
-            onEdit={handleEditMessage}
-            onDelete={handleDeleteMessage}
-            setSelectedMessageId={setSelectedMessageId}
-          />
-        ))}
-      </div>
+    <div className="chatroom-page">
+      <div className="chatroom-page-container">
+        <div>
+          <div>{title}</div>
+        </div>
+        <div ref={chatBodyRef} style={{}} className="chat-body">
+          {messages.map((message) => (
+            <ChatMessage
+              key={message.id}
+              message={message.text}
+              name={message.name}
+              empNo={message.empNo}
+              messageId={message.id}
+              onEdit={handleEditMessage}
+              onDelete={handleDeleteMessage}
+              selectedMessageId={selectedMessageId}
+              setSelectedMessageId={setSelectedMessageId}
+            />
+          ))}
+        </div>
 
-      {/* 메시지 입력 부분 */}
-      <div>
-        <input
-          type="text"
-          placeholder="메시지 입력"
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          onKeyUp={(e) => e.key === 'Enter' && handleSendMessage()}
-        />
-        <button onClick={handleSendMessage}>전송</button>
+        {/* 메시지 입력 부분 */}
+        <div className="chat-input">
+          <input
+            type="text"
+            placeholder="메시지 입력"
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            onKeyUp={(e) => e.key === 'Enter' && handleSendMessage()}
+          />
+          <button onClick={handleSendMessage}>
+            <SendFill />
+          </button>
+        </div>
       </div>
     </div>
   );
