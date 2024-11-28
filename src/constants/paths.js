@@ -1,6 +1,6 @@
 export const PATHS = {
   TODO: '/todo',
-  HOME: '/',
+  HOME: '/home',
   MYPAGE: '/mypage',
   LOGIN: '/login',
   BOARD: '/post',

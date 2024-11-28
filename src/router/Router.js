@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Salary from '../pages/Salary/SalaryPage';
 import AdminSalary from '../pages/Admin/Salary/AdminSalaryPage';
 import PostListPage from '../pages/Post/PostListPage'; // 게시글 목록 페이지
@@ -10,11 +10,15 @@ import Login from '../pages/Employee/Login'; // 로그인 페이지
 import MyPage from '../pages/Employee/MyPage';
 import ChatList from '../pages/Chat/ChatList';
 import ChatRoom from '../pages/Chat/ChatRoom';
+import Home from '../pages/Home/Home';
 
 // 공통 레이아웃이 필요한 라우트 라면 조건 처리
 function AppRouter() {
   return (
     <Routes>
+       {/* 기본 경로 /login으로 설정 */}
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/salary" element={<Salary />} />
       <Route path="/admin/salary" element={<AdminSalary />} />
       <Route path="/post" element={<PostListPage />} />
