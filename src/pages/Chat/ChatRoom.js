@@ -46,6 +46,7 @@ const ChatRoom = () => {
           ...message,
           id: message.messageId,
           text: message.message,
+          name: message.employeeName,
           sent: true,
           received: false,
           isTemp: false,
