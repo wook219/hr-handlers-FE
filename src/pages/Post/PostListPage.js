@@ -40,7 +40,7 @@ const PostListPage = () => {
         employeeId: 2, // 테스트용 임의 값, 실제 값은 로그인 사용자 정보로 대체
         content: editorData,
         hashtagContent: hashtagArray,
-        imageUrl: "https://example.com/image.jpg", // 임시 이미지 URL
+        imageUrl: editorData.includes("<img") ? "https://example.com/image.jpg" : null, // 이미지 조건부 설정
       };
       await createPostAPI(newPost); // API 호출
       handleCloseModal(); // 모달 닫기
@@ -98,9 +98,10 @@ const PostListPage = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredPosts.map((post) => (
+            {filteredPosts.map((post, index) => (
               <tr key={post.id}>
-                <td>{post.id}</td>
+                {/* 동적 번호 계산 */}
+                <td>{index + 1 + currentPage * size}</td>
                 <td>
                   <Link
                     to={`/post/${post.id}`}
