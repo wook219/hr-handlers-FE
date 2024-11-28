@@ -45,6 +45,23 @@
     padding-left: 20px;
 }
 
+/* 번호 있는 리스트 */
+.ckeditor-content ol {
+    list-style-type: decimal; /* 첫 번째 리스트: 숫자 */
+    margin-left: 1.5rem;
+}
+
+/* 번호 있는 리스트의 중첩 */
+.ckeditor-content ol ol {
+    list-style-type: lower-alpha; /* 중첩 리스트: 알파벳 */
+    margin-left: 1.5rem;
+}
+.ckeditor-content ol ol ol {
+    list-style-type: lower-roman; /* 세 번째 단계: 소문자 로마 숫자 */
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+}
+
 .ckeditor-content a {
     color: #007bff;
     text-decoration: none;
@@ -75,7 +92,7 @@
     display: block;
 }
 
-.comment-buttons {
+.post-actions, .comment-buttons{
     display: flex;
     justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
     gap: 5px; /* 버튼 간 간격 */
@@ -109,7 +126,7 @@
     background-color: #fff; /* 포커스 시 배경 색상 변경 */
 }
 
-.comment-submit-button {
+.comment-submit-button, .delete-button{
     align-self: flex-end;
     padding: 5px 10px;
     font-size: small;
@@ -120,7 +137,7 @@
     cursor: pointer;
 }
 
-.comment-cancel-button {
+.comment-cancel-button , .edit-button{
     align-self: flex-end;
     font-size: small;
     padding: 5px 10px;
