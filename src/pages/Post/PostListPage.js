@@ -15,6 +15,7 @@ const PostListPage = () => {
   const [title, setTitle] = useState(""); // 제목
   const [editorData, setEditorData] = useState(""); // 본문 내용
   const [hashtags, setHashtags] = useState(""); // 해시태그
+  const [pageGroupSize] = useState(5); // 한 번에 보여줄 페이지 번호 갯수
 
   // 게시글 목록 가져오기
   useEffect(() => {
@@ -67,6 +68,9 @@ const PostListPage = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  const totalPages = Math.ceil(totalElements / size); // 전체 페이지 수
+  const currentPageGroup = Math.floor(currentPage / pageGroupSize); // 현재 페이지 그룹 계산
 
   return (
     <div className="post-container container mt-5">
@@ -131,46 +135,71 @@ const PostListPage = () => {
       {/* 페이지네이션 UI */}
       <div className="pagination mt-3 d-flex justify-content-center">
         <ul className="pagination">
-          {/* 이전 페이지 버튼 */}
+          {/* 맨 처음으로 이동 */}
           <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
             <button
               className="page-link"
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => handlePageChange(0)}
               disabled={currentPage === 0}
+            >
+              &laquo;
+            </button>
+          </li>
+
+          {/* 이전 그룹으로 이동 */}
+          <li className={`page-item ${currentPageGroup === 0 ? "disabled" : ""}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange((currentPageGroup - 1) * pageGroupSize)}
+              disabled={currentPageGroup === 0}
             >
               &lt;
             </button>
           </li>
 
-          {/* 페이지 번호 */}
-          {[...Array(Math.ceil(totalElements / size))].map((_, index) => (
-            <li
-              key={index}
-              className={`page-item ${currentPage === index ? "active" : ""}`}
-            >
-              <button
-                className="page-link"
-                onClick={() => handlePageChange(index)}
+          {/* 페이지 번호 표시 */}
+          {[...Array(pageGroupSize)].map((_, index) => {
+            const pageIndex = currentPageGroup * pageGroupSize + index;
+            if (pageIndex >= totalPages) return null; // 전체 페이지를 초과하면 표시하지 않음
+            return (
+              <li
+                key={pageIndex}
+                className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
               >
-                {index + 1}
-              </button>
-            </li>
-          ))}
+                <button className="page-link" onClick={() => handlePageChange(pageIndex)}>
+                  {pageIndex + 1}
+                </button>
+              </li>
+            );
+          })}
 
-          {/* 다음 페이지 버튼 */}
+          {/* 다음 그룹으로 이동 */}
           <li
             className={`page-item ${
-              currentPage === Math.ceil(totalElements / size) - 1
-                ? "disabled"
-                : ""
+              currentPageGroup === Math.floor(totalPages / pageGroupSize) ? "disabled" : ""
             }`}
           >
             <button
               className="page-link"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === Math.ceil(totalElements / size) - 1}
+              onClick={() => handlePageChange((currentPageGroup + 1) * pageGroupSize)}
+              disabled={currentPageGroup === Math.floor(totalPages / pageGroupSize)}
             >
               &gt;
+            </button>
+          </li>
+
+          {/* 맨 마지막으로 이동 */}
+          <li
+            className={`page-item ${
+              currentPage === totalPages - 1 ? "disabled" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(totalPages - 1)}
+              disabled={currentPage === totalPages - 1}
+            >
+              &raquo;
             </button>
           </li>
         </ul>
