@@ -69,6 +69,14 @@ const ChatMessage = ({
     setIsEditing(false);
   };
 
+  const handleKeyDown = (e) => {
+    // 엔터키를 눌렀을 때만 저장
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Enter 키로 폼 제출을 방지
+      handleSaveEdit();
+    }
+  };
+
   useEffect(() => {
     if (selectedMessageId !== messageId) {
       setContextMenu(null); // 다른 메시지를 선택하면 기존 메뉴 숨기기
@@ -88,10 +96,10 @@ const ChatMessage = ({
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onBlur={handleSaveEdit} // 블러 시 저장
+                onKeyUp={handleKeyDown} // 엔터키 눌렀을 때 저장
+                className="chat-message-input"
+                autoFocus
               />
-
-              <button onClick={handleSaveEdit}>저장</button>
             </div>
           ) : (
             message

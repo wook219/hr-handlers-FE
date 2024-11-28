@@ -35,7 +35,7 @@
 }
 
 .chat-input input {
-  width: 80%; /* 입력란의 너비 */
+  width: 90%; /* 입력란의 너비 */
   padding: 10px;
   border-radius: 5px; /* 입력란 모서리 둥글게 */
   border: 1px solid #ccc; /* 테두리 */

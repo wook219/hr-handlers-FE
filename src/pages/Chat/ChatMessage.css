@@ -20,6 +20,14 @@
   align-self: flex-end; /* 오른쪽 정렬 */
 }
 
+.chat-message-input {
+  background-color: #1a2b50;
+  color: white;
+  border: none;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
 .message-change-button {
   display: block; /* 세로로 배치 */
   color: black;

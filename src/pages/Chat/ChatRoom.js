@@ -183,7 +183,9 @@ const ChatRoom = () => {
     <div className="chatroom-page">
       <div className="chatroom-page-container">
         <div>
+          <div>목록으로</div>
           <div>{title}</div>
+          <div>퇴장</div>
         </div>
         <div ref={chatBodyRef} style={{}} className="chat-body">
           {messages.map((message) => (
@@ -209,6 +211,7 @@ const ChatRoom = () => {
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyUp={(e) => e.key === 'Enter' && handleSendMessage()}
+            autoFocus
           />
           <button onClick={handleSendMessage}>
             <SendFill />
