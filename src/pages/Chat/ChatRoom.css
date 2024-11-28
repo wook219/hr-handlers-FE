@@ -24,7 +24,7 @@
 .chat-body {
   flex-grow: 1; /* 채팅 영역이 가용 공간을 차지하도록 설정 */
   overflow-y: auto; /* 채팅 내용이 많을 경우 스크롤 */
-  maxheight: '500px';
+  max-height: '500px';
 }
 
 /* 입력란과 버튼 영역 */
