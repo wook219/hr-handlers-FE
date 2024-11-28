@@ -2,7 +2,7 @@ import axios from '../axios';
 
 
 // 게시글 목록 조회 API
-export const getAllPostsAPI = async (page = 0, size = 10) => {
+export const getAllPostsAPI = async (page = 0, size = 5) => {
     try {
         const response = await axios.get(`/post?page=${page}&size=${size}`);
         return response.data;
