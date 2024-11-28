@@ -41,7 +41,6 @@ const PostListPage = () => {
         employeeId: 2, // 테스트용 임의 값, 실제 값은 로그인 사용자 정보로 대체
         content: editorData,
         hashtagContent: hashtagArray,
-        imageUrl: editorData.includes("<img") ? "https://example.com/image.jpg" : null, // 이미지 조건부 설정
       };
       await createPostAPI(newPost); // API 호출
       handleCloseModal(); // 모달 닫기

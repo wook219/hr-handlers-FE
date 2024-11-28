@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import axios from 'axios';
 import './PostModal.css'; // PostModal.css 파일 import
 
 const PostModal = ({
@@ -22,6 +23,39 @@ const PostModal = ({
             console.log('Editing mode active, pre-filling data for editing');
         }
     }, [isEditMode, show]);
+
+    // CKEditor에 이미지 업로드 핸들러 설정
+    const customUploadAdapter = (loader) => {
+        return {
+            upload: () => {
+                return new Promise((resolve, reject) => {
+                    loader.file.then((file) => {
+                        const formData = new FormData();
+                        formData.append('upload', file);
+
+                        // S3 업로드 API 호출
+                        axios
+                            .post('/api/s3/upload', formData, {
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                            })
+                            .then((response) => {
+                                resolve({ default: response.data.url }); // S3 URL 반환
+                            })
+                            .catch((error) => {
+                                console.error('Image upload failed:', error);
+                                reject(error);
+                            });
+                    });
+                });
+            },
+        };
+    };
+
+    // CKEditor 플러그인 설정: 업로드 어댑터 등록
+    function uploadPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) =>
+            customUploadAdapter(loader);
+    }
 
     return (
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
@@ -49,6 +83,9 @@ const PostModal = ({
                         <Form.Label className="post-modal-label">본문</Form.Label>
                         <CKEditor
                             editor={ClassicEditor}
+                            config={{
+                                extraPlugins: [uploadPlugin], // 이미지 업로드 플러그인 추가
+                            }}
                             data={editorData}
                             onChange={(event, editor) => {
                                 const data = editor.getData();
