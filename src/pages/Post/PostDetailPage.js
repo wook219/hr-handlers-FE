@@ -4,6 +4,7 @@ import { getPostDetailAPI , updatePostAPI, deletePostAPI } from '../../api/post'
 import './PostDetailPage.css';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import PostModal from "./PostModal"; // PostModal 컴포넌트 가져오기
+import { useUser } from '../../context/UserContext'; // UserContext 가져오기
 
 const PostDetailPage = () => {
     const navigate = useNavigate(); // useNavigate 훅 선언
@@ -16,6 +17,8 @@ const PostDetailPage = () => {
     const [title, setTitle] = useState("");
     const [editorData, setEditorData] = useState("");
     const [hashtags, setHashtags] = useState("");
+    const { user } = useUser(); // UserContext에서 사용자 정보 가져오기
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,12 +30,9 @@ const PostDetailPage = () => {
                 setEditorData(postResponse.data.content);
                 setHashtags(postResponse.data.hashtagContent.join(", "));
 
-                // JWT에서 empNo 추출
-                const empNo = getEmpNoFromToken();
-                if (!empNo) throw new Error('JWT에서 empNo를 추출하지 못했습니다.');
-
-                // 게시글 작성자와 현재 로그인한 사용자 비교
-                setIsAuthor(postResponse.data.employeeEmpNo === empNo);
+               // 사용자 이름과 게시글 작성자 이름 비교
+               const userName = user.name;
+               setIsAuthor(postResponse.data.employeeName === userName);
 
                 // 더미 댓글 데이터 추가
                 setComments([
@@ -71,7 +71,7 @@ const PostDetailPage = () => {
         e.preventDefault();
         const newComment = {
             id: comments.length + 1,
-            author: '익명 사용자',
+            author: user.name || '익명 사용자', // 사용자 이름 또는 기본값
             content: comment,
             createdAt: new Date().toLocaleString(),
         };
@@ -126,10 +126,12 @@ const PostDetailPage = () => {
                     />
                 )}
             </div>
-                <div className="post-actions">
-                    <button className="edit-button" onClick={handleEditClick}>수정</button>
-                    <button className="delete-button" onClick={handlePostDelete}>삭제</button>
-                </div>
+                {isAuthor && ( // 작성자인 경우에만 표시
+                    <div className="post-actions">
+                        <button className="edit-button" onClick={handleEditClick}>수정</button>
+                        <button className="delete-button" onClick={handlePostDelete}>삭제</button>
+                    </div>
+                )}
                 <PostModal
                     show={isModalOpen}
                     handleClose={handleModalClose}
