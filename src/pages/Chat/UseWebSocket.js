@@ -2,7 +2,7 @@ import { Client } from '@stomp/stompjs';
 import { useState, useEffect, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 
-const UseWebSocket = (chatRoomId, onMessageReceived) => {
+const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessageDeleted, empNo) => {
   const [client, setClient] = useState(null);
 
   useEffect(() => {
@@ -22,11 +22,29 @@ const UseWebSocket = (chatRoomId, onMessageReceived) => {
       },
       onConnect: () => {
         console.log('WebSocket 연결 성공');
+
+        // 메시지 전송
         stompClient.subscribe(`/topic/message/${chatRoomId}`, (message) => {
           const receivedMessage = JSON.parse(message.body);
           if (typeof onMessageReceived === 'function' && receivedMessage.message) {
             onMessageReceived(receivedMessage);
           }
+        });
+
+        // 메시지 수정
+        stompClient.subscribe(`/topic/message/update/${chatRoomId}`, (updateMsg) => {
+          console.log('Update message: ', updateMsg.body);
+          const updatedMessage = JSON.parse(updateMsg.body);
+          if (typeof onMessageUpdated === 'function') {
+            onMessageUpdated(updatedMessage);
+          }
+        });
+
+        // 메시지 삭제
+        stompClient.subscribe(`/topic/message/delete/${chatRoomId}`, (deleteMsg) => {
+          console.log('Delete Message: ', deleteMsg.body);
+          const deletedMessageId = JSON.parse(deleteMsg.body);
+          if (typeof onMessageDeleted(deletedMessageId));
         });
       },
       onStompError: (frame) => {
@@ -42,23 +60,47 @@ const UseWebSocket = (chatRoomId, onMessageReceived) => {
         stompClient.deactivate();
       }
     };
-  }, [chatRoomId, onMessageReceived]);
+  }, [chatRoomId, onMessageReceived, onMessageUpdated, onMessageDeleted, empNo]);
 
   const sendMessage = useCallback(
     (message) => {
       if (client && client.active) {
         client.publish({
           destination: `/app/message/${chatRoomId}`,
-          body: JSON.stringify(message),
+          body: JSON.stringify({ ...message, empNo: empNo }),
         });
       } else {
         console.error('WebSocket 연결이 되어 있지 않습니다.');
       }
     },
-    [client, chatRoomId]
+    [client, chatRoomId, empNo]
   );
 
-  return { sendMessage };
+  const updateMessage = useCallback(
+    (messageId, newText) => {
+      if (client && client.active) {
+        client.publish({
+          destination: `/app/message/update/${chatRoomId}`,
+          body: JSON.stringify({ messageId: messageId, chatRoomId: chatRoomId, message: newText, empNo: empNo }),
+        });
+      }
+    },
+    [client, chatRoomId, empNo]
+  );
+
+  const deleteMessage = useCallback(
+    (messageId) => {
+      if (client && client.active) {
+        client.publish({
+          destination: `/app/message/delete/${chatRoomId}`,
+          body: JSON.stringify({ messageId: messageId, chatRoomId: chatRoomId, empNo: empNo }),
+        });
+      }
+    },
+    [client, chatRoomId, empNo]
+  );
+
+  return { sendMessage, updateMessage, deleteMessage };
 };
 
 export default UseWebSocket;
