@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom'; // useNavigate로 페이지 이�
 import React from 'react';
 import './EnterChatRoomButton.css';
 
-const EnterChatRoomButton = ({ chatRoomId }) => {
+const EnterChatRoomButton = ({ chatRoomId, title }) => {
   const navigate = useNavigate(); // useNavigate 훅 사용
 
   const handleEnterChatRoomClick = () => {
-    navigate(`/chatroom/${chatRoomId}`); // 페이지 이동
+    navigate(`/chatroom/${chatRoomId}`, { state: { title } }); // 페이지 이동
   };
 
   return (
