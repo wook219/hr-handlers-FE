@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
- 
+import './App.css'; // App.js에 스타일 적용
+import AppRouter from './router/Router';
+import Sidebar from "./components/Sidebar/Sidebar";
+import './components/Sidebar/Sidebar.css';
+import { UserProvider } from "./context/UserContext";
+import { useLocation } from "react-router-dom";
+import HiddenUtils from "./utils/HiddenUtils"; 
+
 function App() {
-  const [hidata, setHello] = useState('')
- 
-  useEffect(() => {
-    axios.get('/api/hello')
-      .then(response => setHello(response.data))
-      .catch(error => console.log(error))
-  }, []);
- 
+  const location = useLocation(); 
+  const isSidebarHidden = HiddenUtils.isSidebarHidden(location.pathname);
+
   return (
-    <div>
-      백엔드 스프링 부트 데이터 : {hidata}
-    </div>
+    <UserProvider>
+      <div className="app">
+      {!isSidebarHidden && <Sidebar />} 
+        <div className={`content ${isSidebarHidden ? "full-width" : ""}`}>
+          <AppRouter />
+        </div>
+      </div>
+    </UserProvider>
   );
 }
- 
+
 export default App;

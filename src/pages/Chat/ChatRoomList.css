@@ -1,0 +1,23 @@
+.chatroom-list-all-container {
+  margin-top: 40px;
+  width: 75%; /* 부모 요소의 75%로 크기 설정 */
+  margin-left: auto;
+  margin-right: auto; /* 중앙 정렬 */
+}
+
+.chatroom-list-container {
+  background-color: #ffffff; /* 하얀색 배경 */
+  padding: 20px;
+  border-radius: 8px; /* 둥근 모서리 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+}
+
+.chatroom-list {
+  margin: 0;
+}
+
+.chatroom-list-title {
+  font-size: 20px;
+  font-weight: bold;
+  word-wrap: break-word; /* 긴 제목도 화면에 맞게 줄 바꿈 */
+}

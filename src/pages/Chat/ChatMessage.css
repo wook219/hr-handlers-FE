@@ -1,0 +1,50 @@
+.chat-message-received {
+  background-color: #e7e7e7; /* 수신 메시지 배경색 */
+  color: #333;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: fit-content;
+  max-width: 60%;
+  align-self: flex-start; /* 왼쪽 정렬 */
+}
+
+.chat-message-sent {
+  background-color: #1a2b50; /* 발신 메시지 배경색 */
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: fit-content;
+  max-width: 60%;
+  align-self: flex-end; /* 오른쪽 정렬 */
+}
+
+.chat-message-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.chat-message-input {
+  background-color: #1a2b50;
+  color: white;
+  border: none;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.message-change-button {
+  display: block; /* 세로로 배치 */
+  color: black;
+  padding: 5px 10px; /* 버튼 안의 여백 */
+  background-color: white;
+  border: 1px solid gray;
+  text-align: center; /* 텍스트를 가운데 정렬 */
+  cursor: pointer; /* 마우스 커서가 포인터로 변하게 설정 */
+  font-size: 14px;
+}
+
+/* 호버 시 효과 */
+.message-change-button:hover {
+  background-color: #f0f0f0; /* 호버 시 배경색이 연한 회색으로 변경 */
+}

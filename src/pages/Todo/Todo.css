@@ -1,0 +1,141 @@
+/* ===== 1. 컨테이너 스타일 ===== */
+.todo-calendar-container {
+  width: 1500px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ===== 2. 캘린더 기본 날짜 스타일 ===== */
+/* 평일 */
+.fc-daygrid-day-number {
+  color: #000000 !important;
+}
+
+/* 토요일 */
+.fc-day-sat .fc-daygrid-day-number {
+  color: #0000ff !important;
+}
+
+/* 일요일 */
+.fc-day-sun .fc-daygrid-day-number {
+  color: #ff0000 !important;
+}
+
+/* 토요일 배경 */
+.fc-day-sat {
+  background-color: #f8f9ff;
+}
+
+/* 일요일 배경 */
+.fc-day-sun {
+  background-color: #fff5f5;
+}
+
+/* ===== 3. 공휴일 관련 스타일 ===== */
+/* 공휴일 이벤트 컨테이너 */
+.holiday-event {
+  margin: 0 !important;
+  padding: 0 4px !important;
+  font-size: 0.8em !important;
+}
+
+/* 공휴일 이벤트 내부 */
+.holiday-event .fc-event-main {
+  padding: 0 !important;
+}
+
+/* 공휴일 이벤트 제목 */
+.holiday-event .fc-event-title {
+  color: #ff0000 !important;
+  padding: 0 !important;
+}
+
+/* 공휴일 글머리 기호 */
+.fc-daygrid-event-dot {
+  margin-right: 2px !important;
+}
+
+/* ===== 4. 일정 이벤트 스타일 ===== */
+/* 일반 일정 */
+.todo-event {
+  margin: 1px 0;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+/* 일정 제목 */
+.fc-event-title {
+  font-weight: bold;
+}
+
+/* 이벤트 호버/드래그 효과 */
+.fc-event:hover {
+  filter: brightness(0.9);
+}
+
+.fc-event.fc-dragging {
+  opacity: 0.7;
+}
+
+/* ===== 5. 하이라이트 스타일 ===== */
+/* 오늘 날짜 하이라이트 */
+.fc-daygrid-day.fc-day-today {
+  background-color: rgba(255, 220, 40, 0.15) !important;
+}
+
+/* 선택 날짜 하이라이트 */
+.fc-highlight {
+  background: rgba(74, 144, 226, 0.3) !important;
+}
+
+/* ===== 6. 일정 등록 버튼 스타일 ===== */
+.todo-widget-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+/* 버튼 호버 효과 */
+.todo-widget-btn:hover {
+  background-color: #357abd;
+  transform: scale(1.05);
+}
+
+/* 버튼 아이콘 */
+.todo-widget-btn i {
+  font-size: 24px;
+  color: white;
+}
+
+/* 버튼 툴팁 */
+.todo-widget-btn::after {
+  content: '일정 등록';
+  position: absolute;
+  right: 70px;
+  background-color: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.todo-widget-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
