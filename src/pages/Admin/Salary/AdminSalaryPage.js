@@ -1,18 +1,21 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getAllSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
+import { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import AdminSalaryModalPage from "./AdminSalaryModalPage";
+import AdminSalarySearchPage from "./AdminSalarySearchPage";
 
 const AdminSalaryPage = () => {
-    const [salaries, setSalaries] = useState([]);
-    const [modalShow, setModalShow] = useState(false);
-    const [modalType, setModalType] = useState('');
+    const [salaries, setSalaries] = useState([]); // 급여관리 조회 데이터
+    const [modalShow, setModalShow] = useState(false); // 모달 사용 여부
+    const [modalType, setModalType] = useState(''); // 모달 화면 타입(추가: create, 수정: update)
+    const [checkItems, setCheckItems] = useState([]); // 체크된 아이템을 담을 배열
+    const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
     const positionOptions = [
-        { name: '선택', value: '선택' },
+        { name: '선택', value: '' },
         { name: '사원', value: '사원' },
         { name: '대리', value: '대리' },
         { name: '과장', value: '과장' },
@@ -30,8 +33,13 @@ const AdminSalaryPage = () => {
         { name: '김철수', value: '2' },
         { name: '엘리스', value: '3' }
     ];
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [searchData, setSearchData] = useState([
+        { key: 'startDate', value: '', label: '시작날짜', type: 'inputDate', isDisable: false },
+        { key: 'endDate', value: '', label: '종료날짜', type: 'inputDate', isDisable: false },
+        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
+        { key: 'name', value: '', label: '이름', type: 'inputText', isDisable: false },
+    ]);
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
         { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
@@ -47,8 +55,6 @@ const AdminSalaryPage = () => {
         { key: 'month', value: '', label: '급여월', type: 'select', options: ['선택', 1,2,3,4,5,6,7,8,9,10,11,12], isDisable: false },
         { key: 'day', value: '', label: '급여일', type: 'select', options: [13], isDisable: true },
     ]);
-    const [checkItems, setCheckItems] = useState([]); // 체크된 아이템을 담을 배열
-    const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
 
     useEffect(() => {
         getSalaries()
@@ -158,6 +164,27 @@ const AdminSalaryPage = () => {
         setSalaries(response.data.data);
     };
 
+    // 검색 api
+    const handleSearch = async (searchData) => {
+        console.log("searchData : ", searchData);
+
+        let params = {};
+
+        searchData.forEach((item) => {
+            if (item.value) {
+                params[item.key] = item.value;
+            }
+        });
+
+        const { response, error } = await searchSalaryAPI(params);
+        console.log("response : ", response);
+        if (error) {
+            console.log('에러 발생');
+            return;
+        }
+        // setSalaries(response.data.data);
+    }
+
     // 추가, 수정 api
     const handleSubmit = async (data, selectedDate, modalType) => {
         let params = {};
@@ -241,11 +268,15 @@ const AdminSalaryPage = () => {
     return (
         <div className="">
             <h2 className="">급여 목록</h2>
-            <div>
-                <Button variant="primary" onClick={handleCreate}>
+            <AdminSalarySearchPage
+                searchData={searchData}
+                handleSearch={handleSearch}
+            />
+            <div className="mb-3" style={{ textAlign: "right" }}>
+                <Button className="me-2" variant="primary" onClick={handleCreate}>
                     추가
                 </Button>
-                <Button variant="danger" onClick={handleDelete}>
+                <Button className="me-2" variant="danger" onClick={handleDelete}>
                     삭제
                 </Button>
                 <Button variant="success" onClick={triggerFileInput}>

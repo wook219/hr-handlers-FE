@@ -20,6 +20,24 @@ const getAllSalaryAPI = () => {
         });
 };
 
+const searchSalaryAPI = (params) => {
+    return axios({
+            url: ADMINSALARY.SEARCH,
+            method: 'post',
+            data: params
+        })
+        .then(res => {
+            if (!res.data) {
+                throw new Error("응답 에러: 데이터가 없습니다.");
+            }
+            return { response: res, error: null };
+        })
+        .catch(err => {
+            console.error(err);
+            return { response: null, error: err };
+        });
+};
+
 const createSalaryAPI = (params) => {
     return axios({
             url: ADMINSALARY.BASE,
@@ -96,4 +114,4 @@ const excelUploadSalaryAPI = (formData) => {
 };
 
 
-export { getAllSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI };
+export { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI };

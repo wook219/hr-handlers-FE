@@ -1,5 +1,6 @@
 export {
     getAllSalaryAPI,
+    searchSalaryAPI,
     createSalaryAPI,
     updateSalaryAPI,
     deleteSalaryAPI,
