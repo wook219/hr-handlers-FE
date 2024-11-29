@@ -1,0 +1,29 @@
+.chatting-list-all-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  width: 100%;
+}
+
+/* chatroom-list-container에 Flexbox 적용 */
+.chatting-list-container {
+  background-color: #ffffff; /* 하얀색 배경 */
+  padding: 20px;
+  border-radius: 8px; /* 둥근 모서리 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+  flex-grow: 1; /* 가로 크기를 더 유연하게 늘림 */
+  max-width: 1200px; /* 최대 너비를 설정 */
+  width: 100%; /* 가로 크기를 100%로 설정 */
+  margin-left: auto;
+  margin-right: auto; /* 중앙 정렬 */
+}
+
+.chatroom-list {
+  margin: 0;
+}
+
+.chatroom-list-title {
+  font-size: 20px;
+  font-weight: bold;
+  word-wrap: break-word; /* 긴 제목도 화면에 맞게 줄 바꿈 */
+}

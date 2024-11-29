@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'; // useNavigate로 페이지 이동
 import React, { useState } from 'react';
 import './EnterChatRoomButton.css';
-import { enterChatRoomAPI } from '../../api/chat';
+import { enterChatRoomAPI } from '../../../api/chat';
 
 const EnterChatRoomButton = ({ chatRoomId, title }) => {
   const navigate = useNavigate(); // useNavigate 훅 사용

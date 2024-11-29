@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import CreateChatRoomModal from './CreateChatRoomModal';
+import CreateChatRoomModal from '../ChatModals/CreateChatRoomModal';
 import { Button } from 'react-bootstrap';
 import { SendFill } from 'react-bootstrap-icons';
 import './CreateChatRoomButton.css';
-import { createChatRoomAPI } from '../../api/chat';
+import { createChatRoomAPI } from '../../../api/chat';
 
 const CreateChatRoomButton = () => {
   const [showModal, setShowModal] = useState(false);

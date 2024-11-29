@@ -36,7 +36,7 @@ export const getAllEnterChatAPI = async () => {
 export const createChatRoomAPI = async (chatRoomTitle) => {
   try {
     const response = await axios.post('/chatroom', chatRoomTitle);
-    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error('Failed to create chatRoom: ', error);
@@ -68,7 +68,7 @@ export const getChatMessagesAPI = async (chatRoomId) => {
   }
 };
 
-// 채팅 참여 API
+// 채팅방 참여 API
 export const enterChatRoomAPI = async (chatRoomId) => {
   try {
     const token = localStorage.getItem('access_token');
@@ -83,10 +83,31 @@ export const enterChatRoomAPI = async (chatRoomId) => {
       },
     });
 
-    console.log(response);
     return response.data;
   } catch (error) {
     console.error('Failed to enter chatRoom: ', error);
+    throw error;
+  }
+};
+
+// 채팅방 퇴장 API
+export const exitChatRoomAPI = async (chatRoomId) => {
+  try {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      throw new Error('JWT 토큰이 없습니다. 로그인을 해주세요.');
+    }
+
+    const response = await axios.delete(`/chat/${chatRoomId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Failed to exit chatRoom: ', error);
     throw error;
   }
 };
