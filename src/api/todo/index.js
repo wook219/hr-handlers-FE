@@ -84,3 +84,14 @@ export const deleteTodoAPI = async (todoId) => {
         throw error;
     }
 };
+
+// 공휴일 조회
+export const getHolidaysAPI = async (year, month) => {
+    try {
+        const response = await axios.get(`${TODO}/holidays/${year}/${month}`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch holidays:', error);
+        throw error;
+    }
+};
