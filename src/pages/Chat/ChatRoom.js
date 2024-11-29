@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
+import ChattingList from '../../components/Chat/ChatList/ChattingList';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,6 +30,8 @@ const ChatRoom = () => {
     }
   }, [token]); // token이 변경될 때마다 실행
 
+  const { chatroomId } = useParams();
+
   useEffect(() => {
     if (location.state) {
       setTitle(location.state.title);
@@ -40,7 +43,7 @@ const ChatRoom = () => {
       setChatRoomId(roomId);
       loadChatMessages(roomId);
     }
-  }, [window.location.search]);
+  }, [chatroomId]);
 
   // 메시지가 변경될 때마다 스크롤을 가장 아래로 이동
   useEffect(() => {
@@ -182,6 +185,7 @@ const ChatRoom = () => {
 
   return (
     <div className="chatroom-page">
+      <ChattingList />
       <div className="chatroom-page-container">
         <ChatRoomHeader title={title} />
         <div ref={chatBodyRef} style={{}} className="chat-body">
