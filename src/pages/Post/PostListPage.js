@@ -33,22 +33,27 @@ const PostListPage = () => {
   };
 
   // 게시글 생성
-  const handleCreatePost = async () => {
+  
+  const handleCreatePost = async (postData) => {
     try {
       const hashtagArray = hashtags.split(",").map((tag) => tag.trim());
       const newPost = {
         title,
         employeeId: 2, // 테스트용 임의 값, 실제 값은 로그인 사용자 정보로 대체
-        content: editorData,
+        content: postData.content,
         hashtagContent: hashtagArray,
       };
+
+      // 디버깅 로그 추가
+      console.log('Data being sent to createPostAPI:', newPost);
+
       await createPostAPI(newPost); // API 호출
       handleCloseModal(); // 모달 닫기
       fetchPosts(currentPage, size); // 게시글 목록 갱신
     } catch (error) {
       console.error("Failed to create post:", error);
     }
-  };
+  }; 
 
   // 검색 필터
   const filteredPosts = posts.filter((post) =>
