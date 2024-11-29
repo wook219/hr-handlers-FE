@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getAllChatRoomAPI } from '../../../api/chat';
-import EnterChatRoomButton from '../EnterChatRoomButton';
+import EnterChatRoomButton from '../ChatButtons/EnterChatRoomButton';
 import './ChattingList.css';
 
 const ChattingList = () => {

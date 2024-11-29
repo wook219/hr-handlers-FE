@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAllEnterChatAPI } from '../../../api/chat';
-import EnterChatRoomButton from '../EnterChatRoomButton';
+import EnterChatRoomButton from '../ChatButtons/EnterChatRoomButton';
 import './ChattingList.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
