@@ -109,3 +109,21 @@
     width: 15%;
   }
 }
+
+.context-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  width: 150px;
+  border-radius: 4px;
+}
+
+.context-menu div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.context-menu div:hover {
+  background-color: #f0f0f0;
+}

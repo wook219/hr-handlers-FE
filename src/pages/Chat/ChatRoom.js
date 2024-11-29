@@ -4,7 +4,6 @@ import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
 import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
-import ChatTabNavigation from '../../components/Chat/ChatTabNavigation';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -19,6 +18,29 @@ const ChatRoom = () => {
   const [messageInput, setMessageInput] = useState([]);
   const [title, setTitle] = useState('');
   const location = useLocation(); // useLocation 훅을 사용하여 state에 접근
+  const [contextMenu, setContextMenu] = useState(null);
+  const contextMenuRef = useRef(null);
+
+  const handleClickMenu = (e) => {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    setContextMenu({ mouseX, mouseY });
+  };
+
+  // ContextMenu 영역 외의 곳을 클릭하면 메뉴를 닫는 이벤트 처리
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target)) {
+        setContextMenu(null); // ContextMenu 외의 곳을 클릭했을 경우 메뉴를 닫음
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick); // 클릭 시 이벤트 리스너 추가
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick); // 컴포넌트 언마운트 시 이벤트 리스너 정리
+    };
+  }, [contextMenu]); // contextMenu가 변할 때마다 실행되도록 설정
 
   const chatBodyRef = useRef(null);
 
@@ -191,7 +213,7 @@ const ChatRoom = () => {
         <ActiveChatList />
       </div>
       <div className="chatroom-entire-container">
-        <ChatRoomHeader title={title} />
+        <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} />
         <div className="chatroom-page-container">
           <div ref={chatBodyRef} style={{}} className="chat-body">
             {messages.map((message) => (
@@ -223,6 +245,23 @@ const ChatRoom = () => {
               <SendFill />
             </button>
           </div>
+
+          {/* ContextMenu */}
+          {contextMenu && (
+            <div
+              ref={contextMenuRef}
+              style={{
+                position: 'absolute',
+                top: contextMenu.mouseY,
+                left: contextMenu.mouseX,
+                zIndex: 10,
+              }}
+              className="context-menu"
+            >
+              <div>새 탭으로 열기</div>
+              <div>퇴장</div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -19,13 +19,10 @@
   font-size: 25px;
 }
 
-.chatroom-left {
-  cursor: pointer;
-}
-
 .chatroom-left,
 .chatroom-right {
   flex: 0 0 auto; /* 왼쪽과 오른쪽 아이템은 고정 크기 */
+  cursor: pointer;
 }
 
 .chatroom-center {

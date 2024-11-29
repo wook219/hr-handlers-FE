@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './ChatRoomHeader.css';
 import { ThreeDotsVertical, BoxArrowLeft } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 
-const ChatRoomHeader = ({ title }) => {
+const ChatRoomHeader = ({ title, handleClickMenu }) => {
+  const [contextMenu, setContextMenu] = useState(null); // 메뉴 상태
   const navigate = useNavigate();
 
   // 참여 중인 메신저 목록으로 이동
@@ -17,9 +18,16 @@ const ChatRoomHeader = ({ title }) => {
         <BoxArrowLeft />
       </div>
       <div className="chatroom-center">{title}</div>
-      <div className="chatroom-right chatroom-header-icon-size">
+      <div className="chatroom-right chatroom-header-icon-size" onClick={handleClickMenu}>
         <ThreeDotsVertical />
       </div>
+
+      {contextMenu && (
+        <div style={{ position: 'absolute', top: contextMenu.mouseY, left: contextMenu.mouseX }}>
+          <div>메뉴1</div>
+          <div>메뉴1</div>
+        </div>
+      )}
     </div>
   );
 };
