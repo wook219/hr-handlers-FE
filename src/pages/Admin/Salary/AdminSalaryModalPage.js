@@ -96,8 +96,8 @@ const AdminSalaryModalPage = (props) => {
                                 disabled={field.isDisable}
                             >
                                 {field.options?.map((option, index) => (
-                                    <option key={index} value={option}>
-                                        {option}
+                                    <option key={index} value={option.value}>
+                                        {option.name}
                                     </option>
                                 ))}
                             </Form.Select>

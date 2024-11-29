@@ -11,11 +11,32 @@ const AdminSalaryPage = () => {
     const [salaries, setSalaries] = useState([]);
     const [modalShow, setModalShow] = useState(false);
     const [modalType, setModalType] = useState('');
+    const positionOptions = [
+        { name: '선택', value: '선택' },
+        { name: '사원', value: '사원' },
+        { name: '대리', value: '대리' },
+        { name: '과장', value: '과장' },
+        { name: '팀장', value: '팀장' },
+        { name: '대표', value: '대표' }
+    ];
+    const deptNameOptions = [
+        { name: '선택', value: '' },
+        { name: '개발팀', value: '개발팀' },
+        { name: '재무팀', value: '재무팀' }
+    ];
+    const nameOptions = [
+        { name: '선택', value: '' },
+        { name: '홍길동', value: '1' },
+        { name: '김철수', value: '2' },
+        { name: '엘리스', value: '3' }
+    ];
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', options: ['선택', '사원', '대리', '팀장'], isDisable: false },
-        { key: 'deptName', value: '', label: '부서', type: 'select', options: ['선택', '재무팀', '개발팀'], isDisable: false },
-        { key: 'name', value: '', label: '이름', type: 'select', options: ['선택', '홍길동', '김철수', '엘리스'], isDisable: false },
+        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
+        { key: 'name', value: '', label: '이름', type: 'select', options: nameOptions, isDisable: false },
         { key: 'basicSalary', value: '', label: '지급총액', type: 'input', isDisable: false },
         { key: 'deduction', value: '', label: '공제총액', type: 'input', isDisable: false },
         { key: 'netSalary', value: '', label: '실지급액', type: 'input', isDisable: false },
@@ -64,6 +85,7 @@ const AdminSalaryPage = () => {
         const createFormData = formData.map((field) => ({
             ...field,
             value: '',
+            isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false : field.isDisable,
         }));
     
         // SelectedDate 초기화
@@ -84,10 +106,21 @@ const AdminSalaryPage = () => {
     // row 더블클릭시 실행되는 함수(수정관련)
     const handleRowDoubleClick = (salary) => {
         // 폼 데이터 업데이트
-        const updatedFormData = formData.map((field) => ({
-            ...field,
-            value: salary[field.key],
-        }));
+        const updatedFormData = formData.map((field) => {
+            let updatedValue = salary[field.key];
+
+            // select 타입의 경우 value를 options에서 매칭된 값으로 변환
+            if (field.type === 'select' && field.options) {
+                const matchedOption = field.options.find(option => option.value === updatedValue || option.name === updatedValue);
+                updatedValue = matchedOption ? matchedOption.value : ''; // 매칭되지 않으면 기본값 설정
+            }
+            
+            // 직위, 부서, 이름 셀렉트 박스 disable로 변경
+            const isDisable = ['position', 'deptName', 'name'].includes(field.key) ? true : field.isDisable;
+            
+            return { ...field, value: updatedValue, isDisable };
+        });
+
     
         // 날짜 데이터 업데이트
         const updatedSelectedDate = selectedDate.map((dateField) => {
@@ -137,10 +170,6 @@ const AdminSalaryPage = () => {
         });
 
         // 급여일 데이터 세팅
-        // const year = "2024";
-        // const month = selectedDate.find(item => item.key === "month")?.value || "01";
-        // const day = "13";
-
         const year = selectedDate.find(item => item.key === "year").value;
         const month = selectedDate.find(item => item.key === "month").value;
         const day = selectedDate.find(item => item.key === "day")?.value || "13";
