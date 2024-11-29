@@ -19,8 +19,8 @@ const ChattingList = () => {
     fetchChatRooms();
   }, []);
   return (
-    <div className="chatroom-list-container">
-      <div className="chatroom-list">
+    <div className="chatting-list-container">
+      <div className="chatting-list">
         {chatrooms.map((chatroom) => (
           <div className="row align-items-center mb-3" key={chatroom.chatRoomId}>
             <div className="col-2 text-center">

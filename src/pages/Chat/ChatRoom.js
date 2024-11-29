@@ -3,7 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
-import ChattingList from '../../components/Chat/ChatList/ChattingList';
+import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -185,7 +185,7 @@ const ChatRoom = () => {
 
   return (
     <div className="chatroom-page">
-      <ChattingList />
+      <ActiveChatList />
       <div className="chatroom-page-container">
         <ChatRoomHeader title={title} />
         <div ref={chatBodyRef} style={{}} className="chat-body">
