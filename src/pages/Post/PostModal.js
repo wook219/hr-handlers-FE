@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -17,6 +17,8 @@ const PostModal = ({
     setHashtags,
     isEditMode = false,
 }) => {
+    const [pendingUploads, setPendingUploads] = useState([]); // 업로드 대기 이미지 파일 리스트
+
     // 수정 모드일 때 데이터를 초기화하거나 로그 출력
     useEffect(() => {
         if (isEditMode && show) {
@@ -24,27 +26,17 @@ const PostModal = ({
         }
     }, [isEditMode, show]);
 
-    // CKEditor에 이미지 업로드 핸들러 설정
+    // CKEditor에 이미지 업로드 핸들러 설정 (저장만 하고 즉시 업로드는 안함)
     const customUploadAdapter = (loader) => {
         return {
             upload: () => {
                 return new Promise((resolve, reject) => {
                     loader.file.then((file) => {
-                        const formData = new FormData();
-                        formData.append('upload', file);
-
-                        // S3 업로드 API 호출
-                        axios
-                            .post('/api/s3/upload', formData, {
-                                headers: { 'Content-Type': 'multipart/form-data' },
-                            })
-                            .then((response) => {
-                                resolve({ default: response.data.url }); // S3 URL 반환
-                            })
-                            .catch((error) => {
-                                console.error('Image upload failed:', error);
-                                reject(error);
-                            });
+                        // 이미지 파일을 상태에 저장
+                        setPendingUploads((prevUploads) => [...prevUploads, file]);
+                        // 에디터에 임시 URL 설정 (로컬 미리보기)
+                        const tempUrl = URL.createObjectURL(file);
+                        resolve({ default: tempUrl });
                     });
                 });
             },
@@ -56,6 +48,43 @@ const PostModal = ({
         editor.plugins.get('FileRepository').createUploadAdapter = (loader) =>
             customUploadAdapter(loader);
     }
+
+    // 게시글 등록 핸들러
+    const handleFinalSubmit = async () => {
+        try {
+            // S3에 대기 중인 이미지를 업로드
+            const uploadedUrls = await Promise.all(
+                pendingUploads.map(async (file) => {
+                    const formData = new FormData();
+                    formData.append('upload', file);
+                    const response = await axios.post('/api/s3/upload', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                    });
+                    return response.data.url; // S3 URL 반환
+                })
+            );
+
+            // 에디터 데이터에서 임시 URL을 S3 URL로 대체
+            let updatedEditorData = editorData;
+            pendingUploads.forEach((file, index) => {
+                const tempUrl = URL.createObjectURL(file);
+                updatedEditorData = updatedEditorData.replace(tempUrl, uploadedUrls[index]);
+            });
+
+            // 게시글 데이터와 업로드된 이미지 URL을 함께 제출
+            handleSubmit({
+                title,
+                content: updatedEditorData,
+                hashtags: hashtags.split(',').map((tag) => tag.trim()),
+            });
+
+            // 초기화
+            setPendingUploads([]);
+        } catch (error) {
+            console.error('게시글 등록 중 오류 발생:', error);
+            alert('게시글 등록에 실패했습니다.');
+        }
+    };
 
     return (
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
@@ -115,7 +144,7 @@ const PostModal = ({
                 </Button>
 
                 {/* 등록 또는 수정 버튼 */}
-                <Button variant="primary" className="post-modal-submit" onClick={handleSubmit}>
+                <Button variant="primary" className="post-modal-submit" onClick={handleFinalSubmit}>
                     {isEditMode ? '수정' : '등록'}
                 </Button>
             </Modal.Footer>
