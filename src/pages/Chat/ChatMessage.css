@@ -20,6 +20,11 @@
   align-self: flex-end; /* 오른쪽 정렬 */
 }
 
+.chat-message-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .chat-message-input {
   background-color: #1a2b50;
   color: white;
