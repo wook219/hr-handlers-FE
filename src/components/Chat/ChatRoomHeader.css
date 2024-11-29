@@ -1,20 +1,32 @@
-/* Header.css */
 .chatroom-header-container {
   display: flex; /* Flexbox를 사용 */
   justify-content: space-between; /* 왼쪽, 가운데, 오른쪽으로 배치 */
   align-items: center; /* 세로 중앙 정렬 */
   width: 100%;
-  padding-bottom: 20px;
+  padding: 10px 15px 15px 15px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  box-sizing: border-box; /* padding 포함 */
   position: relative;
   max-width: 500px;
+  background-color: #1a2b50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.chatroom-header-icon-size {
+  font-size: 25px;
 }
 
 .chatroom-left,
 .chatroom-right {
   flex: 0 0 auto; /* 왼쪽과 오른쪽 아이템은 고정 크기 */
+  cursor: pointer;
 }
 
 .chatroom-center {
+  padding-top: 5px;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

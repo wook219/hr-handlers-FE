@@ -84,9 +84,10 @@ const ChatMessage = ({
   }, [selectedMessageId, messageId]);
 
   let messageClass = empNo !== tokenEmpNo ? 'chat-message-received' : 'chat-message-sent';
+  let messageLayout = empNo !== tokenEmpNo ? null : 'chat-message-right';
 
   return (
-    <div>
+    <div className={messageLayout}>
       {empNo !== tokenEmpNo ? <div>{name} </div> : null}
       <div onContextMenu={handleRightClick} className={messageClass}>
         <div>
