@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
+import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -182,11 +183,7 @@ const ChatRoom = () => {
   return (
     <div className="chatroom-page">
       <div className="chatroom-page-container">
-        <div>
-          <div>목록으로</div>
-          <div>{title}</div>
-          <div>퇴장</div>
-        </div>
+        <ChatRoomHeader title={title} />
         <div ref={chatBodyRef} style={{}} className="chat-body">
           {messages.map((message) => (
             <ChatMessage

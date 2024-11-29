@@ -44,7 +44,8 @@ export const createChatRoomAPI = async (chatRoomTitle) => {
   }
 };
 
-export const getChatMessagesAPI = async (roomId) => {
+// 채팅 내역 조회 API
+export const getChatMessagesAPI = async (chatRoomId) => {
   try {
     const token = localStorage.getItem('access_token');
 
@@ -53,7 +54,7 @@ export const getChatMessagesAPI = async (roomId) => {
     }
 
     // axios로 채팅 내역 조회 요청
-    const response = await axios.get(`/chatroom/${roomId}`, {
+    const response = await axios.get(`/chatroom/${chatRoomId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -63,6 +64,29 @@ export const getChatMessagesAPI = async (roomId) => {
     return response.data;
   } catch (error) {
     console.error('Failed to fetch chat messages:', error);
+    throw error;
+  }
+};
+
+// 채팅 참여 API
+export const enterChatRoomAPI = async (chatRoomId) => {
+  try {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      throw new Error('JWT 토큰이 없습니다. 로그인을 해주세요.');
+    }
+
+    const response = await axios.post(`/chatroom/${chatRoomId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to enter chatRoom: ', error);
     throw error;
   }
 };

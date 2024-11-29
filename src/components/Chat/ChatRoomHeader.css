@@ -1,0 +1,23 @@
+/* Header.css */
+.chatroom-header-container {
+  display: flex; /* Flexbox를 사용 */
+  justify-content: space-between; /* 왼쪽, 가운데, 오른쪽으로 배치 */
+  align-items: center; /* 세로 중앙 정렬 */
+  width: 100%;
+  padding-bottom: 20px;
+  position: relative;
+  max-width: 500px;
+}
+
+.chatroom-left,
+.chatroom-right {
+  flex: 0 0 auto; /* 왼쪽과 오른쪽 아이템은 고정 크기 */
+}
+
+.chatroom-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  flex: 1; /* 가운데는 남은 공간을 모두 차지 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}

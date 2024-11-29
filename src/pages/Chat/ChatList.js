@@ -36,7 +36,7 @@ const ChatList = () => {
             </div>
 
             <div className="col-3 text-center">
-              <EnterChatRoomButton chatRoomId={chat.chatRoomId} />
+              <EnterChatRoomButton chatRoomId={chat.chatRoomId} title={chat.title} />
             </div>
           </div>
         ))}
