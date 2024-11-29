@@ -44,7 +44,9 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
         stompClient.subscribe(`/topic/message/delete/${chatRoomId}`, (deleteMsg) => {
           console.log('Delete Message: ', deleteMsg.body);
           const deletedMessageId = JSON.parse(deleteMsg.body);
-          if (typeof onMessageDeleted(deletedMessageId));
+          if (typeof onMessageDeleted === 'function') {
+            onMessageDeleted(deletedMessageId);
+          }
         });
       },
       onStompError: (frame) => {

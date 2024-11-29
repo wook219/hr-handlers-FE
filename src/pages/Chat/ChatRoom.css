@@ -1,10 +1,37 @@
+.chatroom-entire-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; /* 중앙 정렬 */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.chatting-list-all-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  width: 100%;
+}
+
+.chatlist-box {
+  display: inline-block;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #d8d8d87c;
+  color: #000000;
+  box-shadow: 0 -2px 5px rgba(65, 65, 65, 0.2);
+}
+
 .chatroom-page {
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
   align-items: center; /* 세로 중앙 정렬 */
   height: 100%; /* 화면의 전체 높이 */
-  background-color: #f0f0f0;
   padding: 0 20px;
+  margin-left: 25px;
 }
 
 .chatroom-page-container {
@@ -12,7 +39,7 @@
   max-width: 500px;
   background-color: white; /* 흰색 배경 */
   padding: 20px; /* 내부 여백 */
-  border-radius: 10px; /* 둥근 모서리 */
+  border-radius: 5px; /* 둥근 모서리 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   box-sizing: border-box; /* padding 포함 */
   display: flex;
@@ -52,4 +79,33 @@
 
 .chat-input button:hover {
   background-color: #325298; /* 버튼 hover 시 색상 변경 */
+}
+
+@media (max-width: 1000px) {
+  .chatroom-page {
+    flex-direction: column; /* 세로로 배치 */
+  }
+
+  .chatroom-list-all-container {
+    order: 2; /* chatroom-entire-container 아래로 가도록 순서 변경 */
+  }
+
+  .chatroom-entire-container {
+    order: 1; /* chatroom-list-all-container 위로 가도록 순서 변경 */
+    max-width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+  }
+
+  .chatroom-page-container {
+    max-height: 60vh; /* 화면의 60% 정도만 높이 사용 */
+  }
+
+  .chat-input input {
+    width: 80%;
+  }
+
+  .chat-input button {
+    width: 15%;
+  }
 }

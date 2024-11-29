@@ -4,6 +4,7 @@ import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
 import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
+import ChatTabNavigation from '../../components/Chat/ChatTabNavigation';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -185,38 +186,43 @@ const ChatRoom = () => {
 
   return (
     <div className="chatroom-page">
-      <ActiveChatList />
-      <div className="chatroom-page-container">
+      <div className="chatroom-list-all-container mt-5">
+        <div className="chatlist-box">참여 중인 메신저</div>
+        <ActiveChatList />
+      </div>
+      <div className="chatroom-entire-container">
         <ChatRoomHeader title={title} />
-        <div ref={chatBodyRef} style={{}} className="chat-body">
-          {messages.map((message) => (
-            <ChatMessage
-              key={message.id}
-              message={message.text}
-              name={message.name}
-              empNo={message.empNo}
-              messageId={message.id}
-              onEdit={handleEditMessage}
-              onDelete={handleDeleteMessage}
-              selectedMessageId={selectedMessageId}
-              setSelectedMessageId={setSelectedMessageId}
-            />
-          ))}
-        </div>
+        <div className="chatroom-page-container">
+          <div ref={chatBodyRef} style={{}} className="chat-body">
+            {messages.map((message) => (
+              <ChatMessage
+                key={message.id}
+                message={message.text}
+                name={message.name}
+                empNo={message.empNo}
+                messageId={message.id}
+                onEdit={handleEditMessage}
+                onDelete={handleDeleteMessage}
+                selectedMessageId={selectedMessageId}
+                setSelectedMessageId={setSelectedMessageId}
+              />
+            ))}
+          </div>
 
-        {/* 메시지 입력 부분 */}
-        <div className="chat-input">
-          <input
-            type="text"
-            placeholder="메시지 입력"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-            onKeyUp={(e) => e.key === 'Enter' && handleSendMessage()}
-            autoFocus
-          />
-          <button onClick={handleSendMessage}>
-            <SendFill />
-          </button>
+          {/* 메시지 입력 부분 */}
+          <div className="chat-input">
+            <input
+              type="text"
+              placeholder="메시지 입력"
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+              onKeyUp={(e) => e.key === 'Enter' && handleSendMessage()}
+              autoFocus
+            />
+            <button onClick={handleSendMessage}>
+              <SendFill />
+            </button>
+          </div>
         </div>
       </div>
     </div>
