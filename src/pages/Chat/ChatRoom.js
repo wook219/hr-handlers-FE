@@ -9,6 +9,8 @@ import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SendFill } from 'react-bootstrap-icons';
 import './ChatRoom.css';
+import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModal';
+import { exitChatRoomAPI } from '../../api/chat';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
@@ -20,6 +22,7 @@ const ChatRoom = () => {
   const location = useLocation(); // useLocation 훅을 사용하여 state에 접근
   const [contextMenu, setContextMenu] = useState(null);
   const contextMenuRef = useRef(null);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   const handleClickMenu = (e) => {
     const mouseX = e.clientX;
@@ -41,6 +44,21 @@ const ChatRoom = () => {
       document.removeEventListener('mousedown', handleOutsideClick); // 컴포넌트 언마운트 시 이벤트 리스너 정리
     };
   }, [contextMenu]); // contextMenu가 변할 때마다 실행되도록 설정
+
+  // 채팅방 퇴장 컴포넌트 실행
+  const handleExitChatRoom = () => {
+    setShowExitModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowExitModal(false);
+  };
+
+  const handleConfirmExit = async () => {
+    const response = await exitChatRoomAPI(chatRoomId);
+    setShowExitModal(false); // 모달을 닫는다
+    console.log('채팅방 퇴장', response);
+  };
 
   const chatBodyRef = useRef(null);
 
@@ -259,11 +277,13 @@ const ChatRoom = () => {
               className="context-menu"
             >
               <div>새 탭으로 열기</div>
-              <div>퇴장</div>
+              <div onClick={handleExitChatRoom}>퇴장</div>
             </div>
           )}
         </div>
       </div>
+
+      <ExitChatRoomModal show={showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
     </div>
   );
 };
