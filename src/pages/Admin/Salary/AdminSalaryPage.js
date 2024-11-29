@@ -9,6 +9,13 @@ import AdminSalaryModalPage from "./AdminSalaryModalPage";
 import AdminSalarySearchPage from "./AdminSalarySearchPage";
 
 const AdminSalaryPage = () => {
+    const [size, setSize] = useState(10); // 한 페이지에 표시할 게시글 수
+    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
+    const [pageGroupSize] = useState(10); // 한 번에 보여줄 페이지 번호 갯수
+    const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
+    const totalPages = Math.ceil(totalElements / size); // 전체 페이지 수
+    const currentPageGroup = Math.floor(currentPage / pageGroupSize); // 현재 페이지 그룹 계산
+
     const [salaries, setSalaries] = useState([]); // 급여관리 조회 데이터
     const [modalShow, setModalShow] = useState(false); // 모달 사용 여부
     const [modalType, setModalType] = useState(''); // 모달 화면 타입(추가: create, 수정: update)
@@ -57,8 +64,13 @@ const AdminSalaryPage = () => {
     ]);
 
     useEffect(() => {
-        getSalaries()
-    }, []);
+        handleSearch(searchData, currentPage, size)
+    }, [currentPage, size]);
+
+    // 페이지네이션 핸들러
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     // 체크박스 단일 선택
     const handleSingleCheck = (checked, id) => {
@@ -165,9 +177,7 @@ const AdminSalaryPage = () => {
     };
 
     // 검색 api
-    const handleSearch = async (searchData) => {
-        console.log("searchData : ", searchData);
-
+    const handleSearch = async (searchData, page, size) => {
         let params = {};
 
         searchData.forEach((item) => {
@@ -176,13 +186,19 @@ const AdminSalaryPage = () => {
             }
         });
 
-        const { response, error } = await searchSalaryAPI(params);
-        console.log("response : ", response);
+        const { response, error } = await searchSalaryAPI(params, page, size);
         if (error) {
             console.log('에러 발생');
             return;
         }
-        // setSalaries(response.data.data);
+
+        console.log("searchData : ", searchData);
+        console.log("params : ", params);
+        console.log("response : ", response);
+
+        setSearchData(searchData);
+        setSalaries(response.data.data.content);
+        setTotalElements(response.data.data.totalElements); // 총 게시글 수 설정
     }
 
     // 추가, 수정 api
@@ -228,7 +244,7 @@ const AdminSalaryPage = () => {
         }
 
         setModalShow(false);
-        getSalaries();
+        handleSearch(searchData, currentPage, size)
     };
 
     // 삭제 api
@@ -241,7 +257,7 @@ const AdminSalaryPage = () => {
             return;
         }
 
-        getSalaries();
+        handleSearch(searchData, currentPage, size)
     };
 
     // 엑셀 업로드 api
@@ -262,7 +278,7 @@ const AdminSalaryPage = () => {
             return;
         }
 
-        getSalaries();
+        handleSearch(searchData, currentPage, size)
     };
 
     return (
@@ -329,6 +345,78 @@ const AdminSalaryPage = () => {
                         ))}
                     </tbody>
                 </Table>
+            </div>
+            {/* 페이지네이션 UI */}
+            <div className="pagination mt-3 d-flex justify-content-center">
+                <ul className="pagination">
+                {/* 맨 처음으로 이동 */}
+                <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                    <button
+                    className="page-link"
+                    onClick={() => handlePageChange(0)}
+                    disabled={currentPage === 0}
+                    >
+                    &laquo;
+                    </button>
+                </li>
+
+                {/* 이전 그룹으로 이동 */}
+                <li className={`page-item ${currentPageGroup === 0 ? "disabled" : ""}`}>
+                    <button
+                        className="page-link"
+                        onClick={() => handlePageChange((currentPageGroup - 1) * pageGroupSize)}
+                        disabled={currentPageGroup === 0}
+                    >
+                    &lt;
+                    </button>
+                </li>
+
+                {/* 페이지 번호 표시 */}
+                {[...Array(pageGroupSize)].map((_, index) => {
+                    const pageIndex = currentPageGroup * pageGroupSize + index;
+                    if (pageIndex >= totalPages) return null; // 전체 페이지를 초과하면 표시하지 않음
+                    return (
+                    <li
+                        key={pageIndex}
+                        className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
+                    >
+                        <button className="page-link" onClick={() => handlePageChange(pageIndex)}>
+                            {pageIndex + 1}
+                        </button>
+                    </li>
+                    );
+                })}
+
+                {/* 다음 그룹으로 이동 */}
+                <li
+                    className={`page-item ${
+                    currentPageGroup === Math.floor(totalPages / pageGroupSize) ? "disabled" : ""
+                    }`}
+                >
+                    <button
+                        className="page-link"
+                        onClick={() => handlePageChange((currentPageGroup + 1) * pageGroupSize)}
+                        disabled={currentPageGroup === Math.floor(totalPages / pageGroupSize)}
+                    >
+                    &gt;
+                    </button>
+                </li>
+
+                {/* 맨 마지막으로 이동 */}
+                <li
+                    className={`page-item ${
+                    currentPage === totalPages - 1 ? "disabled" : ""
+                    }`}
+                >
+                    <button
+                        className="page-link"
+                        onClick={() => handlePageChange(totalPages - 1)}
+                        disabled={currentPage === totalPages - 1}
+                    >
+                    &raquo;
+                    </button>
+                </li>
+                </ul>
             </div>
             <AdminSalaryModalPage
                 show={modalShow}

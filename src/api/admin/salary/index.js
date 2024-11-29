@@ -20,9 +20,9 @@ const getAllSalaryAPI = () => {
         });
 };
 
-const searchSalaryAPI = (params) => {
+const searchSalaryAPI = (params, page, size) => {
     return axios({
-            url: ADMINSALARY.SEARCH,
+            url: `${ADMINSALARY.SEARCH}?page=${page}&size=${size}`,
             method: 'post',
             data: params
         })
