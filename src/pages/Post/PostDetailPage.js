@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPostDetailAPI , updatePostAPI, deletePostAPI } from '../../api/post';
+import { getPostDetailAPI , updatePostAPI, deletePostAPI, getCommentsByPostAPI, createCommentAPI, } from '../../api/post';
 import './PostDetailPage.css';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import PostModal from "./PostModal"; // PostModal 컴포넌트 가져오기
@@ -34,11 +34,9 @@ const PostDetailPage = () => {
                const userName = user.name;
                setIsAuthor(postResponse.data.employeeName === userName);
 
-                // 더미 댓글 데이터 추가
-                setComments([
-                    { id: 1, author: 'hello123', content: '네, 익명 아니더라구요...', createdAt: '2024.11.18 오후 14:50' },
-                    { id: 2, author: 'hello123', content: '다시 보니 정말 재밌네요!', createdAt: '2024.11.18 오후 14:51' },
-                ]);
+                 // 댓글 조회
+                 const commentsResponse = await getCommentsByPostAPI(postId); // 댓글 조회 API 호출
+                 setComments(commentsResponse.data);
             } catch (error) {
                 console.error('데이터 요청 실패:', error);
             }
@@ -67,16 +65,17 @@ const PostDetailPage = () => {
         }
     };
     
-    const handleCommentSubmit = (e) => {
+    const handleCommentSubmit = async (e) => {
         e.preventDefault();
-        const newComment = {
-            id: comments.length + 1,
-            author: user.name || '익명 사용자', // 사용자 이름 또는 기본값
-            content: comment,
-            createdAt: new Date().toLocaleString(),
-        };
-        setComments([...comments, newComment]);
-        setComment('');
+        try {
+            // 댓글 작성 API 호출
+            const newComment = await createCommentAPI(postId, { content: comment });
+            setComments([...comments, newComment.data]); // 작성된 댓글 추가
+            setComment(''); // 입력 필드 초기화
+        } catch (error) {
+            console.error('댓글 작성 실패:', error);
+            alert('댓글 작성에 실패했습니다.');
+        }
     };
 
     const handleCommentCancel = () => {
@@ -169,7 +168,7 @@ const PostDetailPage = () => {
                         {comments.map((c) => (
                             <li key={c.id} className="comment-item">
                                 <div className="comment-header">
-                                    <span className="comment-author">{c.author}</span>
+                                    <span className="comment-employeeName">{c.employeeName}</span>
                                     <span className="comment-date">{c.createdAt}</span>
                                 </div>
                                 <p className="comment-content">{c.content}</p>
