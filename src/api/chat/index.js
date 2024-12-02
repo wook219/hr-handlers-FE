@@ -107,7 +107,18 @@ export const exitChatRoomAPI = async (chatRoomId) => {
 
     return response.data;
   } catch (error) {
-    console.error('Failed to exit chatRoom: ', error);
+    console.error('채팅방 퇴장 실패: ', error);
+    throw error;
+  }
+};
+
+// 채팅방 참여 목록 조회 API
+export const getJoinedEmployees = async (chatRoomId) => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 참여 목록 조회 실패: ', error);
     throw error;
   }
 };

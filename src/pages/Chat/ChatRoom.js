@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { SendFill } from 'react-bootstrap-icons';
 import './ChatRoom.css';
 import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModal';
+import ChatParticipantsModal from '../../components/Chat/ChatModals/ChatParticipantsModal';
 import { exitChatRoomAPI } from '../../api/chat';
 
 const ChatRoom = () => {
@@ -22,7 +23,11 @@ const ChatRoom = () => {
   const location = useLocation(); // useLocation 훅을 사용하여 state에 접근
   const [contextMenu, setContextMenu] = useState(null);
   const contextMenuRef = useRef(null);
-  const [showExitModal, setShowExitModal] = useState(false);
+  // 모달 통합
+  const [modal, setModal] = useState({
+    showExitModal: false,
+    showParticipantsModal: false,
+  });
 
   const handleClickMenu = (e) => {
     const mouseX = e.clientX;
@@ -45,19 +50,28 @@ const ChatRoom = () => {
     };
   }, [contextMenu]); // contextMenu가 변할 때마다 실행되도록 설정
 
-  // 채팅방 퇴장 컴포넌트 실행
+  // 채팅방 퇴장 모달 컴포넌트 실행
   const handleExitChatRoom = () => {
-    setShowExitModal(true);
+    setModal((prevState) => ({ ...prevState, showExitModal: true }));
   };
 
   const handleCloseModal = () => {
-    setShowExitModal(false);
+    setModal((prevState) => ({ ...prevState, showExitModal: false }));
   };
 
   const handleConfirmExit = async () => {
     const response = await exitChatRoomAPI(chatRoomId);
-    setShowExitModal(false); // 모달을 닫는다
+    setModal((prevState) => ({ ...prevState, showExitModal: false }));
     console.log('채팅방 퇴장', response);
+  };
+
+  // 채팅방 참여 목록 모달 컴포넌트
+  const handleParticipants = () => {
+    setModal((prevState) => ({ ...prevState, showParticipantsModal: true }));
+  };
+
+  const handleCloseParticipants = () => {
+    setModal((prevState) => ({ ...prevState, showParticipantsModal: false }));
   };
 
   const chatBodyRef = useRef(null);
@@ -233,7 +247,7 @@ const ChatRoom = () => {
       <div className="chatroom-entire-container">
         <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} />
         <div className="chatroom-page-container">
-          <div ref={chatBodyRef} style={{}} className="chat-body">
+          <div ref={chatBodyRef} className="chat-body">
             {messages.map((message) => (
               <ChatMessage
                 key={message.id}
@@ -276,14 +290,20 @@ const ChatRoom = () => {
               }}
               className="context-menu"
             >
-              <div>새 탭으로 열기</div>
+              <div onClick={handleParticipants}>참여 목록</div>
               <div onClick={handleExitChatRoom}>퇴장</div>
             </div>
           )}
         </div>
       </div>
 
-      <ExitChatRoomModal show={showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
+      <ExitChatRoomModal show={modal.showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
+
+      <ChatParticipantsModal
+        show={modal.showParticipantsModal}
+        handleClose={handleCloseParticipants}
+        chatRoomId={chatRoomId}
+      />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import './CreateChatRoomModal.css';
+import './ChatRoomModal.css';
 
 const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
   const [title, setTitle] = useState('');

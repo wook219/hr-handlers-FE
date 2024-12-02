@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import './CreateChatRoomModal.css';
+import './ChatRoomModal.css';
 
 const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
   const [isExited, setIsExited] = useState(false);
