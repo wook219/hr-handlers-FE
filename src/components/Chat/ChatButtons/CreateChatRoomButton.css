@@ -1,0 +1,19 @@
+.create-chatroom-btn {
+  background-color: #1a2b50;
+  color: white;
+  border: none;
+  padding: 15px 20px; /* 버튼의 크기 */
+  font-size: 20px;
+  border-radius: 7px;
+  transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+}
+
+/* 호버 시 배경색 변화 */
+.create-chatroom-btn:hover {
+  background-color: #142041; /* 마우스 올릴 때 어두운 색으로 변경 */
+  cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+}
+
+.chat-icon {
+  margin-right: 12px;
+}

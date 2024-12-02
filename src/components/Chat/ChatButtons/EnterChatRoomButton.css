@@ -1,0 +1,29 @@
+.chat-enter-button {
+  background-color: #1a2b50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 7px;
+  border: none; /* 테두리 없앰 */
+  padding: 10px 20px; /* 버튼 내부 여백 */
+  cursor: pointer; /* 클릭 가능한 손 모양 */
+  transition: background-color 0.3s ease; /* 배경색 변화 애니메이션 */
+}
+
+.chat-enter-button:hover {
+  background-color: #0f182e; /* 마우스 오버 시 배경색 변화 */
+}
+
+@media (max-width: 1000px) {
+  .chat-enter-button {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .chat-enter-button {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}

@@ -1,0 +1,121 @@
+/* 모달 오버레이 */
+.todo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 컨테이너 */
+.todo-modal-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  width: 500px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 모달 헤더 */
+.todo-modal-content h2 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 입력 필드 그룹 */
+.todo-modal-field {
+  margin-bottom: 20px;
+}
+
+.todo-modal-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+}
+
+.todo-modal-field input,
+.todo-modal-field textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.todo-modal-field input:focus,
+.todo-modal-field textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* 필수 입력 표시 */
+.required:after {
+  content: "*";
+  color: #ff4d4f;
+  margin-left: 4px;
+}
+
+/* 버튼 컨테이너 */
+.todo-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+/* 버튼 스타일 */
+.todo-modal-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* 수정 버튼 */
+.todo-modal-actions button:first-child {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.todo-modal-actions button:first-child:hover {
+  background-color: #357abd;
+}
+
+/* 삭제 버튼 */
+.todo-modal-actions button:nth-child(2) {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.todo-modal-actions button:nth-child(2):hover {
+  background-color: #ff7875;
+}
+
+/* 닫기 버튼 */
+.todo-modal-actions button:last-child {
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+.todo-modal-actions button:last-child:hover {
+  background-color: #e8e8e8;
+}
+
+/* 입력 필드가 비활성화되었을 때의 스타일 */
+.todo-modal-field input:disabled,
+.todo-modal-field textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
