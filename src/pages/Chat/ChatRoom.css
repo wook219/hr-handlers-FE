@@ -81,7 +81,7 @@
   background-color: #325298; /* 버튼 hover 시 색상 변경 */
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .chatroom-page {
     flex-direction: column; /* 세로로 배치 */
   }
