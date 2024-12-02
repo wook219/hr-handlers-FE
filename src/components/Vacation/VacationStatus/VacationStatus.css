@@ -1,0 +1,160 @@
+/* VacationStatus.css */
+/* 공통 레이아웃 */
+.vacation-status-container {
+    margin-top: 40px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.vacation-top-section {
+    display: flex;
+    gap: 150px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+/* 차트 영역 */
+.vacation-chart-section {
+    display: flex;
+    gap: 20px;
+    min-width: 300px;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.vacation-chart-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+    height: 100%;
+}
+
+.vacation-chart-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vacation-chart-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.vacation-chart-color-remain { background-color: #98E9D0; }
+.vacation-chart-color-used { background-color: #FFB6A3; }
+.vacation-chart-color-waiting { background-color: #FFE5CC; }
+
+/* 테이블 영역 */
+.vacation-table-container {
+    height: 240px;
+    overflow-y: auto;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+.vacation-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.vacation-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.vacation-table th,
+.vacation-table td {
+    padding: 12px 16px;
+    text-align: center; /* 모든 셀 가운데 정렬 */
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.vacation-table tr:hover td {
+    background-color: #f9fafb;
+}
+
+/* 승인 대기 테이블 컬럼 너비 */
+.vacation-table th:nth-child(1), .vacation-table td:nth-child(1) { width: 140px; text-align: center; } /* 문서 번호 */
+.vacation-table th:nth-child(2), .vacation-table td:nth-child(2) { width: 140px; text-align: center; } /* 신청 일자 */
+.vacation-table th:nth-child(3), .vacation-table td:nth-child(3) { width: 300px; text-align: center; }  /* 제목 */
+.vacation-table th:nth-child(4), 
+.vacation-table td:nth-child(4),
+.vacation-table th:nth-child(5), 
+.vacation-table td:nth-child(5) { 
+    width: 80px; /* 수정/삭제 버튼 */
+    text-align: center;
+}
+
+/* 승인 휴가 목록 컬럼 너비 */
+.vacation-table.approved th:nth-child(1),
+.vacation-table.approved td:nth-child(1) {
+    width: 140px; /* 문서 번호 */
+}
+
+.vacation-table.approved th:nth-child(2),
+.vacation-table.approved td:nth-child(2) {
+    width: 100px; /* 신청 일자 */
+}
+
+.vacation-table.approved th:nth-child(3),
+.vacation-table.approved td:nth-child(3) {
+    width: 200px; /* 제목 */
+}
+
+.vacation-table.approved th:nth-child(4),
+.vacation-table.approved td:nth-child(4) {
+    width: 100px; /* 승인 상태 */
+}
+
+.vacation-table.approved th:nth-child(5),
+.vacation-table.approved td:nth-child(5) {
+    width: 100px; /* 확정 일자 */
+}
+
+.vacation-table.approved th:nth-child(6),
+.vacation-table.approved td:nth-child(6) {
+    width: 100px; /* 결재자 */
+}
+
+/* 스크롤바 스타일 */
+.vacation-table-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vacation-table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.vacation-table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.vacation-table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 버튼 스타일 */
+.vacation-table button {
+    padding: 6px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background-color: white;
+    color: #374151;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.vacation-table button:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}

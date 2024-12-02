@@ -5,9 +5,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './Todo.css';
-import { ToastContainer, toast } from 'react-toastify';
+import { useToast } from '../../context/ToastContext';
 import 'react-toastify/dist/ReactToastify.css';
-import { showToast } from '../../utils/toast';
 import TodoDetailModal from "../../components/Todo/TodoDetailModal";
 import TodoEnrollModal from "../../components/Todo/TodoEnrollModal";
 import { getAllTodosAPI, getTodoDetailAPI, enrollTodoAPI, modifyTodoAPI, deleteTodoAPI, getHolidaysAPI } from '../../api/todo'; // Todo API 가져오기
@@ -18,6 +17,7 @@ const TodoPage = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const calendarRef = useRef(null);
+    const { showToast } = useToast();
 
     // 일정 전체 조회
     const handleEvents = useCallback(async (fetchInfo, successCallback, failureCallback) => {
@@ -190,12 +190,12 @@ const TodoPage = () => {
     const handleCreateSubmit = async (formData) => {
       try {
         await enrollTodoAPI(formData);
-        showToast.success('새 일정이 등록되었습니다.');
+        showToast('새 일정이 등록되었습니다.', 'success');
         setIsCreateModalOpen(false);
         refreshEvents();
       } catch (error) {
         console.error('Failed to create todo:', error);
-        showToast.error('일정 등록에 실패했습니다.');
+        showToast('일정 등록에 실패했습니다.','error')
       }
     };
 
@@ -204,11 +204,11 @@ const TodoPage = () => {
       try {
         await modifyTodoAPI(todoId, formData);
         setIsDetailModalOpen(false);
-        showToast.success('일정이 수정되었습니다.');
+        showToast('일정이 수정되었습니다.', 'success');
         refreshEvents();
       } catch (error) {
         console.error('Failed to modify todo:', error);
-        showToast.error('일정 수정에 실패했습니다.');
+        showToast('일정 수정에 실패했습니다.', 'error')
       }
     };
     
@@ -221,11 +221,11 @@ const TodoPage = () => {
     
         await deleteTodoAPI(todoId);
         setIsDetailModalOpen(false);
-        showToast.success('일정이 삭제되었습니다.');
+        showToast('일정이 삭제되었습니다.', 'success');
         refreshEvents();
       } catch (error) {
         console.error('Failed to delete todo:', error);
-        showToast.error('일정 삭제에 실패했습니다.');
+        showToast('일정 삭제에 실패했습니다.', 'error');
       }
     }
   
@@ -280,18 +280,6 @@ const TodoPage = () => {
             <i className = "bi bi-calendar-plus-fill"></i>
           </button>
 
-          {/* Toast 컨테이너 */}
-          <ToastContainer
-            position = "top-center"
-            autoClose = {3000}
-            hideProgressBar = {false}
-            newestOnTop = {false}
-            closeOnClick
-            rtl = {false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
       </div>
     );
 };
