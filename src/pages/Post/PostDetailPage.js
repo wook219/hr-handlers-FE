@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     getPostDetailAPI,
@@ -15,6 +15,8 @@ const PostDetailPage = () => {
     const navigate = useNavigate();
     const { postId } = useParams();
     const { user } = useUser();
+    const contentRef = useRef(null);  // contentRef 추가
+    const [renderKey, setRenderKey] = useState(0); // 추가
 
     const [post, setPost] = useState({
         data: null,
@@ -27,6 +29,13 @@ const PostDetailPage = () => {
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
+
+        // querySelector를 사용하는 useEffect를 ref를 사용하도록 수정
+        useEffect(() => {
+            if (contentRef.current) {
+                contentRef.current.innerHTML = post.content;
+            }
+        }, [post.content]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,45 +84,47 @@ const PostDetailPage = () => {
         }
     };
 
-    
     const handlePostUpdate = async (updatedData) => {
-        const updatedPost = {
-            title: updatedData.title,
-            content: updatedData.content,
-            hashtagContent: updatedData.hashtags,
-        };
+        const { title, content, hashtags } = updatedData;
+        console.log('Updated content:', content); // 업데이트되는 내용 확인
     
         try {
-            await updatePostAPI(postId, updatedPost);
-
-            // 상태 확인
-            console.log('Updated post:', {
-                title: updatedPost.title,
-                content: updatedPost.content,
-                hashtags: updatedPost.hashtagContent,
-            });
-            
-              // 상태 즉시 갱신
-              setPost((prev) => ({
-                ...prev,
-                data: {
-                    ...prev.data,
-                    ...updatedPost,
-                },
-                title: updatedPost.title,
-                content: updatedPost.content,
-                hashtags: updatedPost.hashtagContent.join(', '),
-            }));
+            const updatedPost = {
+                title,
+                content,
+                hashtagContent: hashtags, // 배열 그대로
+            };
     
+            // 서버로 수정 요청
+            await updatePostAPI(postId, updatedPost);
+    
+            // 상태 즉시 갱신
+            setPost((prev) => {
+                const newPost = {
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        title: updatedPost.title,
+                        content: updatedPost.content,
+                        hashtagContent: updatedPost.hashtagContent
+                    },
+                    title: updatedPost.title,
+                    content: updatedPost.content,
+                    hashtags: updatedPost.hashtagContent.join(', '),
+                };
+                console.log('New post state:', newPost); // 새로운 상태 확인
+                return newPost;
+            });
+            setRenderKey(prev => prev + 1); // 강제 리렌더링 추가
             alert('게시글이 성공적으로 수정되었습니다!');
             setModalOpen(false); // 모달 닫기
+            window.location.reload(); // 새로고침 추가
         } catch (error) {
             console.error('게시글 수정 실패:', error);
             alert('게시글 수정에 실패했습니다.');
         }
-    };
-    
-    
+    };    
+
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
@@ -141,17 +152,14 @@ const PostDetailPage = () => {
     }
 
     return (
-        <div className="post-detail-container">
+        <div className="post-detail-container" key={renderKey}> {/* key 추가 */}
             <h1 className="post-title">{post.title}</h1>
             <p className="post-meta">
                 작성자: {post.data.employeeName || '알 수 없음'} | 작성일:{' '}
                 {new Date(post.data.createdAt).toLocaleString()}
             </p>
             <div className="post-content">
-                <div
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                    className="ckeditor-content"
-                />
+                <div ref={contentRef} className="ckeditor-content" /> {/* ref 추가 */}
                 {post.data.imageUrl && (
                     <img src={post.data.imageUrl} alt="Post illustration" className="post-image" />
                 )}
