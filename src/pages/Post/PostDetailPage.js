@@ -14,9 +14,8 @@ import PostModal from './PostModal';
 const PostDetailPage = () => {
     const navigate = useNavigate();
     const { postId } = useParams();
-    const { user } = useUser(); // 사용자 정보 가져오기
+    const { user } = useUser();
 
-    // 상태 관리 (post 관련된 정보는 하나의 상태 객체로 관리)
     const [post, setPost] = useState({
         data: null,
         title: '',
@@ -25,7 +24,6 @@ const PostDetailPage = () => {
         isAuthor: false,
     });
 
-    // 댓글 상태 관리
     const [comments, setComments] = useState([]);
     const [commentInput, setCommentInput] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
@@ -46,11 +44,12 @@ const PostDetailPage = () => {
                 });
 
                 const commentsResponse = await getCommentsByPostAPI(postId);
-                const formattedComments = commentsResponse.data.map((comment) => ({
-                    ...comment,
-                    createdAt: new Date(comment.createdAt), // Date 객체로 변환
-                }))
-                .sort((a, b) => b.createdAt - a.createdAt); // 최신순 정렬
+                const formattedComments = commentsResponse.data
+                    .map((comment) => ({
+                        ...comment,
+                        createdAt: new Date(comment.createdAt),
+                    }))
+                    .sort((a, b) => b.createdAt - a.createdAt); // 최신순 정렬
                 setComments(formattedComments);
             } catch (error) {
                 console.error('데이터 요청 실패:', error);
@@ -76,23 +75,45 @@ const PostDetailPage = () => {
         }
     };
 
-    const handlePostUpdate = async () => {
+    
+    const handlePostUpdate = async (updatedData) => {
         const updatedPost = {
-            title: post.title,
-            content: post.content,
-            hashtagContent: post.hashtags.split(',').map((tag) => tag.trim()),
+            title: updatedData.title,
+            content: updatedData.content,
+            hashtagContent: updatedData.hashtags,
         };
-
+    
         try {
             await updatePostAPI(postId, updatedPost);
+
+            // 상태 확인
+            console.log('Updated post:', {
+                title: updatedPost.title,
+                content: updatedPost.content,
+                hashtags: updatedPost.hashtagContent,
+            });
+            
+              // 상태 즉시 갱신
+              setPost((prev) => ({
+                ...prev,
+                data: {
+                    ...prev.data,
+                    ...updatedPost,
+                },
+                title: updatedPost.title,
+                content: updatedPost.content,
+                hashtags: updatedPost.hashtagContent.join(', '),
+            }));
+    
             alert('게시글이 성공적으로 수정되었습니다!');
-            setPost((prev) => ({ ...prev, data: { ...prev.data, ...updatedPost } }));
-            setModalOpen(false);
+            setModalOpen(false); // 모달 닫기
         } catch (error) {
             console.error('게시글 수정 실패:', error);
             alert('게시글 수정에 실패했습니다.');
         }
     };
+    
+    
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
@@ -104,7 +125,7 @@ const PostDetailPage = () => {
                 employeeName: user.name,
                 createdAt: new Date(response.data.timestamp),
             };
-    
+
             setComments((prev) => [newComment, ...prev]); // 기존 댓글 배열에 추가
             setCommentInput(''); // 입력 필드 초기화
         } catch (error) {

@@ -50,24 +50,50 @@ export const createPostAPI = async (postData) => {
 // 게시글 수정 API
 export const updatePostAPI = async (postId, postData) => {
     try {
-        const response = await axios.put(`/post/${postId}`, postData);
-        return response.data;
+        // 로컬스토리지에서 JWT 토큰 가져오기
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        // Authorization 헤더 포함하여 PUT 요청
+        const response = await axios.put(`/post/${postId}`, postData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Bearer 토큰 설정
+            },
+        });
+
+        return response.data; // 응답 데이터 반환
     } catch (error) {
         console.error(`Failed to update post (ID: ${postId}):`, error);
-        throw error;
+        throw error; // 에러 다시 던지기
     }
 };
+
 
 // 게시글 삭제 API
 export const deletePostAPI = async (postId) => {
     try {
-        const response = await axios.delete(`/post/${postId}`);
-        return response.data;
+        // 로컬스토리지에서 JWT 토큰 가져오기
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        // Authorization 헤더 포함하여 DELETE 요청
+        const response = await axios.delete(`/post/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Bearer 토큰 설정
+            },
+        });
+
+        return response.data; // 응답 데이터 반환
     } catch (error) {
         console.error(`Failed to delete post (ID: ${postId}):`, error);
-        throw error;
+        throw error; // 에러 다시 던지기
     }
 };
+
 
 // 댓글 조회 API
 export const getCommentsByPostAPI = async (postId) => {

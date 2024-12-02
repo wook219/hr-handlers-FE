@@ -52,56 +52,40 @@ const PostModal = ({
     // 게시글 등록 핸들러
     const handleFinalSubmit = async () => {
         try {
+            // S3에 대기 중인 이미지를 업로드
             const uploadedUrls = await Promise.all(
                 pendingUploads.map(async (file) => {
                     const formData = new FormData();
                     formData.append('upload', file);
-    
                     const response = await axios.post('/api/s3/upload', formData, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
-                    return response.data.url;
+                    return response.data.url; // S3 URL 반환
                 })
             );
-    
-            let updatedEditorData = editorData;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(editorData, 'text/html');
-            const images = doc.querySelectorAll('img');
-    
-            images.forEach((img, index) => {
-                const blobUrl = img.getAttribute('src');
-                const s3Url = uploadedUrls[index];
-                updatedEditorData = updatedEditorData.split(blobUrl).join(s3Url);
-            });
-    
-            console.log('Final updatedEditorData before submit:', updatedEditorData); // 디버깅용
 
-            // handleSubmit 호출 직전에 데이터 출력
-            console.log('Data passed to handleSubmit:', {
-                title,
-                content: updatedEditorData, // 최종 처리된 데이터 (이미지 URL 변환된 HTML)
-                hashtags: hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
+            // 에디터 데이터에서 임시 URL을 S3 URL로 대체
+            let updatedEditorData = editorData;
+            pendingUploads.forEach((file, index) => {
+                const tempUrl = URL.createObjectURL(file);
+                updatedEditorData = updatedEditorData.replace(tempUrl, uploadedUrls[index]);
             });
-            
-            await handleSubmit({
+
+            // 게시글 데이터와 업로드된 이미지 URL을 함께 제출
+            handleSubmit({
                 title,
                 content: updatedEditorData,
                 hashtags: hashtags.split(',').map((tag) => tag.trim()),
             });
-    
+
+            // 초기화
             setPendingUploads([]);
-            setEditorData('');
-            setTitle('');
-            setHashtags('');
         } catch (error) {
-            console.error('Error during final submit:', error);
+            console.error('게시글 등록 중 오류 발생:', error);
             alert('게시글 등록에 실패했습니다.');
         }
     };
 
-    
-    
     return (
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
             <Modal.Header className="post-modal-header" closeButton>
