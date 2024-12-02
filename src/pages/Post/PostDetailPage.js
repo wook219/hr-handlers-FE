@@ -11,12 +11,54 @@ import './PostDetailPage.css';
 import { useUser } from '../../context/UserContext';
 import PostModal from './PostModal';
 
+// CommentItem 컴포넌트 추가
+const CommentItem = ({ comment, onReply }) => {
+    return (
+        <li key={comment.id} className="comment-item">
+            <div className="comment-header">
+                <span className="comment-employeeName">{comment.employeeName}</span>
+                <span className="comment-date">
+                    {comment.createdAt.toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })}
+                </span>
+            </div>
+            <p className="comment-content">{comment.content}</p>
+            <button 
+                className="reply-button" 
+                onClick={() => onReply(comment.id)}
+            >
+                답글 달기
+            </button>
+            
+            {comment.replies?.length > 0 && (
+                <ul className="nested-comment">
+                    {comment.replies.map(reply => (
+                        <CommentItem 
+                            key={reply.id} 
+                            comment={reply} 
+                            onReply={onReply}
+                        />
+                    ))}
+                </ul>
+            )}
+        </li>
+    );
+};
+
+
 const PostDetailPage = () => {
     const navigate = useNavigate();
     const { postId } = useParams();
     const { user } = useUser();
     const contentRef = useRef(null);  // contentRef 추가
     const [renderKey, setRenderKey] = useState(0); // 추가
+    const [replyToId, setReplyToId] = useState(null); // 대댓글을 위한 상태 추가
 
     const [post, setPost] = useState({
         data: null,
@@ -37,36 +79,43 @@ const PostDetailPage = () => {
             }
         }, [post.content]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const postResponse = await getPostDetailAPI(postId);
-                const { data } = postResponse;
-                const isAuthor = data.employeeName === user.name;
-
-                setPost({
-                    data,
-                    title: data.title,
-                    content: data.content,
-                    hashtags: data.hashtagContent.join(', '),
-                    isAuthor,
-                });
-
-                const commentsResponse = await getCommentsByPostAPI(postId);
-                const formattedComments = commentsResponse.data
-                    .map((comment) => ({
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const postResponse = await getPostDetailAPI(postId);
+                    const { data } = postResponse;
+                    const isAuthor = data.employeeName === user.name;
+        
+                    setPost({
+                        data,
+                        title: data.title,
+                        content: data.content,
+                        hashtags: data.hashtagContent.join(', '),
+                        isAuthor,
+                    });
+        
+                    const commentsResponse = await getCommentsByPostAPI(postId);
+                    console.log('Received comments:', commentsResponse.data);
+                    
+                    // 서버에서 받은 댓글 데이터에 날짜 변환만 적용
+                    const formattedComments = commentsResponse.data.map(comment => ({
                         ...comment,
-                        createdAt: new Date(comment.createdAt),
-                    }))
-                    .sort((a, b) => b.createdAt - a.createdAt); // 최신순 정렬
-                setComments(formattedComments);
-            } catch (error) {
-                console.error('데이터 요청 실패:', error);
-            }
-        };
-
-        fetchData();
-    }, [postId, user.name]);
+                        createdAt: new Date(comment.createdAt)
+                    }));
+        
+                    // 최신순 정렬
+                    const sortedComments = formattedComments.sort(
+                        (a, b) => b.createdAt - a.createdAt
+                    );
+        
+                    setComments(sortedComments);
+                } catch (error) {
+                    console.error('데이터 요청 실패:', error);
+                }
+            };
+        
+            fetchData();
+        }, [postId, user.name]);
 
     const handleEditClick = () => setModalOpen(true);
 
@@ -125,41 +174,82 @@ const PostDetailPage = () => {
         }
     };    
 
-
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await createCommentAPI(postId, { content: commentInput });
+            const response = await createCommentAPI(postId, { 
+                content: commentInput,
+                parentId: replyToId // parentCommentId 대신 parentId 사용
+            });
+    
             const newComment = {
                 id: response.data.id,
                 content: commentInput,
                 employeeName: user.name,
                 createdAt: new Date(response.data.timestamp),
+                parentId: replyToId,
+                replies: []
             };
-
-            setComments((prev) => [newComment, ...prev]); // 기존 댓글 배열에 추가
-            setCommentInput(''); // 입력 필드 초기화
+    
+            setComments((prev) => {
+                if (replyToId) {
+                    // 대댓글인 경우: 모든 댓글 트리를 순회하면서 부모 댓글 찾기
+                    return prev.map(comment => {
+                        // 현재 댓글이 부모인 경우
+                        if (comment.id === replyToId) {
+                            return {
+                                ...comment,
+                                replies: [newComment, ...(comment.replies || [])]
+                            };
+                        }
+                        // 현재 댓글의 replies 배열 내에 부모가 있는지 확인
+                        if (comment.replies && comment.replies.length > 0) {
+                            return {
+                                ...comment,
+                                replies: comment.replies.map(reply => {
+                                    if (reply.id === replyToId) {
+                                        return {
+                                            ...reply,
+                                            replies: [newComment, ...(reply.replies || [])]
+                                        };
+                                    }
+                                    return reply;
+                                })
+                            };
+                        }
+                        return comment;
+                    });
+                }
+                // 일반 댓글인 경우
+                return [newComment, ...prev];
+            });
+            
+            setCommentInput('');
+            setReplyToId(null);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
             alert('댓글 작성에 실패했습니다.');
         }
     };
 
-    const handleCommentCancel = () => setCommentInput('');
+    const handleCommentCancel = () => {
+        setCommentInput('');
+        setReplyToId(null);
+    };
 
     if (!post.data) {
         return <p>Loading...</p>;
     }
 
     return (
-        <div className="post-detail-container" key={renderKey}> {/* key 추가 */}
+        <div className="post-detail-container" key={renderKey}>
             <h1 className="post-title">{post.title}</h1>
             <p className="post-meta">
                 작성자: {post.data.employeeName || '알 수 없음'} | 작성일:{' '}
                 {new Date(post.data.createdAt).toLocaleString()}
             </p>
             <div className="post-content">
-                <div ref={contentRef} className="ckeditor-content" /> {/* ref 추가 */}
+                <div ref={contentRef} className="ckeditor-content" />
                 {post.data.imageUrl && (
                     <img src={post.data.imageUrl} alt="Post illustration" className="post-image" />
                 )}
@@ -187,44 +277,48 @@ const PostDetailPage = () => {
                 isEditMode={true}
             />
             <hr />
-            <form onSubmit={handleCommentSubmit} className="comment-form">
-                <textarea
-                    value={commentInput}
-                    onChange={(e) => setCommentInput(e.target.value)}
-                    placeholder="댓글을 입력하세요"
-                    className="comment-input"
-                    required
-                ></textarea>
-                <div className="comment-buttons">
-                    <button type="button" className="comment-cancel-button" onClick={handleCommentCancel}>
-                        취소
-                    </button>
-                    <button type="submit" className="comment-submit-button">
-                        등록
-                    </button>
-                </div>
-            </form>
             <section className="comments-section">
                 <h5>댓글</h5>
+                {replyToId && (
+                    <p className="replying-to">
+                        답글 작성 중... 
+                        <button 
+                            className="cancel-reply" 
+                            onClick={() => setReplyToId(null)}
+                        >
+                            취소
+                        </button>
+                    </p>
+                )}
+                <form onSubmit={handleCommentSubmit} className="comment-form">
+                    <textarea
+                        value={commentInput}
+                        onChange={(e) => setCommentInput(e.target.value)}
+                        placeholder={replyToId ? "답글을 입력하세요" : "댓글을 입력하세요"}
+                        className="comment-input"
+                        required
+                    ></textarea>
+                    <div className="comment-buttons">
+                        <button 
+                            type="button" 
+                            className="comment-cancel-button" 
+                            onClick={handleCommentCancel}
+                        >
+                            취소
+                        </button>
+                        <button type="submit" className="comment-submit-button">
+                            {replyToId ? '답글 등록' : '등록'}
+                        </button>
+                    </div>
+                </form>
                 {comments.length > 0 ? (
                     <ul className="comments-list">
-                        {comments.map((c) => (
-                            <li key={c.id} className="comment-item">
-                                <div className="comment-header">
-                                    <span className="comment-employeeName">{c.employeeName}</span>
-                                    <span className="comment-date">
-                                        {c.createdAt.toLocaleString('ko-KR', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            second: '2-digit',
-                                        })}
-                                    </span>
-                                </div>
-                                <p className="comment-content">{c.content}</p>
-                            </li>
+                        {comments.map((comment) => (
+                            <CommentItem 
+                                key={comment.id} 
+                                comment={comment}
+                                onReply={(id) => setReplyToId(id)}
+                            />
                         ))}
                     </ul>
                 ) : (

@@ -106,7 +106,7 @@ export const getCommentsByPostAPI = async (postId) => {
     }
 };
 
-// 댓글 생성 API
+// 댓글 생성 API (대댓글 포함)
 export const createCommentAPI = async (postId, commentData) => {
     try {
         const token = localStorage.getItem("access_token");
@@ -165,80 +165,6 @@ export const deleteCommentAPI = async (commentId) => {
         return response.data;
     } catch (error) {
         console.error(`Failed to delete comment (ID: ${commentId}):`, error);
-        throw error;
-    }
-};
-
-// 대댓글 조회 API
-export const getRepliesByCommentAPI = async (parentCommentId) => {
-    try {
-        const response = await axios.get(`/reply/${parentCommentId}`);
-        return response.data;
-    } catch (error) {
-        console.error(`Failed to fetch replies for comment (ID: ${parentCommentId}):`, error);
-        throw error;
-    }
-};
-
-// 대댓글 생성 API
-export const createReplyAPI = async (parentCommentId, replyData) => {
-    try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
-        }
-
-        const response = await axios.post(`/reply/${parentCommentId}`, replyData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        return response.data;
-    } catch (error) {
-        console.error(`Failed to create reply for comment (ID: ${parentCommentId}):`, error);
-        throw error;
-    }
-};
-
-// 대댓글 수정 API
-export const updateReplyAPI = async (replyId, replyData) => {
-    try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
-        }
-
-        const response = await axios.put(`/reply/${replyId}`, replyData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        return response.data;
-    } catch (error) {
-        console.error(`Failed to update reply (ID: ${replyId}):`, error);
-        throw error;
-    }
-};
-
-// 대댓글 삭제 API
-export const deleteReplyAPI = async (replyId) => {
-    try {
-        const token = localStorage.getItem("access_token");
-        if (!token) {
-            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
-        }
-
-        const response = await axios.delete(`/reply/${replyId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        return response.data;
-    } catch (error) {
-        console.error(`Failed to delete reply (ID: ${replyId}):`, error);
         throw error;
     }
 };
