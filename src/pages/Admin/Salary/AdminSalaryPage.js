@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
+import { 
+        getAllSalaryAPI,
+        searchSalaryAPI,
+        createSalaryAPI,
+        updateSalaryAPI,
+        deleteSalaryAPI,
+        excelUploadSalaryAPI,
+        excelDownloadSalaryAPI
+       } from '../../../api/admin/index.js';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -261,7 +269,7 @@ const AdminSalaryPage = () => {
     };
 
     // 엑셀 업로드 api
-    const handleDrop = async (event) => {
+    const handleExcelUpload = async (event) => {
         const file = event.target.files[0]; // 첫 번째 파일만 처리
         if (!file) {
             console.log("파일이 선택되지 않았습니다.");
@@ -281,6 +289,36 @@ const AdminSalaryPage = () => {
         handleSearch(searchData, currentPage, size)
     };
 
+    // 엑셀 다운로드 api
+    const handleExcelDownload = async () => {
+        const params = {};
+        searchData.forEach((item) => {
+            if (item.value) {
+                params[item.key] = item.value;
+            }
+        });
+
+        const { response, error } = await excelDownloadSalaryAPI(params);
+        if (error) {
+            console.log('에러 발생');
+            return;
+        }
+
+        console.log("params : ", params);
+        console.log("response : ", response);
+
+        // Blob을 사용하여 파일 다운로드
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', '급여관리.xlsx'); // 다운로드할 파일 이름
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // 링크 요소 제거
+        
+        handleSearch(searchData, currentPage, size);
+    };
+
     return (
         <div className="">
             <h2 className="">급여 목록</h2>
@@ -295,15 +333,18 @@ const AdminSalaryPage = () => {
                 <Button className="me-2" variant="danger" onClick={handleDelete}>
                     삭제
                 </Button>
-                <Button variant="success" onClick={triggerFileInput}>
+                <Button className="me-2" variant="success" onClick={triggerFileInput}>
                     엑셀 업로드
                     <input
                         type="file"
                         accept=".xlsx, .xls, .csv"
                         ref={fileInputRef}
-                        onChange={(e) => handleDrop(e)}
+                        onChange={(e) => handleExcelUpload(e)}
                         style={{ display: "none" }}
                     />
+                </Button>
+                <Button variant="success" onClick={handleExcelDownload}>
+                    엑셀 다운로드
                 </Button>
             </div>
             <div>
