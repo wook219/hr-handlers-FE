@@ -4,6 +4,7 @@ export const path = {
     ADMINSALARY: {
         BASE: `${API_BASE_URL}/salary`,
         SEARCH: `${API_BASE_URL}/salary/search`,
-        EXCELUPLOAD: `${API_BASE_URL}/salary/excel/upload`
+        EXCELUPLOAD: `${API_BASE_URL}/salary/excel/upload`,
+        EXCELDOWNLOAD: `${API_BASE_URL}/salary/excel/download`,
     },
 }

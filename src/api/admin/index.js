@@ -4,6 +4,7 @@ export {
     createSalaryAPI,
     updateSalaryAPI,
     deleteSalaryAPI,
-    excelUploadSalaryAPI
+    excelUploadSalaryAPI,
+    excelDownloadSalaryAPI
 }
 from './salary';

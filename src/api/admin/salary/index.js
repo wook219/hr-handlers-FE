@@ -113,5 +113,21 @@ const excelUploadSalaryAPI = (formData) => {
         });
 };
 
+const excelDownloadSalaryAPI = (params) => {
+    return axios({
+            url: ADMINSALARY.EXCELDOWNLOAD,
+            method: 'post',
+            data: params,
+            responseType: 'blob'
+        })
+        .then(res => {
+            return { response: res, error: null };
+        })
+        .catch(err => {
+            console.error(err);
+            return { response: null, error: err };
+        });
+};
 
-export { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI };
+
+export { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI, excelDownloadSalaryAPI };
