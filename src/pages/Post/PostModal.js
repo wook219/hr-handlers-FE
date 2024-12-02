@@ -49,7 +49,6 @@ const PostModal = ({
             customUploadAdapter(loader);
     }
 
-    // 게시글 등록 핸들러
     const handleFinalSubmit = async () => {
         try {
             // S3에 대기 중인 이미지를 업로드
@@ -57,35 +56,46 @@ const PostModal = ({
                 pendingUploads.map(async (file) => {
                     const formData = new FormData();
                     formData.append('upload', file);
-                    const response = await axios.post('/api/s3/upload', formData, {
+                    const response = await axios.post('api/s3', formData, {
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
                     return response.data.url; // S3 URL 반환
                 })
             );
-
-            // 에디터 데이터에서 임시 URL을 S3 URL로 대체
+    
+            // 에디터 데이터에서 임시 URL(blob)을 S3 URL로 대체
             let updatedEditorData = editorData;
-            pendingUploads.forEach((file, index) => {
-                const tempUrl = URL.createObjectURL(file);
-                updatedEditorData = updatedEditorData.replace(tempUrl, uploadedUrls[index]);
+    
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(editorData, 'text/html');
+            const images = doc.querySelectorAll('img');
+    
+            images.forEach((img, index) => {
+                const blobUrl = img.getAttribute('src');
+                if (blobUrl.startsWith('blob:')) {
+                    const s3Url = uploadedUrls[index];
+                    updatedEditorData = updatedEditorData.replace(blobUrl, s3Url); // blob -> S3 URL 대체
+                }
             });
-
+    
             // 게시글 데이터와 업로드된 이미지 URL을 함께 제출
-            handleSubmit({
+            await handleSubmit({
                 title,
                 content: updatedEditorData,
-                hashtags: hashtags.split(',').map((tag) => tag.trim()),
+                hashtags: hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
             });
-
+    
             // 초기화
             setPendingUploads([]);
+            setEditorData('');
+            setTitle('');
+            setHashtags('');
         } catch (error) {
             console.error('게시글 등록 중 오류 발생:', error);
             alert('게시글 등록에 실패했습니다.');
         }
     };
-
+    
     return (
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
             <Modal.Header className="post-modal-header" closeButton>
