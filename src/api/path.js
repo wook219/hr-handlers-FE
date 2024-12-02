@@ -7,3 +7,7 @@ export const path = {
 export const todoPath = {
     TODO : `${API_BASE_URL}/todo`
 }
+
+export const vacationPath = {
+    VACATION : `${API_BASE_URL}/vacation`
+}
