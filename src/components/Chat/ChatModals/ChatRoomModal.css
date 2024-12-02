@@ -43,3 +43,48 @@
   padding: 50px;
   font-size: 18px;
 }
+
+.chat-participant {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-participant.last-participant {
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  border-bottom: none; /* 마지막 항목에는 경계선 제거 */
+}
+
+.chat-participant-empName {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.chat-participant-participant-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.chat-participant-deptName,
+.chat-participant-empPosition {
+  text-align: right;
+}
+
+.chat-participant-empPosition {
+  color: #898989;
+}
+
+.chat-participant-scrollable-modal {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.chat-participant-icon {
+  padding-bottom: 5px;
+}
