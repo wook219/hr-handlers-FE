@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ChatRoomHeader.css';
-import { ThreeDotsVertical, BoxArrowLeft } from 'react-bootstrap-icons';
+import { ThreeDotsVertical, ChevronLeft } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 
 const ChatRoomHeader = ({ title, handleClickMenu }) => {
@@ -15,7 +15,7 @@ const ChatRoomHeader = ({ title, handleClickMenu }) => {
   return (
     <div className="chatroom-header-container">
       <div className="chatroom-left chatroom-header-icon-size" onClick={handleClick}>
-        <BoxArrowLeft />
+        <ChevronLeft />
       </div>
       <div className="chatroom-center">{title}</div>
       <div className="chatroom-right chatroom-header-icon-size" onClick={handleClickMenu}>
