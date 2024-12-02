@@ -1,80 +1,86 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllPostsAPI, createPostAPI } from "../../api/post";
-import "bootstrap/dist/css/bootstrap.min.css"; // 부트스트랩 CSS import
-import "./PostListPage.css"; // 커스텀 CSS import
-import PostModal from "./PostModal"; // PostModal 컴포넌트 임포트
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./PostListPage.css";
+import PostModal from "./PostModal";
 
 const PostListPage = () => {
   const [posts, setPosts] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 0,
+    totalElements: 0,
+    size: 5,
+    pageGroupSize: 5,
+  });
   const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
-  const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
-  const [size, setSize] = useState(5); // 한 페이지에 표시할 게시글 수
-  const [title, setTitle] = useState(""); // 제목
-  const [editorData, setEditorData] = useState(""); // 본문 내용
-  const [hashtags, setHashtags] = useState(""); // 해시태그
-  const [pageGroupSize] = useState(5); // 한 번에 보여줄 페이지 번호 갯수
+  const [modalState, setModalState] = useState({
+    show: false,
+    title: "",
+    editorData: "",
+    hashtags: "",
+  });
 
   // 게시글 목록 가져오기
   useEffect(() => {
-    fetchPosts(currentPage, size); // 초기 페이지 로드
-  }, [currentPage, size]);
+    fetchPosts(pagination.currentPage, pagination.size);
+  }, [pagination.currentPage, pagination.size]);
 
   const fetchPosts = async (page, size) => {
     try {
       const response = await getAllPostsAPI(page, size);
-      setPosts(response.data.posts); // 게시글 목록 설정
-      setTotalElements(response.data.totalElements); // 총 게시글 수 설정
+      setPosts(response.data.posts);
+      setPagination((prev) => ({
+        ...prev,
+        totalElements: response.data.totalElements,
+      }));
     } catch (error) {
       console.error("Failed to fetch posts:", error);
     }
   };
 
   // 게시글 생성
-  
   const handleCreatePost = async (postData) => {
     try {
-      const hashtagArray = hashtags.split(",").map((tag) => tag.trim());
+      const hashtagArray = modalState.hashtags.split(",").map((tag) => tag.trim());
       const newPost = {
-        title,
-        employeeId: 2, // 테스트용 임의 값, 실제 값은 로그인 사용자 정보로 대체
+        title: modalState.title,
+        employeeId: 2,
         content: postData.content,
         hashtagContent: hashtagArray,
       };
 
-      // 디버깅 로그 추가
-      console.log('Data being sent to createPostAPI:', newPost);
-
-      await createPostAPI(newPost); // API 호출
-      handleCloseModal(); // 모달 닫기
-      fetchPosts(currentPage, size); // 게시글 목록 갱신
+      await createPostAPI(newPost);
+      handleCloseModal();
+      fetchPosts(pagination.currentPage, pagination.size);
     } catch (error) {
       console.error("Failed to create post:", error);
     }
-  }; 
-
-  // 검색 필터
-  const filteredPosts = posts.filter((post) =>
-    post.title.includes(searchTerm)
-  );
+  };
 
   // 모달 닫기
   const handleCloseModal = () => {
-    setShowModal(false);
-    setTitle("");
-    setEditorData("");
-    setHashtags("");
+    setModalState({
+      show: false,
+      title: "",
+      editorData: "",
+      hashtags: "",
+    });
   };
 
   // 페이지네이션 핸들러
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: newPage,
+    }));
   };
 
-  const totalPages = Math.ceil(totalElements / size); // 전체 페이지 수
-  const currentPageGroup = Math.floor(currentPage / pageGroupSize); // 현재 페이지 그룹 계산
+  const totalPages = Math.ceil(pagination.totalElements / pagination.size);
+  const currentPageGroup = Math.floor(pagination.currentPage / pagination.pageGroupSize);
+
+  // 검색 필터
+  const filteredPosts = posts.filter((post) => post.title.includes(searchTerm));
 
   return (
     <div className="post-container container mt-5">
@@ -89,7 +95,9 @@ const PostListPage = () => {
         />
         <button
           className="btn post-create-btn ms-2"
-          onClick={() => setShowModal(true)}
+          onClick={() =>
+            setModalState((prev) => ({ ...prev, show: true }))
+          }
         >
           게시글 작성
         </button>
@@ -108,8 +116,7 @@ const PostListPage = () => {
           <tbody>
             {filteredPosts.map((post, index) => (
               <tr key={post.id}>
-                {/* 동적 번호 계산 */}
-                <td>{index + 1 + currentPage * size}</td>
+                <td>{index + 1 + pagination.currentPage * pagination.size}</td>
                 <td>
                   <Link
                     to={`/post/${post.id}`}
@@ -119,9 +126,9 @@ const PostListPage = () => {
                   </Link>
                 </td>
                 <td>
-                  {post.hashtagContent.map((tag, index) => (
+                  {post.hashtagContent.map((tag, idx) => (
                     <span
-                      key={index}
+                      key={idx}
                       className="badge bg-primary post-tag me-1"
                     >
                       #{tag}
@@ -139,69 +146,84 @@ const PostListPage = () => {
       {/* 페이지네이션 UI */}
       <div className="pagination mt-3 d-flex justify-content-center">
         <ul className="pagination">
-          {/* 맨 처음으로 이동 */}
-          <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+          <li
+            className={`page-item ${pagination.currentPage === 0 ? "disabled" : ""}`}
+          >
             <button
               className="page-link"
               onClick={() => handlePageChange(0)}
-              disabled={currentPage === 0}
+              disabled={pagination.currentPage === 0}
             >
               &laquo;
             </button>
           </li>
 
-          {/* 이전 그룹으로 이동 */}
-          <li className={`page-item ${currentPageGroup === 0 ? "disabled" : ""}`}>
+          <li
+            className={`page-item ${
+              currentPageGroup === 0 ? "disabled" : ""
+            }`}
+          >
             <button
               className="page-link"
-              onClick={() => handlePageChange((currentPageGroup - 1) * pageGroupSize)}
+              onClick={() =>
+                handlePageChange((currentPageGroup - 1) * pagination.pageGroupSize)
+              }
               disabled={currentPageGroup === 0}
             >
               &lt;
             </button>
           </li>
 
-          {/* 페이지 번호 표시 */}
-          {[...Array(pageGroupSize)].map((_, index) => {
-            const pageIndex = currentPageGroup * pageGroupSize + index;
-            if (pageIndex >= totalPages) return null; // 전체 페이지를 초과하면 표시하지 않음
+          {[...Array(pagination.pageGroupSize)].map((_, idx) => {
+            const pageIndex = currentPageGroup * pagination.pageGroupSize + idx;
+            if (pageIndex >= totalPages) return null;
             return (
               <li
                 key={pageIndex}
-                className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
+                className={`page-item ${
+                  pagination.currentPage === pageIndex ? "active" : ""
+                }`}
               >
-                <button className="page-link" onClick={() => handlePageChange(pageIndex)}>
+                <button
+                  className="page-link"
+                  onClick={() => handlePageChange(pageIndex)}
+                >
                   {pageIndex + 1}
                 </button>
               </li>
             );
           })}
 
-          {/* 다음 그룹으로 이동 */}
           <li
             className={`page-item ${
-              currentPageGroup === Math.floor(totalPages / pageGroupSize) ? "disabled" : ""
+              currentPageGroup === Math.floor(totalPages / pagination.pageGroupSize)
+                ? "disabled"
+                : ""
             }`}
           >
             <button
               className="page-link"
-              onClick={() => handlePageChange((currentPageGroup + 1) * pageGroupSize)}
-              disabled={currentPageGroup === Math.floor(totalPages / pageGroupSize)}
+              onClick={() =>
+                handlePageChange((currentPageGroup + 1) * pagination.pageGroupSize)
+              }
+              disabled={
+                currentPageGroup ===
+                Math.floor(totalPages / pagination.pageGroupSize)
+              }
             >
               &gt;
             </button>
           </li>
 
-          {/* 맨 마지막으로 이동 */}
           <li
             className={`page-item ${
-              currentPage === totalPages - 1 ? "disabled" : ""
+              pagination.currentPage === totalPages - 1 ? "disabled" : ""
             }`}
           >
             <button
               className="page-link"
               onClick={() => handlePageChange(totalPages - 1)}
-              disabled={currentPage === totalPages - 1}
+              disabled={pagination.currentPage === totalPages - 1}
             >
               &raquo;
             </button>
@@ -211,15 +233,21 @@ const PostListPage = () => {
 
       {/* PostModal 컴포넌트 */}
       <PostModal
-        show={showModal}
+        show={modalState.show}
         handleClose={handleCloseModal}
-        handleSubmit={handleCreatePost} // 게시글 생성 후 목록 갱신
-        title={title}
-        setTitle={setTitle}
-        editorData={editorData}
-        setEditorData={setEditorData}
-        hashtags={hashtags}
-        setHashtags={setHashtags}
+        handleSubmit={handleCreatePost}
+        title={modalState.title}
+        setTitle={(title) =>
+          setModalState((prev) => ({ ...prev, title }))
+        }
+        editorData={modalState.editorData}
+        setEditorData={(editorData) =>
+          setModalState((prev) => ({ ...prev, editorData }))
+        }
+        hashtags={modalState.hashtags}
+        setHashtags={(hashtags) =>
+          setModalState((prev) => ({ ...prev, hashtags }))
+        }
       />
     </div>
   );
