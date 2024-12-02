@@ -34,9 +34,9 @@ function Sidebar() {
             <span>일정 관리</span>
           </li>
 
-          <li>
+          <li onClick={navigation.toVacation}>
             <FaPlane className="icon" />
-            <span>출퇴근기록</span>
+            <span>휴가 관리</span>
           </li>
 
           <li onClick={navigation.toChatRoom}>

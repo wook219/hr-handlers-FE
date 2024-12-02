@@ -1,0 +1,61 @@
+/* VacationType.css */
+.vacation-types-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 각 섹션을 4등분 */
+    width: 100%;
+    height: 130px;
+    margin-bottom: 40px;
+    gap: 1px;
+}
+
+.vacation-types-content {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;  /* 4개의 동일한 영역 */
+    width: 100%;
+}
+
+.vacation-type-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 20px;
+    background-color: white;
+    border: 1px solid gray;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100%;  /* 각 아이템이 자신의 영역을 꽉 채우도록 */
+}
+
+.vacation-type-item:last-child {
+    border-right: none;  /* 마지막 아이템의 오른쪽 구분선 제거 */
+}
+
+.vacation-type-item:hover {
+    background-color: #fafafa;
+}
+
+.vacation-type-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.vacation-type-icon {
+    width: 40px;
+    height: 40px;
+    color: #4a5568;
+}
+
+.vacation-type-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a202c;
+    margin: 0;
+}
+
+/* hover 효과 제거 */
+.vacation-type-item:hover {
+    background-color: #f5f5f5;
+}
