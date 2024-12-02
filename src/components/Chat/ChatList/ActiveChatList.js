@@ -26,7 +26,7 @@ const ActiveChatList = () => {
         {chats.map((chat, index) => (
           <div className="row align-items-center mb-3" key={index}>
             <div className="col-2 text-center">
-              <span>{index}</span>
+              <span>{index + 1}</span>
             </div>
 
             <div className="col-7">
