@@ -1,109 +1,121 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPostDetailAPI , updatePostAPI, deletePostAPI } from '../../api/post';
+import {
+    getPostDetailAPI,
+    updatePostAPI,
+    deletePostAPI,
+    getCommentsByPostAPI,
+    createCommentAPI,
+} from '../../api/post';
 import './PostDetailPage.css';
-import { getEmpNoFromToken } from '../../utils/tokenUtils';
-import PostModal from "./PostModal"; // PostModal 컴포넌트 가져오기
-import { useUser } from '../../context/UserContext'; // UserContext 가져오기
+import { useUser } from '../../context/UserContext';
+import PostModal from './PostModal';
 
 const PostDetailPage = () => {
-    const navigate = useNavigate(); // useNavigate 훅 선언
+    const navigate = useNavigate();
     const { postId } = useParams();
-    const [post, setPost] = useState(null);
-    const [comment, setComment] = useState('');
+    const { user } = useUser(); // 사용자 정보 가져오기
+
+    // 상태 관리 (post 관련된 정보는 하나의 상태 객체로 관리)
+    const [post, setPost] = useState({
+        data: null,
+        title: '',
+        content: '',
+        hashtags: '',
+        isAuthor: false,
+    });
+
+    // 댓글 상태 관리
     const [comments, setComments] = useState([]);
-    const [isAuthor, setIsAuthor] = useState(false); // 작성자 여부 확인 상태
-    const [isModalOpen, setModalOpen] = useState(false); // 모달 열림 상태
-    const [title, setTitle] = useState("");
-    const [editorData, setEditorData] = useState("");
-    const [hashtags, setHashtags] = useState("");
-    const { user } = useUser(); // UserContext에서 사용자 정보 가져오기
-    
+    const [commentInput, setCommentInput] = useState('');
+    const [isModalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 게시글 정보 가져오기
                 const postResponse = await getPostDetailAPI(postId);
-                setPost(postResponse.data);
-                setTitle(postResponse.data.title);
-                setEditorData(postResponse.data.content);
-                setHashtags(postResponse.data.hashtagContent.join(", "));
+                const { data } = postResponse;
+                const isAuthor = data.employeeName === user.name;
 
-               // 사용자 이름과 게시글 작성자 이름 비교
-               const userName = user.name;
-               setIsAuthor(postResponse.data.employeeName === userName);
+                setPost({
+                    data,
+                    title: data.title,
+                    content: data.content,
+                    hashtags: data.hashtagContent.join(', '),
+                    isAuthor,
+                });
 
-                // 더미 댓글 데이터 추가
-                setComments([
-                    { id: 1, author: 'hello123', content: '네, 익명 아니더라구요...', createdAt: '2024.11.18 오후 14:50' },
-                    { id: 2, author: 'hello123', content: '다시 보니 정말 재밌네요!', createdAt: '2024.11.18 오후 14:51' },
-                ]);
+                const commentsResponse = await getCommentsByPostAPI(postId);
+                const formattedComments = commentsResponse.data.map((comment) => ({
+                    ...comment,
+                    createdAt: new Date(comment.createdAt), // Date 객체로 변환
+                }))
+                .sort((a, b) => b.createdAt - a.createdAt); // 최신순 정렬
+                setComments(formattedComments);
             } catch (error) {
                 console.error('데이터 요청 실패:', error);
             }
         };
 
         fetchData();
-    }, [postId]);
+    }, [postId, user.name]);
 
-    const handleEditClick = () => {
-        setModalOpen(true); // 모달 열기
-      };
-    
-      const handleModalClose = () => {
-        setModalOpen(false); // 모달 닫기
-      };
+    const handleEditClick = () => setModalOpen(true);
+
+    const handleModalClose = () => setModalOpen(false);
 
     const handlePostDelete = async () => {
-        if (!window.confirm("이 게시글을 삭제하시겠습니까?")) return; // 삭제 확인 대화상자
+        if (!window.confirm('이 게시글을 삭제하시겠습니까?')) return;
         try {
-            await deletePostAPI(postId); // 삭제 API 호출
-            alert("게시글이 성공적으로 삭제되었습니다.");
-            navigate("/post"); // 삭제 후 메인 페이지로 리다이렉트
+            await deletePostAPI(postId);
+            alert('게시글이 성공적으로 삭제되었습니다.');
+            navigate('/post');
         } catch (error) {
-            console.error("게시글 삭제 실패:", error);
-            alert("게시글 삭제에 실패했습니다.");
+            console.error('게시글 삭제 실패:', error);
+            alert('게시글 삭제에 실패했습니다.');
         }
     };
-    
-    const handleCommentSubmit = (e) => {
-        e.preventDefault();
-        const newComment = {
-            id: comments.length + 1,
-            author: user.name || '익명 사용자', // 사용자 이름 또는 기본값
-            content: comment,
-            createdAt: new Date().toLocaleString(),
-        };
-        setComments([...comments, newComment]);
-        setComment('');
-    };
-
-    const handleCommentCancel = () => {
-        setComment('');
-    };
-
 
     const handlePostUpdate = async () => {
         const updatedPost = {
-        title,
-        content: editorData,
-        hashtagContent: hashtags.split(",").map((tag) => tag.trim()),
+            title: post.title,
+            content: post.content,
+            hashtagContent: post.hashtags.split(',').map((tag) => tag.trim()),
         };
 
         try {
-        await updatePostAPI(postId, updatedPost);
-        alert("게시글이 성공적으로 수정되었습니다!");
-        setPost({ ...post, ...updatedPost });
-        setModalOpen(false); // 모달 닫기
+            await updatePostAPI(postId, updatedPost);
+            alert('게시글이 성공적으로 수정되었습니다!');
+            setPost((prev) => ({ ...prev, data: { ...prev.data, ...updatedPost } }));
+            setModalOpen(false);
         } catch (error) {
-        console.error("게시글 수정 실패:", error);
-        alert("게시글 수정에 실패했습니다.");
+            console.error('게시글 수정 실패:', error);
+            alert('게시글 수정에 실패했습니다.');
         }
     };
 
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await createCommentAPI(postId, { content: commentInput });
+            const newComment = {
+                id: response.data.id,
+                content: commentInput,
+                employeeName: user.name,
+                createdAt: new Date(response.data.timestamp),
+            };
+    
+            setComments((prev) => [newComment, ...prev]); // 기존 댓글 배열에 추가
+            setCommentInput(''); // 입력 필드 초기화
+        } catch (error) {
+            console.error('댓글 작성 실패:', error);
+            alert('댓글 작성에 실패했습니다.');
+        }
+    };
 
-    if (!post) {
+    const handleCommentCancel = () => setCommentInput('');
+
+    if (!post.data) {
         return <p>Loading...</p>;
     }
 
@@ -111,44 +123,45 @@ const PostDetailPage = () => {
         <div className="post-detail-container">
             <h1 className="post-title">{post.title}</h1>
             <p className="post-meta">
-                작성자: {post.employeeName || '알 수 없음'} | 작성일: {new Date(post.createdAt).toLocaleString()}
+                작성자: {post.data.employeeName || '알 수 없음'} | 작성일:{' '}
+                {new Date(post.data.createdAt).toLocaleString()}
             </p>
             <div className="post-content">
                 <div
                     dangerouslySetInnerHTML={{ __html: post.content }}
                     className="ckeditor-content"
                 />
-                {post.imageUrl && (
-                    <img
-                        src={post.imageUrl}
-                        alt="Post illustration"
-                        className="post-image"
-                    />
+                {post.data.imageUrl && (
+                    <img src={post.data.imageUrl} alt="Post illustration" className="post-image" />
                 )}
             </div>
-                {isAuthor && ( // 작성자인 경우에만 표시
-                    <div className="post-actions">
-                        <button className="edit-button" onClick={handleEditClick}>수정</button>
-                        <button className="delete-button" onClick={handlePostDelete}>삭제</button>
-                    </div>
-                )}
-                <PostModal
-                    show={isModalOpen}
-                    handleClose={handleModalClose}
-                    handleSubmit={handlePostUpdate}
-                    title={title}
-                    setTitle={setTitle}
-                    editorData={editorData}
-                    setEditorData={setEditorData}
-                    hashtags={hashtags}
-                    setHashtags={setHashtags}
-                    isEditMode={true} // 수정 모드 활성화
-                />
+            {post.isAuthor && (
+                <div className="post-actions">
+                    <button className="edit-button" onClick={handleEditClick}>
+                        수정
+                    </button>
+                    <button className="delete-button" onClick={handlePostDelete}>
+                        삭제
+                    </button>
+                </div>
+            )}
+            <PostModal
+                show={isModalOpen}
+                handleClose={handleModalClose}
+                handleSubmit={handlePostUpdate}
+                title={post.title}
+                setTitle={(title) => setPost((prev) => ({ ...prev, title }))}
+                editorData={post.content}
+                setEditorData={(content) => setPost((prev) => ({ ...prev, content }))}
+                hashtags={post.hashtags}
+                setHashtags={(hashtags) => setPost((prev) => ({ ...prev, hashtags }))}
+                isEditMode={true}
+            />
             <hr />
             <form onSubmit={handleCommentSubmit} className="comment-form">
                 <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
                     placeholder="댓글을 입력하세요"
                     className="comment-input"
                     required
@@ -169,8 +182,17 @@ const PostDetailPage = () => {
                         {comments.map((c) => (
                             <li key={c.id} className="comment-item">
                                 <div className="comment-header">
-                                    <span className="comment-author">{c.author}</span>
-                                    <span className="comment-date">{c.createdAt}</span>
+                                    <span className="comment-employeeName">{c.employeeName}</span>
+                                    <span className="comment-date">
+                                        {c.createdAt.toLocaleString('ko-KR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            second: '2-digit',
+                                        })}
+                                    </span>
                                 </div>
                                 <p className="comment-content">{c.content}</p>
                             </li>
