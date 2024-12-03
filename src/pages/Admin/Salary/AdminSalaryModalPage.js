@@ -56,9 +56,59 @@ const AdminSalaryModalPage = (props) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevFormData) =>
-            prevFormData.map((field) =>
-                field.key === name ? { ...field, value } : field
-            )
+            prevFormData.map((field) => {
+                if (field.key === name) {
+                    if (field.type === "input") {
+                        // 숫자 필드는 쉼표를 추가
+                        const rawValue = value.replace(/,/g, ""); // 쉼표 제거
+                        if (!isNaN(rawValue) && rawValue !== "") {
+                            if (field.key === "deduction") {
+                                const basicSalaryField = prevFormData.find((f) => f.key === "basicSalary");
+                                const basicSalary = basicSalaryField?.value
+                                    ? Number(basicSalaryField.value.replace(/,/g, ""))
+                                    : 0;
+                                const deduction = Number(rawValue);
+            
+                                // deduction이 basicSalary보다 크면 업데이트하지 않음
+                                if (deduction >= basicSalary) {
+                                    alert("공제 금액은 지급 총액보다 클 수 없습니다.");
+                                    return field; // 변경 없이 기존 값 유지
+                                }
+                            }
+                            return {
+                                ...field,
+                                value: Number(rawValue).toLocaleString("en-US"),
+                            };
+                        }
+                        return { ...field, value: "" }; // 빈 값 처리
+                    }
+                    return { ...field, value }; // 다른 필드는 그냥 업데이트
+                }
+                return field;
+            })
+        );
+        // 위에서 차액 계산하면 한박자 느리게 계산됌 ㄷㄷ;;
+        setFormData((prevFormData) =>
+            prevFormData.map((field) => {
+                // netSalary 계산
+                if (field.key === "netSalary") {
+                    const basicSalaryField = prevFormData.find((f) => f.key === "basicSalary");
+                    const deductionField = prevFormData.find((f) => f.key === "deduction");
+
+                    const basicSalary = basicSalaryField?.value ? Number(basicSalaryField.value.replace(/,/g, "")) : 0;
+                    const deduction = deductionField?.value ? Number(deductionField.value.replace(/,/g, "")) : 0;
+
+                    const calculatedNetSalary = Math.max(basicSalary - deduction, 0);
+
+                    return {
+                        ...field,
+                        value: !isNaN(calculatedNetSalary)
+                            ? calculatedNetSalary.toLocaleString("en-US")
+                            : "",
+                    };
+                }
+                return field;
+            })
         );
     };
 
@@ -103,10 +153,11 @@ const AdminSalaryModalPage = (props) => {
                             </Form.Select>
                         ) : field.type === 'input' ? (
                             <Form.Control
-                                type="number"
+                                type="text"
                                 name={field.key}
                                 value={field.value}
                                 onChange={handleChange}
+                                disabled={field.isDisable}
                             />
                         ) : null}
                     </div>
