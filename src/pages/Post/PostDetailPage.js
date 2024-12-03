@@ -63,7 +63,6 @@ const PostDetailPage = () => {
     const [replyToId, setReplyToId] = useState(null); // 대댓글을 위한 상태 추가
 
     const [post, setPost] = useState({
-        data: null,
         title: '',
         content: '',
         hashtags: '',
@@ -81,17 +80,16 @@ const PostDetailPage = () => {
             }
         }, [post.content]);
 
-        useEffect(() => {
-            const fetchData = async () => {
+           const fetchData = async () => {
                 try {
                     const postResponse = await getPostDetailAPI(postId);
                     const { data } = postResponse;
                     const isAuthor = data.employeeName === user.name;
-        
+                    
+                    console.log('데이터: ', data);
+
                     setPost({
-                        data,
-                        title: data.title,
-                        content: data.content,
+                        ...data,
                         hashtags: data.hashtagContent.join(', '),
                         isAuthor,
                     });
@@ -116,6 +114,9 @@ const PostDetailPage = () => {
                 }
             };
         
+
+        useEffect(() => {
+         
             fetchData();
         }, [postId, user.name]);
 
@@ -137,7 +138,6 @@ const PostDetailPage = () => {
 
     const handlePostUpdate = async (updatedData) => {
         const { title, content, hashtags } = updatedData;
-        console.log('Updated content:', content); // 업데이트되는 내용 확인
     
         try {
             const updatedPost = {
@@ -145,34 +145,15 @@ const PostDetailPage = () => {
                 content,
                 hashtagContent: hashtags, // 배열 그대로
             };
+        console.log('updatedPost:', updatedPost); // 업데이트되는 내용 확인
     
             // 서버로 수정 요청
             await updatePostAPI(postId, updatedPost);
-    
-            // 상태 즉시 갱신
-            setPost((prev) => {
-                const newPost = {
-                    ...prev,
-                    data: {
-                        ...prev.data,
-                        title: updatedPost.title,
-                        content: updatedPost.content,
-                        hashtagContent: updatedPost.hashtagContent
-                    },
-                    title: updatedPost.title,
-                    content: updatedPost.content,
-                    hashtags: updatedPost.hashtagContent.join(', '),
-                };
-                console.log('New post state:', newPost); // 새로운 상태 확인
-                return newPost;
-            });
-            setRenderKey(prev => prev + 1); // 강제 리렌더링 추가
+            
+            await fetchData();
             showToast('게시글이 성공적으로 수정되었습니다!', 'success');
             setModalOpen(false); // 모달 닫기
-                 // 1.5초 후에 새로고침
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1500);
+
 
         } catch (error) {
             showToast('게시글 수정에 실패했습니다', 'error');
@@ -259,7 +240,7 @@ const PostDetailPage = () => {
         setReplyToId(null);
     };
 
-    if (!post.data) {
+    if (!post.title?.length) {
         return <p>Loading...</p>;
     }
 
@@ -267,13 +248,13 @@ const PostDetailPage = () => {
         <div className="post-detail-container" key={renderKey}>
             <h1 className="post-title">{post.title}</h1>
             <p className="post-meta">
-                작성자: {post.data.employeeName || '알 수 없음'} | 작성일:{' '}
-                {new Date(post.data.createdAt).toLocaleString()}
+                작성자: {post.employeeName || '알 수 없음'} | 작성일:{' '}
+                {new Date(post.createdAt).toLocaleString()}
             </p>
             <div className="post-content">
                 <div ref={contentRef} className="ckeditor-content" />
-                {post.data.imageUrl && (
-                    <img src={post.data.imageUrl} alt="Post illustration" className="post-image" />
+                {post.imageUrl && (
+                    <img src={post.imageUrl} alt="Post illustration" className="post-image" />
                 )}
             </div>
             {post.isAuthor && (
