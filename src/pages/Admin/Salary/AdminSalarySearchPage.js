@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import "./AdminSalaryPage.css";
 
 const AdminSalarySearchPage = (props) => {
     const [searchData, setSearchData] = useState(props.searchData || []);
@@ -18,7 +19,7 @@ const AdminSalarySearchPage = (props) => {
     };
 
     return (
-        <div className="mt-4 mb-4 p-3">
+        <div className="mt-4 mb-5 p-3 salary-table-responsive">
             <div className="row mb-3">
                 {searchData
                     .filter((field) => field.key === "startDate" || field.key === "endDate")
