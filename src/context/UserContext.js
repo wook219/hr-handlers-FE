@@ -10,6 +10,7 @@ export const UserProvider = ({ children }) => {
     role: null,       // 권한
     name: null,       // 이름
     deptName: null, // 부서 이름
+    // TODO: 프로필 사진 추가 예정
   });
 
   // 로그인: 사용자 정보를 Context에 저장

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../context/UserContext"; // Context 가져오기
-import { loginAPI, fetchUserInfo } from "../../api/employee/index"; // API 호출
+import { useUser } from "../../context/UserContext"; 
+import { loginAPI, fetchUserInfo } from "../../api/employee/index"; 
 import FindPassword from "./FindPassword";
 import "./Login.css";
 
@@ -26,23 +26,24 @@ const Login = () => {
     }
 
     try {
-      // 1. 로그인 API 호출
+      // 로그인 API 호출
       const token = await loginAPI(empNo, password);
       console.log("API Response (Token):", token);
 
-      // 2. 토큰 저장
+      // 토큰 저장
       localStorage.setItem("access_token", token);
 
-      // 3. 사용자 정보 API 호출
+      // 사용자 정보 API 호출
       const userInfo = await fetchUserInfo(empNo);
       console.log("User Info:", userInfo);
 
-      // 4. Context에 사용자 정보 저장
+      // Context에 사용자 정보 저장
       login({
         empNo: userInfo.empNo,
         name: userInfo.name,
         role: userInfo.role,
         deptName: userInfo.deptName,
+        // TODO: 프로필 사진 추가 예정 
       });
 
       alert(`${userInfo.name}님 환영합니다.`);
