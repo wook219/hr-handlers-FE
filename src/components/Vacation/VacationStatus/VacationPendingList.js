@@ -4,7 +4,7 @@ import VacationTable from './VacationTable';
 import VacationDetailModal from '../Modal/VacationDetailModal';
 import { getPendingVacationsAPI } from '../../../api/vacation';
 
-const VacationPendingList = () => {
+const VacationPendingList = ({ onVacationUpdate }) => {
     const [selectedVacation, setSelectedVacation] = useState(null);
     const [pendingVacations, setPendingVacations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ const VacationPendingList = () => {
     const renderRow = (vacation, index) => {
         return (
             <tr key={index}>
-                <td>{vacation.doc_num}</td>
+                <td>{vacation.docNum}</td>
                 <td>{formatDate(vacation.createdAt)}</td>
                 <td>{vacation.title}</td>
                 <td>
@@ -69,8 +69,14 @@ const VacationPendingList = () => {
                     vacationId={selectedVacation}
                     onClose={() => setSelectedVacation(null)}
                     editable={true}
-                    onModify={fetchPendingVacations}
-                    onDelete={fetchPendingVacations}
+                    onModify={() => {
+                        fetchPendingVacations();  
+                        onVacationUpdate();       
+                    }}
+                    onDelete={() => {
+                        fetchPendingVacations();  
+                        onVacationUpdate();       
+                    }}
                 />
             )}
         </div>

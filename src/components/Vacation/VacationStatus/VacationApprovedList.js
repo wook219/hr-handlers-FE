@@ -34,7 +34,7 @@ const VacationApprovedList = () => {
 
     const renderRow = (vacation, index) => (
         <tr key={index}>
-            <td>{vacation.doc_num}</td>
+            <td>{vacation.docNum}</td>
             <td>{formatDate(vacation.updatedAt)}</td>
             <td>{vacation.title}</td>
             <td>{vacation.status === "APPROVED" ? "확정" : "반려"}</td>
