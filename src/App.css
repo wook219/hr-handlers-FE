@@ -11,6 +11,7 @@
   flex-grow: 1; /* 남은 공간을 모두 차지 */
   padding: 20px;
   background-color: #f8f9fa; /* 콘텐츠 영역 배경색 */
+  height: 100vh;
 }
 
 /* 사이드바 없는 경우 전체 너비로 확장 */

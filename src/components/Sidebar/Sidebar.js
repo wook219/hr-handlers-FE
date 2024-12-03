@@ -53,6 +53,12 @@ function Sidebar() {
             <FaDollarSign className="icon" />
             <span>급여관리</span>
           </li>
+          {user.role === 'ROLE_ADMIN' && (
+          <li onClick={navigation.toAdminHome}>
+            <FaDollarSign className="icon" />
+            <span>통합관리</span>
+          </li>
+          )}
         </ul>
       </nav>
       <div className="logout">

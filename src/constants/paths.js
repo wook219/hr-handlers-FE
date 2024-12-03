@@ -8,3 +8,7 @@ export const PATHS = {
   SALARY: '/admin/salary',
   VACATION : '/vacation',
 };
+
+export const ADMINPATHS = {
+  HOME: '/admin/home',
+};
