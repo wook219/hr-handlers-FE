@@ -4,8 +4,10 @@ import { getAllPostsAPI, createPostAPI } from "../../api/post";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostListPage.css";
 import PostModal from "./PostModal";
+import { useToast } from '../../context/ToastContext';
 
 const PostListPage = () => {
+  const { showToast } = useToast();
   const [posts, setPosts] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 0,
@@ -35,6 +37,7 @@ const PostListPage = () => {
         totalElements: response.data.totalElements,
       }));
     } catch (error) {
+      showToast('게시글 목록을 가져오는데 실패했습니다.', 'error');
       console.error("Failed to fetch posts:", error);
     }
   };
@@ -54,6 +57,7 @@ const PostListPage = () => {
       handleCloseModal();
       fetchPosts(pagination.currentPage, pagination.size);
     } catch (error) {
+      showToast('게시글을 생성을 실패했습니다.', 'error');
       console.error("Failed to create post:", error);
     }
   };

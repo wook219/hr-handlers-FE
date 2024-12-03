@@ -3,6 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
+import { useToast } from '../../context/ToastContext';
 import './PostModal.css'; // PostModal.css 파일 import
 
 const PostModal = ({
@@ -18,6 +19,7 @@ const PostModal = ({
     isEditMode = false,
 }) => {
     const [pendingUploads, setPendingUploads] = useState([]); // 업로드 대기 이미지 파일 리스트
+    const { showToast } = useToast();
 
     // 수정 모드일 때 데이터를 초기화하거나 로그 출력
     useEffect(() => {
@@ -92,7 +94,7 @@ const PostModal = ({
             setHashtags('');
         } catch (error) {
             console.error('게시글 등록 중 오류 발생:', error);
-            alert('게시글 등록에 실패했습니다.');
+            showToast('게시글 등록에 실패했습니다', 'error');
         }
     };
     
