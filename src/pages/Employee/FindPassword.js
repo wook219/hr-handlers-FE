@@ -10,8 +10,8 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
         <button className="findpassword-close-button" onClick={onClose}>
           &times;
         </button>
-        <h2>비밀번호 찾기</h2>
-        <p>입력하신 이메일로 임시 비밀번호가 전송됩니다.</p>
+        <h6 style={{fontWeight: "bold", marginTop: "40px"}}>비밀번호 찾기</h6>
+        <p style={{fontWeight: "300", marginTop: "10px", fontSize: "0.9rem", marginBottom: "40px"}}>입력하신 이메일로 임시 비밀번호가 전송됩니다.</p>
         <form>
           <div className="findpassword-form-group">
             <label htmlFor="empNo" className="findpassword-label">사원번호</label>
@@ -19,7 +19,6 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
               type="text"
               id="empNo"
               className="findpassword-input"
-              placeholder="사원번호 입력"
               required
             />
           </div>
@@ -29,7 +28,6 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
               type="email"
               id="email"
               className="findpassword-input"
-              placeholder="이메일 입력"
               required
             />
           </div>
