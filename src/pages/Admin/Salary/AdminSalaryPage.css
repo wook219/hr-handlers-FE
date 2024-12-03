@@ -1,0 +1,15 @@
+.salary-table-responsive {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 25px; /* 내부 여백 확대 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 그림자 강조 */
+}
+
+.salary-container {
+    padding: 40px;
+}
+.salary-container-h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}

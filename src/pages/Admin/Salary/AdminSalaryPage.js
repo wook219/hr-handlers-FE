@@ -12,17 +12,20 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useToast } from '../../../context/ToastContext';
+import "./AdminSalaryPage.css";
 
 import AdminSalaryModalPage from "./AdminSalaryModalPage";
 import AdminSalarySearchPage from "./AdminSalarySearchPage";
 
 const AdminSalaryPage = () => {
-    const [size, setSize] = useState(10); // 한 페이지에 표시할 게시글 수
+    const [size, setSize] = useState(15); // 한 페이지에 표시할 게시글 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
     const [pageGroupSize] = useState(10); // 한 번에 보여줄 페이지 번호 갯수
     const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
     const totalPages = Math.ceil(totalElements / size); // 전체 페이지 수
     const currentPageGroup = Math.floor(currentPage / pageGroupSize); // 현재 페이지 그룹 계산
+    const { showToast } = useToast();
 
     const [salaries, setSalaries] = useState([]); // 급여관리 조회 데이터
     const [modalShow, setModalShow] = useState(false); // 모달 사용 여부
@@ -261,15 +264,17 @@ const AdminSalaryPage = () => {
         if(modalType === 'create') {
             const { response, error } = await createSalaryAPI(params);
             if (error) {
-                console.log('에러 발생');
+                showToast('에러 발생', 'error');
                 return;
             }
+            showToast(response.data.message, 'success');
         } else if (modalType === 'update') {
             const { response, error } = await updateSalaryAPI(params);
             if (error) {
-                console.log('에러 발생');
+                showToast('에러 발생', 'error');
                 return;
             }
+            showToast(response.data.message, 'success');
         }
 
         setModalShow(false);
@@ -282,9 +287,10 @@ const AdminSalaryPage = () => {
         const { response, error } = await deleteSalaryAPI(checkItems);
         console.log("response : ", response);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
+        showToast(response.data.message, 'success');
 
         handleSearch(searchData, currentPage, size)
     };
@@ -293,7 +299,7 @@ const AdminSalaryPage = () => {
     const handleExcelUpload = async (event) => {
         const file = event.target.files[0]; // 첫 번째 파일만 처리
         if (!file) {
-            console.log("파일이 선택되지 않았습니다.");
+            showToast('파일이 선택되지 않았습니다.', 'error');
             return;
         }
 
@@ -303,9 +309,10 @@ const AdminSalaryPage = () => {
 
         const { response, error } = await excelUploadSalaryAPI(formData);
         if (error) {
-            console.log("에러 발생");
+            showToast('에러 발생', 'error');
             return;
         }
+        showToast(response.data.message, 'success');
 
         handleSearch(searchData, currentPage, size)
     };
@@ -321,7 +328,7 @@ const AdminSalaryPage = () => {
 
         const { response, error } = await excelDownloadSalaryAPI(params);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
 
@@ -341,12 +348,8 @@ const AdminSalaryPage = () => {
     };
 
     return (
-        <div className="">
-            <h2 className="">급여 목록</h2>
-            <AdminSalarySearchPage
-                searchData={searchData}
-                handleSearch={handleSearch}
-            />
+        <div className="salary-container">
+            <h2 className="salary-container-h2">급여 목록</h2>
             <div className="mb-3" style={{ textAlign: "right" }}>
                 <Button className="me-2" variant="primary" onClick={handleCreate}>
                     추가
@@ -368,8 +371,12 @@ const AdminSalaryPage = () => {
                     엑셀 다운로드
                 </Button>
             </div>
-            <div>
-                <Table className="">
+            <AdminSalarySearchPage
+                searchData={searchData}
+                handleSearch={handleSearch}
+            />
+            <div className="salary-table-responsive">
+                <Table>
                     <thead>
                     <tr>
                         <th>
