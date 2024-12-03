@@ -28,14 +28,12 @@ const Login = () => {
     try {
       // 로그인 API 호출
       const token = await loginAPI(empNo, password);
-      console.log("API Response (Token):", token);
 
       // 토큰 저장
-      localStorage.setItem("access_token", token);
+      localStorage.setItem("access_token", typeof token === "string" ? token : JSON.stringify(token));
 
       // 사용자 정보 API 호출
       const userInfo = await fetchUserInfo(empNo);
-      console.log("User Info:", userInfo);
 
       // Context에 사용자 정보 저장
       login({
@@ -59,7 +57,7 @@ const Login = () => {
       <div className="login-box">
         <div className="login-logo">
           <img
-            src="/Eployee/free-icon-hr-9227651.png"
+            src="/free-icon-hr-9227651.png"
             alt="Logo"
             className="login-image-logo"
           />

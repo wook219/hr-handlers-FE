@@ -110,7 +110,7 @@ const EmployeeManagement = () => {
             alert(`사원 ID ${empNo} 정보가 수정되었습니다.`);
             setEmployees(employees.map(employee =>
                 employee.empNo === empNo
-                    ? { ...employee, isEditing: false } 
+                    ? { ...employee, isEditing: false }
                     : employee
             ));
         } catch (error) {
@@ -184,7 +184,9 @@ const EmployeeManagement = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <button className="admin-employee-search-button">검색</button>
+                    <button className="admin-employee-search-button">
+                        <img src="/search.png" alt="검색" className="search-button-icon" />
+                    </button>
                 </div>
                 <table className="admin-employee-table">
                     <thead>
@@ -209,7 +211,7 @@ const EmployeeManagement = () => {
                     <tbody>
                         {employees
                             .filter((employee) =>
-                                employee.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+                                employee.name.toLowerCase().includes(searchTerm.toLowerCase())
                             )
                             .map((employee) => (
                                 <tr key={employee.empNo}>
@@ -268,9 +270,11 @@ const EmployeeManagement = () => {
                                     <td>
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
-                                                <button onClick={() => handleSave(employee.empNo)}>완료</button>
+                                                <button onClick={() => handleSave(employee.empNo)}
+                                                style={{borderRadius: "5px"}}>완료</button>
                                             ) : (
-                                                <button onClick={() => handleEdit(employee.empNo)}>수정</button>
+                                                <button onClick={() => handleEdit(employee.empNo)}
+                                                style={{borderRadius: "5px"}}>수정</button>
                                             )}
                                             <button className="admin-employee-delete-button" onClick={() => handleDelete(employee.empNo)}>삭제</button>
                                         </div>
@@ -290,7 +294,7 @@ const EmployeeManagement = () => {
                     <span>{`페이지 ${currentPage + 1} / ${totalPages}`}</span>
                     <button
                         onClick={() => setCurrentPage(prevPage => prevPage + 1)}
-                        disabled={currentPage + 1 >= totalPages} 
+                        disabled={currentPage + 1 >= totalPages}
                     >
                         다음
                     </button>
