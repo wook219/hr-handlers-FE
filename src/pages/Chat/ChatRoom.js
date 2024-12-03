@@ -119,6 +119,7 @@ const ChatRoom = () => {
           id: message.messageId,
           text: message.message,
           name: message.employeeName,
+          timestamp: message.createdAt,
           sent: true,
           received: false,
           isTemp: false,
@@ -131,6 +132,7 @@ const ChatRoom = () => {
             id: message.messageId,
             text: message.message,
             name: message.employeeName,
+            timestamp: message.createdAt,
             sent: false,
             received: true,
             fromServer: true,
@@ -173,7 +175,7 @@ const ChatRoom = () => {
           empNo: msg.empNo,
           sent: msg.empNo === empNo,
           received: msg.empNo !== empNo,
-          timestamp: new Date(msg.timestamp),
+          timestamp: new Date(msg.createdAt),
         }));
 
         setMessages(formattedMessages);
@@ -255,6 +257,7 @@ const ChatRoom = () => {
                 name={message.name}
                 empNo={message.empNo}
                 messageId={message.id}
+                timestamp={message.timestamp}
                 onEdit={handleEditMessage}
                 onDelete={handleDeleteMessage}
                 selectedMessageId={selectedMessageId}
