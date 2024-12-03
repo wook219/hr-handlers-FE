@@ -111,7 +111,8 @@ const AdminSalaryPage = () => {
         const createFormData = formData.map((field) => ({
             ...field,
             value: '',
-            isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false : field.isDisable,
+            isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false :
+                ['netSalary'].includes(field.key) ? true : field.isDisable,
         }));
     
         // SelectedDate 초기화
@@ -142,7 +143,8 @@ const AdminSalaryPage = () => {
             }
             
             // 직위, 부서, 이름 셀렉트 박스 disable로 변경
-            const isDisable = ['position', 'deptName', 'name'].includes(field.key) ? true : field.isDisable;
+            // 실지급액 disable 변경
+            const isDisable = ['position', 'deptName', 'name', 'netSalary'].includes(field.key) ? true : field.isDisable;
             
             return { ...field, value: updatedValue, isDisable };
         });
@@ -171,6 +173,10 @@ const AdminSalaryPage = () => {
     // 엑셀 업로드 버튼 클릭시 실행되는 함수
     const triggerFileInput = () => {
         fileInputRef.current.click(); // 숨겨진 input을 클릭
+    };
+
+    const formatNumberWithCommas = (num) => {
+        return num.toLocaleString("en-US");
     };
 
     // 조회 api
@@ -204,8 +210,16 @@ const AdminSalaryPage = () => {
         console.log("params : ", params);
         console.log("response : ", response);
 
+        // 지급총액, 공제총액, 실지급액 세자리마다 , 붙이는 로직
+        const formattedData = response.data.data.content.map((item) => ({
+            ...item,
+            basicSalary: formatNumberWithCommas(item.basicSalary),
+            deduction: formatNumberWithCommas(item.deduction),
+            netSalary: formatNumberWithCommas(item.netSalary),
+        }));
+
         setSearchData(searchData);
-        setSalaries(response.data.data.content);
+        setSalaries(formattedData);
         setTotalElements(response.data.data.totalElements); // 총 게시글 수 설정
     }
 
@@ -231,6 +245,13 @@ const AdminSalaryPage = () => {
             employeeId: 1, // todo 아이디는 나중에
             payDate: `${year}-${month.toString().padStart(2, '0')}-${day}`
         }
+
+        // 쉼표 제거 로직 추가
+        Object.keys(params).forEach((key) => {
+            if (typeof params[key] === "string" && params[key].includes(",")) {
+                params[key] = params[key].replace(/,/g, "");
+            }
+        });
 
         console.log('modalType : ', modalType);
         console.log("data : ", data);
@@ -378,9 +399,9 @@ const AdminSalaryPage = () => {
                                 <td>{salary.position || 'N/A'}</td>
                                 <td>{salary.deptName || 'N/A'}</td>
                                 <td>{salary.name || 'N/A'}</td>
-                                <td>{salary.basicSalary || 'N/A'}</td>
-                                <td>{salary.deduction || 'N/A'}</td>
-                                <td>{salary.netSalary || 'N/A'}</td>
+                                <td>{salary.basicSalary ? `${salary.basicSalary}원` : 'N/A'}</td>
+                                <td>{salary.deduction ? `${salary.deduction}원` : 'N/A'}</td>
+                                <td>{salary.netSalary ? `${salary.netSalary}원` : 'N/A'}</td>
                                 <td>{salary.payDate || 'N/A'}</td>
                             </tr>
                         ))}
