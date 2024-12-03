@@ -10,7 +10,8 @@
 }
 
 .admin-employee-add-employee-button {
-    padding: 10px 15px;
+    margin-bottom: 20px;
+    padding: 8px 10px;
     border: none;
     background-color: #4caf50;
     color: white;
@@ -33,6 +34,8 @@
     margin-bottom: 10px;
     display: flex; 
     gap: 10px;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center; 
 }
 
 .admin-employee-table {
@@ -40,7 +43,7 @@
     border-collapse: collapse;
     table-layout: fixed; 
     white-space: normal;
-    word-break: break-word, 
+    word-break: break-word;
 }
 
 .admin-employee-table th, 
@@ -50,6 +53,7 @@
     text-align: left;
     vertical-align: middle;
 }
+
 
 .admin-employee-table th {
     background-color: #f9f9f9;
@@ -76,20 +80,32 @@
 
 .admin-employee-edit-button, 
 .admin-employee-delete-button {
-    padding: 5px 10px;
-    margin: 2px;
+    padding: 4px 10px; /* 버튼 크기 통일 */
     border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 14px; /* 글씨 크기 통일 */
+    font-weight: bold; /* 굵은 글씨 */
     cursor: pointer;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+    transition: all 0.3s ease; /* 부드러운 효과 */
 }
 
 .admin-employee-edit-button {
-    background-color: #2196f3;
-    color: white;
+    background-color: #2196f3; /* 수정 버튼 색상 */
+    border-radius: 5px;
+}
+
+.admin-employee-edit-button:hover {
+    background-color: #1976d2; /* 수정 버튼 호버 색상 */
 }
 
 .admin-employee-delete-button {
-    background-color: #f44336;
-    color: white;
+    background-color: #f44336; /* 삭제 버튼 색상 */
+}
+
+.admin-employee-delete-button:hover {
+    background-color: #d32f2f; /* 삭제 버튼 호버 색상 */
 }
 
 .admin-employee-edit-button[disabled] {
@@ -128,6 +144,18 @@
     gap: 10px;
 }
 
+.admin-employee-search-button {
+    padding: 0; 
+    border: none; 
+    background: none;
+    cursor: pointer; 
+}
+
+.search-button-icon {
+    width: 25px; 
+    height: 25px; 
+}
+
 .admin-employee-modal-buttons {
     margin-top: 20px;
     display: flex;
@@ -149,10 +177,6 @@
     flex-grow: 1;
     height: 30px; 
     padding: 5px;
-}
-
-.admin-employee-table .admin-employee-edit-cell button {
-    white-space: nowrap; 
 }
 
 .admin-employee-pagination {
