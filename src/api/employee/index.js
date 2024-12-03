@@ -3,7 +3,7 @@ import instance from "../axios";
 // 로그인 API
 export const loginAPI = async (empNo, password) => {
     try {
-        const response = await instance.post("http://localhost:8080/login", { empNo, password });
+        const response = await instance.post("/login", { empNo, password });
 
         // 헤더에서 토큰 추출
         const token = response.headers["access"];
