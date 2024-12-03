@@ -6,16 +6,25 @@ const MyPage = () => {
     const [userData, setUserData] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState("intro"); 
+    const [activeTab, setActiveTab] = useState("intro");
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({}); 
+    const [formData, setFormData] = useState({});
+    const [selectedFile, setSelectedFile] = useState(null); // 업로드할 파일
+    const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 URL
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getMyPageAPI();
+                const profileImage = data?.data?.profileImageUrl || "/profile_image.png"; // 기본값 설정
                 setUserData(data);
-                setFormData(data?.data || {}); 
+                setFormData({
+                    email: data.data.email || "",
+                    password: "*********", // 기본값으로 더미 비밀번호 설정
+                    phone: data.data.phone || "",
+                    birthDate: data.data.birthDate || "",
+                });
+                setFormData({ ...data.data, profileImageUrl: profileImage }); // 기본값 포함
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
@@ -25,6 +34,7 @@ const MyPage = () => {
         fetchData();
     }, []);
 
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -33,17 +43,58 @@ const MyPage = () => {
         }));
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedFile(file); // 선택한 파일 저장
+            setPreviewImage(URL.createObjectURL(file)); // 미리보기 설정
+        }
+    };
+
+
     // 수정
     const handleSave = async () => {
         try {
-            await updateMyPageAPI(formData); 
-            setUserData((prev) => ({ ...prev, data: { ...prev.data, ...formData } }));
-            setIsEditing(false); 
+
+            const passwordToSend = formData.password !== "*********"
+                ? formData.password // 새 비밀번호를 전송
+                : undefined; // 사용자가 수정하지 않으면 undefined
+
+            // 프로필 사진 업로드 처리
+            let uploadedImageUrl = formData.profileImageUrl; // 기본 값으로 기존 URL 유지
+            if (selectedFile) {
+                const formDataToUpload = new FormData();
+                formDataToUpload.append("profileImage", selectedFile);
+
+                // 업로드 API 호출 (업로드 성공 시 URL 반환)
+                uploadedImageUrl = await updateMyPageAPI(formDataToUpload);
+            }
+
+            // 업데이트할 데이터를 준비
+            const updatedData = {
+                ...formData,
+                password: passwordToSend,
+                profileImageUrl: uploadedImageUrl,
+            };
+
+            // API 호출로 데이터 업데이트
+            await updateMyPageAPI(updatedData);
+            setUserData((prev) => ({ ...prev, data: { ...prev.data, ...updatedData } }));
+            setIsEditing(false);
             alert("프로필이 성공적으로 수정되었습니다!");
         } catch (error) {
             alert(`수정 중 오류가 발생했습니다: ${error.message}`);
         }
     };
+
+    const handleCancel = () => {
+        setIsEditing(false); // 수정 모드 종료
+        setPreviewImage(userData?.data?.profileImageUrl || "/profile_image.png"); // 기본값 설정
+        setSelectedFile(null); // 선택된 파일 초기화
+        setFormData(userData?.data || {}); // 원래 데이터로 복원
+    };
+
+
 
     if (loading) return <div className="mypage-loading">로딩 중...</div>;
     if (error) return <div className="mypage-error">오류: {error}</div>;
@@ -52,16 +103,32 @@ const MyPage = () => {
         <div className="mypage-container">
             <div className="mypage-left">
                 <div className="mypage-profile-section">
-                    <img
-                        className="mypage-profile-img"
-                        src={formData?.profileImageUrl || "https://via.placeholder.com/150"}
-                        alt={formData?.name || "프로필 사진"}
-                    />
+                    <label htmlFor="profileImageInput">
+                        <img
+                            className="mypage-profile-img"
+                            src={previewImage || formData.profileImageUrl || "/profile_image.png"} // public 폴더 기준 경로
+                            alt={formData?.name || "프로필 사진"}
+                        />
+                    </label>
+                    {isEditing && (
+                        <input
+                            id="profileImageInput"
+                            type="file"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                        />
+                    )}
                     <button
                         className="mypage-profile-edit-button"
-                        onClick={() => setIsEditing(!isEditing)}
+                        onClick={() => {
+                            if (!isEditing) {
+                                setIsEditing(true);
+                            }
+                        }}
+                        disabled={isEditing}
                     >
-                        프로필 수정 
+                        프로필 수정
                     </button>
                 </div>
                 <div className="mypage-profile-info">
@@ -71,7 +138,7 @@ const MyPage = () => {
                 </div>
 
                 <div className="mypage-basic-info">
-                    <h5 style={{marginTop: "60px", marginBottom: "30px", fontWeight: "bold"}}>기본 정보</h5>
+                    <h5 style={{ marginTop: "60px", marginBottom: "30px", fontWeight: "bold" }}>기본 정보</h5>
                     {isEditing ? (
                         <>
                             <div className="mypage-info-item">
@@ -88,8 +155,9 @@ const MyPage = () => {
                                 <input
                                     type="password"
                                     name="password"
+                                    placeholder="*********"
                                     value={formData.password || ""}
-                                    onChange={handleInputChange}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 />
                             </div>
                             <div className="mypage-info-item">
@@ -141,10 +209,7 @@ const MyPage = () => {
                         <button className="mypage-save-button" onClick={handleSave}>
                             저장
                         </button>
-                        <button
-                            className="mypage-cancel-button"
-                            onClick={() => setIsEditing(false)}
-                        >
+                        <button className="mypage-cancel-button" onClick={handleCancel}>
                             취소
                         </button>
                     </div>
@@ -168,7 +233,7 @@ const MyPage = () => {
 
                 {activeTab === "intro" && (
                     <div className="mypage-intro">
-                        <h5 style={{fontWeight: "bold", marginLeft: "10px", marginBottom: "20px"}}>자기 소개</h5>
+                        <h5 style={{ fontWeight: "bold", marginLeft: "10px", marginBottom: "20px" }}>자기 소개</h5>
                         {isEditing ? (
                             <textarea
                                 name="introduction"
