@@ -197,12 +197,14 @@ const MyPage = () => {
                                 <span>생일:</span>
                                 <span>{userData?.data.birthDate}</span>
                             </div>
-                            <div className="mypage-info-item">
-                                <span>부서:</span>
-                                <span>{userData?.data.deptName}</span>
-                            </div>
                         </>
                     )}
+                </div>
+                <div className="mypage-department-info">
+                    <h5 style={{fontWeight: "bold", marginTop: "40px"}}>부서</h5>
+                    <div className="mypage-info-item">
+                        <span style={{marginTop: "10px",marginLeft: "20px"}}>{userData?.data.deptName || "등록된 부서 없음"}</span>
+                    </div>
                 </div>
                 {isEditing && (
                     <div className="mypage-edit-buttons">
@@ -233,7 +235,7 @@ const MyPage = () => {
 
                 {activeTab === "intro" && (
                     <div className="mypage-intro">
-                        <h5 style={{ fontWeight: "bold", marginLeft: "10px", marginBottom: "20px" }}>자기 소개</h5>
+                        <h6 style={{ fontWeight: "bold", marginLeft: "10px", marginBottom: "20px" }}>자기 소개</h6>
                         {isEditing ? (
                             <textarea
                                 name="introduction"
@@ -249,21 +251,21 @@ const MyPage = () => {
                 {activeTab === "hr" && (
                     <div className="mypage-hr">
                         <div className="mypage-job-info">
-                            <h5 className="mypage-info-title">근무 기본정보</h5>
-                            <div className="mypage-info-item">
+                            <h6 className="mypage-info-title">근무 기본정보</h6>
+                            <div className="mypage-info-item-tab">
                                 <span>계약 형태:</span>
                                 <span>{userData?.data.contractType || "계약 형태 없음"}</span>
                             </div>
-                            <div className="mypage-info-item">
+                            <div className="mypage-info-item-tab">
                                 <span>일하는 날:</span>
                                 <span>월요일, 화요일, 수요일, 목요일, 금요일</span>
                             </div>
-                            <div className="mypage-info-item">
+                            <div className="mypage-info-item-tab">
                                 <span>근무 시간:</span>
                                 <span>09:00 ~ 18:00</span>
                             </div>
-                            <h5 className="mypage-info-title">인사발령 정보</h5>
-                            <div className="mypage-info-item">
+                            <h6 className="mypage-info-title">인사발령정보</h6>
+                            <div className="mypage-info-item-tab">
                                 <span>{userData?.data.joinDate || "인사발령 정보 없음"}</span>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 // Context 생성
 const UserContext = createContext();
@@ -7,6 +7,7 @@ export const UserProvider = ({ children }) => {
   // 초기 상태를 localStorage에서 가져옴
   const getUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem("user");
+    console.log("user 정보"+storedUser)
     return storedUser ? JSON.parse(storedUser) : { empNo: null, role: null, name: null, deptName: null };
   };
 
@@ -14,6 +15,7 @@ export const UserProvider = ({ children }) => {
 
   // 로그인: 사용자 정보를 Context와 localStorage에 저장
   const login = (userData) => {
+    
     const updatedUser = {
       empNo: userData.empNo,
       role: userData.role,
