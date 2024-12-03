@@ -10,6 +10,7 @@ import {
 import './PostDetailPage.css';
 import { useUser } from '../../context/UserContext';
 import PostModal from './PostModal';
+import { useToast } from '../../context/ToastContext';  // 이 줄 추가
 
 // CommentItem 컴포넌트 추가
 const CommentItem = ({ comment, onReply }) => {
@@ -53,6 +54,7 @@ const CommentItem = ({ comment, onReply }) => {
 
 
 const PostDetailPage = () => {
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { postId } = useParams();
     const { user } = useUser();
@@ -125,11 +127,11 @@ const PostDetailPage = () => {
         if (!window.confirm('이 게시글을 삭제하시겠습니까?')) return;
         try {
             await deletePostAPI(postId);
-            alert('게시글이 성공적으로 삭제되었습니다.');
+            showToast('게시글이 성공적으로 삭제되었습니다!', 'success');
             navigate('/post');
         } catch (error) {
             console.error('게시글 삭제 실패:', error);
-            alert('게시글 삭제에 실패했습니다.');
+            showToast('게시글 삭제에 실패했습니다', 'error');
         }
     };
 
@@ -165,12 +167,16 @@ const PostDetailPage = () => {
                 return newPost;
             });
             setRenderKey(prev => prev + 1); // 강제 리렌더링 추가
-            alert('게시글이 성공적으로 수정되었습니다!');
+            showToast('게시글이 성공적으로 수정되었습니다!', 'success');
             setModalOpen(false); // 모달 닫기
-            window.location.reload(); // 새로고침 추가
+                 // 1.5초 후에 새로고침
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+
         } catch (error) {
+            showToast('게시글 수정에 실패했습니다', 'error');
             console.error('게시글 수정 실패:', error);
-            alert('게시글 수정에 실패했습니다.');
         }
     };    
 
@@ -179,7 +185,7 @@ const PostDetailPage = () => {
         try {
             const response = await createCommentAPI(postId, { 
                 content: commentInput,
-                parentId: replyToId // parentCommentId 대신 parentId 사용
+                parentCommentId: replyToId
             });
     
             const newComment = {
@@ -228,7 +234,7 @@ const PostDetailPage = () => {
             setReplyToId(null);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
-            alert('댓글 작성에 실패했습니다.');
+            showToast('댓글 작성에 실패했습니다', 'error');
         }
     };
 
