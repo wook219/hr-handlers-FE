@@ -9,6 +9,8 @@ const VacationChart = ({summaryData}) => {
         { name: '승인대기', value: summaryData.pending }
     ];
 
+    console.log('summaryDate : ', summaryData);
+
     const COLORS = ['#98E9D0', '#FFB6A3', '#FFE5CC'];
 
     return (
