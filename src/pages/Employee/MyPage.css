@@ -1,42 +1,166 @@
 .mypage-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .mypage-title {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .mypage-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .mypage-info-item {
-    margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
-  }
-  
-  .mypage-info-label {
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    min-height: calc(100vh - 100px);
+}
+
+.mypage-left {
+    flex: 1;
+    padding-right: 40px;
+    border-right: 1px solid #e0e0e0; 
+    position: relative;
+}
+
+.mypage-right {
+    flex: 1;
+    padding-left: 40px;
+}
+
+.mypage-profile-section {
+    position: relative; 
+    margin-bottom: 20px;
+}
+
+.mypage-profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    margin-left: 25px;
+}
+
+.mypage-profile-edit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    color: #1a2b50;
+    border: 2px solid #1a2b50; 
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1rem; 
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; 
+}
+
+.mypage-profile-edit-button:hover {
+    background-color: #1a2b50; 
+    color: white;
+}
+
+.mypage-profile-info {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.mypage-profile-name {
+    font-size: 1.5rem;
     font-weight: bold;
-  }
-  
-  .mypage-loading {
-    text-align: center;
-    font-size: 18px;
-    color: #555;
-  }
-  
-  .mypage-error {
-    text-align: center;
-    color: red;
-    font-size: 18px;
-  }  
+    margin-bottom: 10px;
+}
+
+.mypage-basic-info {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.mypage-info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.mypage-job-info{
+    margin-left: 10px;
+}
+
+.mypage-info-title{
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.mypage-info-item input,
+.mypage-info-item textarea,
+.mypage-intro textarea {
+    border: none;
+    background-color: transparent; 
+    outline: none; 
+    font-size: 1rem;
+    width: 40%;
+}
+
+.mypage-intro textarea{
+    width: 300px;
+    height: 300px;
+    padding: 10px; 
+    resize: none;
+    box-sizing: border-box;
+}
+
+.mypage-info-item input:focus,
+.mypage-info-item textarea:focus,
+.mypage-intro textarea:focus {
+    border-bottom: 2px solid #1a2b50;
+}
+
+.mypage-edit-buttons {
+    margin-top: 20px;
+}
+
+.mypage-save-button, .mypage-cancel-button {
+    padding: 10px 20px;
+    border: 1px solid #1a2b50;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.mypage-save-button:hover {
+    background-color: #1a2b50;
+    color: white;
+}
+
+.mypage-cancel-button:hover {
+    background-color: #f5f5f5;
+}
+
+.mypage-tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.mypage-tab-button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    transition: background-color 0.3s;
+}
+
+.mypage-tab-button.active {
+    background-color: #1a2b50;
+    color: white;
+}
+
+.mypage-tab-button:hover {
+    background-color: #e0e0e0;
+}
+
+.mypage-hr, .mypage-intro {
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    background-color: #fafafa;
+}
