@@ -1,14 +1,18 @@
 import axios from '../axios'; // axios 인스턴스 가져오기
 import * as api from '../path';
-import { getEmpNoFromToken } from '../../utils/tokenUtils';
 
 const VACATION = api.vacationPath.VACATION;
 
 // 승인 대기 휴가 조회
 export const getPendingVacationsAPI = async () => {
     try {
-        const empNo = getEmpNoFromToken();
-        const response = await axios.get(`${VACATION}/pending/${empNo}`);
+        const token = localStorage.getItem("access_token");
+
+        const response = await axios.get(`${VACATION}/pending`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data.data;
     } catch (error) {
         throw error;
@@ -17,9 +21,14 @@ export const getPendingVacationsAPI = async () => {
 
 // 확정 휴가 조회 (승인, 반려)
 export const getApprovedVacationsAPI = async () => {
+    const token = localStorage.getItem("access_token");
+
     try {
-        const empNo = getEmpNoFromToken();
-        const response = await axios.get(`${VACATION}/approved/${empNo}`);
+        const response = await axios.get(`${VACATION}/approved`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data.data;
     } catch (error) {
         throw error;
@@ -29,8 +38,13 @@ export const getApprovedVacationsAPI = async () => {
 // 차트에 들어갈 휴가 정보 조회
 export const getVacationSummaryAPI = async () => {
     try {
-        const empNo = getEmpNoFromToken();
-        const response = await axios.get(`${VACATION}/summary/${empNo}`);
+        const token = localStorage.getItem("access_token");
+
+        const response = await axios.get(`${VACATION}/summary`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data.data;
     } catch (error) {
         throw error;
@@ -40,10 +54,8 @@ export const getVacationSummaryAPI = async () => {
 // 휴가 등록
 export const enrollVacationAPI = async (vacationData) => {
     try {
-        const empNo = getEmpNoFromToken();
         const requestData = {
-            ...vacationData,
-            empNo: empNo
+            ...vacationData
         };
 
         const response = await axios.post(`${VACATION}`, requestData);
@@ -69,11 +81,8 @@ export const getVacationDetailAPI = async (id) => {
 // 휴가 수정
 export const modifyVacationAPI = async (id, modifyData) => {
     try {
-        const empNo = getEmpNoFromToken();
-
         const requestData = {
             ...modifyData,
-            empNo: empNo
         };
 
         const response = await axios.put(`${VACATION}/${id}`, requestData);
