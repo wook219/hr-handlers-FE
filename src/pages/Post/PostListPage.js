@@ -5,9 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./PostListPage.css";
 import PostModal from "./PostModal";
 import { useToast } from '../../context/ToastContext';
+import { useUser } from '../../context/UserContext';
 
 const PostListPage = () => {
   const { showToast } = useToast();
+  const { user } = useUser(); // 로그인 상태 확인
   const [posts, setPosts] = useState([]);
   const [pagination, setPagination] = useState({
     currentPage: 0,
@@ -48,7 +50,7 @@ const PostListPage = () => {
       const hashtagArray = modalState.hashtags.split(",").map((tag) => tag.trim());
       const newPost = {
         title: modalState.title,
-        employeeId: 2,
+        employeeId: user.empNo, // 로그인된 사용자 ID 사용
         content: postData.content,
         hashtagContent: hashtagArray,
       };
@@ -80,6 +82,15 @@ const PostListPage = () => {
     }));
   };
 
+  const handlePostCreateClick = () => {
+    if (!user.empNo) {
+      showToast("로그인이 필요합니다.", "warning"); // Toast로 로그인 필요 메시지 띄우기
+      return;
+    }
+    setModalState((prev) => ({ ...prev, show: true }));
+  };
+
+
   const totalPages = Math.ceil(pagination.totalElements / pagination.size);
   const currentPageGroup = Math.floor(pagination.currentPage / pagination.pageGroupSize);
 
@@ -97,11 +108,9 @@ const PostListPage = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button
+         <button
           className="btn post-create-btn ms-2"
-          onClick={() =>
-            setModalState((prev) => ({ ...prev, show: true }))
-          }
+          onClick={handlePostCreateClick} // 클릭 이벤트 처리
         >
           게시글 작성
         </button>

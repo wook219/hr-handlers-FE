@@ -182,6 +182,13 @@ const PostDetailPage = () => {
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
+
+        // 로그인 여부 확인
+        if (!user.empNo) {
+            showToast('로그인이 필요합니다.', 'warning');
+            return;
+        }
+
         try {
             const response = await createCommentAPI(postId, { 
                 content: commentInput,
@@ -236,6 +243,15 @@ const PostDetailPage = () => {
             console.error('댓글 작성 실패:', error);
             showToast('댓글 작성에 실패했습니다', 'error');
         }
+    };
+
+    const handleReplyClick = (commentId) => {
+        // 로그인 여부 확인
+        if (!user.empNo) {
+            showToast('로그인이 필요합니다.', 'warning');
+            return;
+        }
+        setReplyToId(commentId);
     };
 
     const handleCommentCancel = () => {
