@@ -47,7 +47,7 @@ export const enrollVacationAPI = async (vacationData) => {
         };
 
         const response = await axios.post(`${VACATION}`, requestData);
-        return response.data;
+        return response.data.data;
     } catch (error) {
         if (error.response?.status === 400 && error.response?.data?.message === '잔여 휴가 일수가 부족합니다.') {
             throw new Error('잔여 휴가 일수가 부족합니다.');
@@ -69,8 +69,16 @@ export const getVacationDetailAPI = async (id) => {
 // 휴가 수정
 export const modifyVacationAPI = async (id, modifyData) => {
     try {
-        const response = await axios.put(`${VACATION}/${id}`, modifyData);
-        return response.data;
+        const empNo = getEmpNoFromToken();
+
+        const requestData = {
+            ...modifyData,
+            empNo: empNo
+        };
+
+        const response = await axios.put(`${VACATION}/${id}`, requestData);
+
+        return response.data.data;
     } catch (error) {
         throw error;
     }
