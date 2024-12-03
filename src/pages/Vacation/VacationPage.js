@@ -60,7 +60,9 @@ const VacationPage = () => {
                 <VacationChart 
                     summaryData={summaryData}
                 />
-                <VacationPendingList />
+                <VacationPendingList 
+                    onVacationUpdate={fetchVacationSummary}
+                />
             </section>
 
             <section className="vacation-section">
