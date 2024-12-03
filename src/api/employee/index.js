@@ -34,7 +34,13 @@ export const getMyPageAPI = async () => {
 
 // 마이페이지 수정 API
 export const updateMyPageAPI = async (formData) => {
-    const response = await instance.patch("/emp", formData);
+    const token = localStorage.getItem("access_token");
+
+    const response = await instance.patch("/emp", formData, {
+        headers: {
+            access: token,
+        },
+    });
     return response.data;
 };
 
@@ -61,10 +67,10 @@ export const getAllEmployeesAPI = async (searchParams) => {
         const response = await instance.get("/admin/emp", {
             params: searchParams,
             headers: {
-                access: token, 
+                access: token,
             },
         });
-        return response.data.data; 
+        return response.data.data;
     } catch (error) {
         console.error("사원 조회 오류:", error.response?.data || error.message);
         throw error;
@@ -91,7 +97,7 @@ export const deleteEmployeeAPI = async (empNo) => {
     try {
         const response = await instance.delete(`/admin/emp/${empNo}`, {
             headers: {
-                access: `${localStorage.getItem("access_token")}`, 
+                access: `${localStorage.getItem("access_token")}`,
             },
         });
         return response.data;
@@ -100,6 +106,36 @@ export const deleteEmployeeAPI = async (empNo) => {
         throw error;
     }
 };
+
+export const matchEmailAndEmpNoAPI = async (empNo, email) => {
+    try {
+        const response = await instance.post("/emp/check", { empNo, email }, {
+            headers: {
+                access: localStorage.getItem("access_token"),
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("사원 번호와 이메일 일치 여부 확인 오류:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+export const sendResetPasswordAPI = async (empNo, email) => {
+    try {
+        const response = await instance.post("/emp/send/mail", { empNo, email }, {
+            headers: {
+                access: localStorage.getItem("access_token"),
+            },
+        });
+        console.log("메일 전송 API 응답:", response.data); 
+        return response.data;
+    } catch (error) {
+        console.error("임시 비밀번호 전송 오류:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 
 // 사용자 정보 API
 export const fetchUserInfo = async () => {
