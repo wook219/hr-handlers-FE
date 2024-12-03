@@ -88,10 +88,12 @@ const PostModal = ({
             });
     
             // 초기화
+            /*
             setPendingUploads([]);
             setEditorData('');
             setTitle('');
             setHashtags('');
+            */
         } catch (error) {
             console.error('게시글 등록 중 오류 발생:', error);
             showToast('게시글 등록에 실패했습니다', 'error');
