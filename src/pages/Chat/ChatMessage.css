@@ -4,7 +4,7 @@
   padding: 10px;
   border-radius: 10px;
   width: fit-content;
-  max-width: 60%;
+  max-width: 65%;
   align-self: flex-start; /* 왼쪽 정렬 */
 }
 
@@ -15,7 +15,7 @@
   border-radius: 10px;
   margin-right: 5px;
   width: fit-content;
-  max-width: 60%;
+  max-width: 65%;
   align-self: flex-end; /* 오른쪽 정렬 */
 }
 
