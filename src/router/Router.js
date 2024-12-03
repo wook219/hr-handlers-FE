@@ -12,6 +12,7 @@ import ChatList from '../pages/Chat/ChatList';
 import ChatRoom from '../pages/Chat/ChatRoom';
 import Home from '../pages/Home/Home';
 import VacationPage from '../pages/Vacation/VacationPage';
+import AdminEmp from '../pages/Admin/Employee/AdminEmployeePage'
 
 // 공통 레이아웃이 필요한 라우트 라면 조건 처리
 function AppRouter() {
@@ -30,6 +31,7 @@ function AppRouter() {
       <Route path="/todo" element={<TodoPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/mypage" element={<MyPage />} />
+      <Route path="/admin/emp" element={<AdminEmp />} />
       <Route path="/vacation" element={<VacationPage />} />
     </Routes>
   );

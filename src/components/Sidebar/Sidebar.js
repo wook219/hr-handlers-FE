@@ -4,7 +4,7 @@ import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalenda
 import { useUser } from '../../context/UserContext'; 
 
 function Sidebar() {
-  const { user, logout } = useUser();
+  const { user, logout } = useUser(); // context 사용 부분 참고
   const navigation = useNavigation();
 
   // 로그아웃
