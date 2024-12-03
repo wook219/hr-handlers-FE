@@ -14,6 +14,8 @@ import Home from '../pages/Home/Home';
 import VacationPage from '../pages/Vacation/VacationPage';
 import AdminEmp from '../pages/Admin/Employee/AdminEmployeePage'
 
+import AdminHome from '../pages/Admin/Home/AdminHomePage'
+
 // 공통 레이아웃이 필요한 라우트 라면 조건 처리
 function AppRouter() {
   return (
@@ -22,7 +24,6 @@ function AppRouter() {
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/home" element={<Home />} />
       <Route path="/salary" element={<Salary />} />
-      <Route path="/admin/salary" element={<AdminSalary />} />
       <Route path="/post" element={<PostListPage />} />
       <Route path="/post/:postId" element={<PostDetailPage />} />
       <Route path="/chatroom" element={<ChatRoomListPage />} />
@@ -31,8 +32,11 @@ function AppRouter() {
       <Route path="/todo" element={<TodoPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/mypage" element={<MyPage />} />
-      <Route path="/admin/emp" element={<AdminEmp />} />
       <Route path="/vacation" element={<VacationPage />} />
+      
+      <Route path="/admin/home" element={<AdminHome />} />
+      <Route path="/admin/salary" element={<AdminSalary />} />
+      <Route path="/admin/emp" element={<AdminEmp />} />
     </Routes>
   );
 }
