@@ -23,18 +23,6 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
       onCreate(title, isSecret ? 'Y' : 'N');
       setTitle(''); // 제목 초기화
       showToast('채팅방이 생성되었습니다!', 'success'); // 채팅방 생성 성공 메시지
-
-      // 생성 후 새로고침
-      setTimeout(() => {
-        window.location.reload(); // 1초 후에 새로고침
-      }, 1000);
-
-      // 만약 비공개 채팅방이라면
-      if (isSecret) {
-        setTimeout(() => {
-          navigate('/invite/chatroom'); // 비공개 채팅방 페이지로 이동
-        }, 1000);
-      }
     } else {
       showToast('채팅방 제목을 입력해주세요.', 'error'); // 제목 입력을 하지 않았을 때 에러 메시지
     }
