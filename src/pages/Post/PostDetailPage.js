@@ -6,6 +6,7 @@ import {
     deletePostAPI,
     getCommentsByPostAPI,
     createCommentAPI,
+    updateCommentAPI,
     deleteCommentAPI,
 } from '../../api/post';
 import './PostDetailPage.css';
@@ -13,60 +14,92 @@ import { useUser } from '../../context/UserContext';
 import PostModal from './PostModal';
 import { useToast } from '../../context/ToastContext';
 
-const CommentItem = ({ comment, onReply, onDelete}) => {
-    console.log("onDelete:", onDelete);
+const CommentItem = ({ comment, onReply, onDelete, onUpdate }) => {
     const { user } = useUser();
+    const [isEditing, setIsEditing] = useState(false);
+    const [updatedContent, setUpdatedContent] = useState(comment.content);
+
     return (
         <li key={comment.id} className="comment-item">
-           <div className="comment-header">
-            <span className="comment-employeeName">{comment.employeeName}</span>
-            <span className="comment-date">
-                {new Date(comment.createdAt).toLocaleString('ko-KR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                })}
-            </span>
-        </div>
-        <p className="comment-content">{comment.content}</p>
-                <div className="comment-actions">
-            <div className="comment-reply">
-                <button 
-                    className="reply-button" 
-                    onClick={() => onReply(comment.id)}
-                >
-                    답글 달기
-                </button>
+            <div className="comment-header">
+                <span className="comment-employeeName">{comment.employeeName}</span>
+                <span className="comment-date">
+                    {new Date(comment.createdAt).toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })}
+                </span>
             </div>
-            {user.name === comment.employeeName && (
-                <div className="comment-edit-delete">
-                    <button 
-                        className="reply-button"
-                        onClick={() => console.log("수정 기능 추가 예정")}
-                    >
-                        수정
-                    </button>
-                    <button 
-                        className="reply-button"
-                        onClick={() => onDelete(comment.id)}
-                    >
-                        삭제
+            {isEditing ? (
+                <textarea
+                    value={updatedContent}
+                    onChange={(e) => setUpdatedContent(e.target.value)}
+                    className="comment-input"
+                />
+            ) : (
+                <p className="comment-content">{comment.content}</p>
+            )}
+            <div className="comment-actions">
+                <div className="comment-reply">
+                    <button className="reply-button" onClick={() => onReply(comment.id)}>
+                        답글 달기
                     </button>
                 </div>
-            )}
-        </div>
-
+                {user.name === comment.employeeName && (
+                    <div className="comment-edit-delete">
+                        {isEditing ? (
+                            <>
+                                <button
+                                    className="reply-button"
+                                    onClick={() => {
+                                        onUpdate(comment.id, updatedContent);
+                                        setIsEditing(false);
+                                    }}
+                                >
+                                    저장
+                                </button>
+                                <button
+                                    className="reply-button"
+                                    onClick={() => {
+                                        setIsEditing(false);
+                                        setUpdatedContent(comment.content);
+                                    }}
+                                >
+                                    취소
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    className="reply-button"
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    수정
+                                </button>
+                                <button
+                                    className="reply-button"
+                                    onClick={() => onDelete(comment.id)}
+                                >
+                                    삭제
+                                </button>
+                            </>
+                        )}
+                    </div>
+                )}
+            </div>
             {comment.replies?.length > 0 && (
                 <ul className="nested-comment">
-                    {comment.replies.map(reply => (
-                        <CommentItem 
-                            key={reply.id} 
-                            comment={reply} 
+                    {comment.replies.map((reply) => (
+                        <CommentItem
+                            key={reply.id}
+                            comment={reply}
                             onReply={onReply}
                             onDelete={onDelete}
+                            onUpdate={onUpdate}
                         />
                     ))}
                 </ul>
@@ -97,13 +130,6 @@ const PostDetailPage = () => {
         size: 5,
     });
 
-    useEffect(() => {
-    }, [pagination.currentPage]);
-
-    useEffect(() => {
-        fetchComments(pagination.currentPage, pagination.size);
-    }, [pagination.currentPage]);
-    
     const [commentInput, setCommentInput] = useState('');
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -113,13 +139,19 @@ const PostDetailPage = () => {
         }
     }, [post.content]);
 
+    useEffect(() => {
+        fetchComments(pagination.currentPage, pagination.size);
+    }, [pagination.currentPage]);
+
+    useEffect(() => {
+        fetchData();
+    }, [postId, user.name]);
+
     const fetchData = async () => {
         try {
             const postResponse = await getPostDetailAPI(postId);
             const { data } = postResponse;
             const isAuthor = data.employeeName === user.name;
-
-            console.log('DEBUG: Post Data:', data);
 
             setPost({
                 ...data,
@@ -154,12 +186,7 @@ const PostDetailPage = () => {
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, [postId, user.name]);
-
     const handlePageChange = (newPage) => {
-        console.log(`Page change triggered: ${newPage}`);
         setPagination((prev) => ({
             ...prev,
             currentPage: newPage,
@@ -175,7 +202,7 @@ const PostDetailPage = () => {
         }
 
         try {
-            await createCommentAPI(postId, { 
+            await createCommentAPI(postId, {
                 content: commentInput,
                 parentCommentId: replyToId,
             });
@@ -185,13 +212,23 @@ const PostDetailPage = () => {
             setReplyToId(null);
         } catch (error) {
             console.error('댓글 작성 실패:', error);
-            showToast('댓글 작성에 실패했습니다', 'error');
+            showToast('댓글 작성에 실패했습니다.', 'error');
+        }
+    };
+
+    const handleCommentUpdate = async (commentId, content) => {
+        try {
+            await updateCommentAPI(commentId, { content });
+            showToast('댓글이 수정되었습니다.', 'success');
+            fetchComments(pagination.currentPage, pagination.size);
+        } catch (error) {
+            console.error('댓글 수정 실패:', error);
+            showToast('댓글 수정에 실패했습니다.', 'error');
         }
     };
 
     const handlePostUpdate = async (updatedData) => {
         const { title, content, hashtags } = updatedData;
-        console.log('DEBUG: Updated Data:', updatedData);
 
         try {
             const updatedPost = {
@@ -201,8 +238,6 @@ const PostDetailPage = () => {
                     ? hashtags
                     : (hashtags || '').split(',').map((tag) => tag.trim()),
             };
-
-            console.log('DEBUG: Updated Post:', updatedPost);
 
             await updatePostAPI(postId, updatedPost);
             fetchData();
@@ -215,26 +250,23 @@ const PostDetailPage = () => {
     };
 
     const handleCommentDelete = async (commentId) => {
-        console.log("Deleting comment ID:", commentId);
-        if (!window.confirm("이 댓글을 삭제하시겠습니까?")) return;
-    
+        if (!window.confirm('이 댓글을 삭제하시겠습니까?')) return;
+
         try {
             await deleteCommentAPI(commentId);
-            showToast("댓글이 삭제되었습니다.", "success");
-            fetchComments(pagination.currentPage, pagination.size); // 최신 댓글 목록 불러오기
+            showToast('댓글이 삭제되었습니다.', 'success');
+            fetchComments(pagination.currentPage, pagination.size);
         } catch (error) {
-            console.error("댓글 삭제 실패:", error);
-            showToast("댓글 삭제에 실패했습니다.", "error");
+            console.error('댓글 삭제 실패:', error);
+            showToast('댓글 삭제에 실패했습니다.', 'error');
         }
     };
-    
+
     const totalPages = Math.ceil(pagination.totalElements / pagination.size);
 
     if (!post.title?.length) {
         return <p>Loading...</p>;
     }
-
-    
 
     return (
         <div className="post-detail-container">
@@ -290,9 +322,9 @@ const PostDetailPage = () => {
                 <h5>댓글</h5>
                 {replyToId && (
                     <p className="replying-to">
-                        답글 작성 중... 
-                        <button 
-                            className="cancel-reply" 
+                        답글 작성 중...
+                        <button
+                            className="cancel-reply"
                             onClick={() => setReplyToId(null)}
                         >
                             취소
@@ -303,7 +335,7 @@ const PostDetailPage = () => {
                     <textarea
                         value={commentInput}
                         onChange={(e) => setCommentInput(e.target.value)}
-                        placeholder={replyToId ? "답글을 입력하세요" : "댓글을 입력하세요"}
+                        placeholder={replyToId ? '답글을 입력하세요' : '댓글을 입력하세요'}
                         className="comment-input"
                         required
                     ></textarea>
@@ -314,11 +346,12 @@ const PostDetailPage = () => {
                 {comments.length > 0 ? (
                     <ul className="comments-list">
                         {comments.map((comment) => (
-                            <CommentItem 
-                                key={comment.id} 
+                            <CommentItem
+                                key={comment.id}
                                 comment={comment}
                                 onReply={setReplyToId}
                                 onDelete={handleCommentDelete}
+                                onUpdate={handleCommentUpdate}
                             />
                         ))}
                     </ul>
