@@ -33,9 +33,24 @@ export const getAllEnterChatAPI = async () => {
 };
 
 // 채팅방 생성 API
-export const createChatRoomAPI = async (chatRoomTitle) => {
+export const createChatRoomAPI = async (chatRoomTitle, isSecret) => {
   try {
-    const response = await axios.post('/chatroom', chatRoomTitle);
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      throw new Error('JWT 토큰이 없습니다. 로그인을 해주세요.');
+    }
+
+    const requestBody = {
+      title: chatRoomTitle,
+      isSecret: isSecret,
+    };
+
+    const response = await axios.post('/chatroom', requestBody, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response.data;
   } catch (error) {

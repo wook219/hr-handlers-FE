@@ -11,9 +11,9 @@ const CreateChatRoomButton = () => {
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
-  const handleCreateChatRoom = async (title) => {
-    const response = await createChatRoomAPI(title);
-    console.log('새로운 채팅방 생성:', title);
+  const handleCreateChatRoom = async (title, isSecret) => {
+    const response = await createChatRoomAPI(title, isSecret);
+    console.log('새로운 채팅방 생성:', title, '비공개 여부:', isSecret);
 
     handleCloseModal(); // 모달 닫기
   };
