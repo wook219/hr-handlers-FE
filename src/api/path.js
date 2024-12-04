@@ -1,7 +1,8 @@
 import { API_BASE_URL } from './axios';
 
 export const path = {
-    SALARY: `${API_BASE_URL}/salary`
+    SALARY: `${API_BASE_URL}/salary`,
+    ADMIN_EMP: `${API_BASE_URL}/admin/emp`
 }
 
 export const todoPath = {

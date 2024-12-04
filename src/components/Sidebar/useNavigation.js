@@ -13,6 +13,7 @@ export const useNavigation = () => {
     toChatRoom: () => navigate(PATHS.CHATROOM),
     toSalary: () => navigate(PATHS.SALARY),
     toVacation : () => navigate(PATHS.VACATION),
-    toAdminHome : () => navigate(ADMINPATHS.HOME)
+    toAdminHome : () => navigate(ADMINPATHS.HOME),
+    toAdminEmp: () => navigate(ADMINPATHS.EMP)
   };
 };

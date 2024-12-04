@@ -1,7 +1,5 @@
 import instance from "../axios";
 
-// 사원 관련 API 요청 처리
-
 // 로그인 API
 export const loginAPI = async (empNo, password) => {
     try {
