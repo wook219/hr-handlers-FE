@@ -17,14 +17,16 @@ const MyPage = () => {
             try {
                 const data = await getMyPageAPI();
                 const profileImage = data?.data?.profileImageUrl || "/profile_image.png"; // 기본값 설정
-                setUserData(data);
                 setFormData({
                     email: data.data.email || "",
                     password: "*********", // 기본값으로 더미 비밀번호 설정
                     phone: data.data.phone || "",
                     birthDate: data.data.birthDate || "",
+                    name: data.data.name || "", 
+                    position: data.data.position || "",
+                    profileImage,
                 });
-                setFormData({ ...data.data, profileImageUrl: profileImage }); // 기본값 포함
+                setUserData(data);
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
@@ -106,7 +108,7 @@ const MyPage = () => {
                     <label htmlFor="profileImageInput">
                         <img
                             className="mypage-profile-img"
-                            src={previewImage || formData.profileImageUrl || "/profile_image.png"} // public 폴더 기준 경로
+                            src={previewImage || formData.profileImageUrl} // public 폴더 기준 경로
                             alt={formData?.name || "프로필 사진"}
                         />
                     </label>
@@ -201,9 +203,9 @@ const MyPage = () => {
                     )}
                 </div>
                 <div className="mypage-department-info">
-                    <h5 style={{fontWeight: "bold", marginTop: "40px"}}>부서</h5>
+                    <h5 style={{ fontWeight: "bold", marginTop: "40px" }}>부서</h5>
                     <div className="mypage-info-item">
-                        <span style={{marginTop: "10px",marginLeft: "20px"}}>{userData?.data.deptName || "등록된 부서 없음"}</span>
+                        <span style={{ marginTop: "10px", marginLeft: "20px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
                     </div>
                 </div>
                 {isEditing && (

@@ -8,29 +8,29 @@ export const UserProvider = ({ children }) => {
   const getUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem("user");
     console.log("user 정보"+storedUser)
-    return storedUser ? JSON.parse(storedUser) : { empNo: null, role: null, name: null, deptName: null };
+    return storedUser ? JSON.parse(storedUser) : { empNo: null, role: null, name: null, deptName: null }; // 초기값
   };
 
   const [user, setUser] = useState(getUserFromLocalStorage());
 
-  // 로그인: 사용자 정보를 Context와 localStorage에 저장
+  // 로그인 시 사용자 정보 저장
   const login = (userData) => {
-    
     const updatedUser = {
       empNo: userData.empNo,
       role: userData.role,
       name: userData.name,
       deptName: userData.deptName,
+      profileImage: userData.profileImage,
     };
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setUser(updatedUser); // Context에 저장
+    localStorage.setItem("user", JSON.stringify(updatedUser)); // localStorage에 저장 -> 새로고침 문제 해결
   };
 
-  // 로그아웃: 사용자 정보를 초기화하고 localStorage에서 제거
+  // 로그아웃 시 사용자 정보 초기화
   const logout = () => {
     const initialState = { empNo: null, role: null, name: null, deptName: null };
-    setUser(initialState);
-    localStorage.removeItem("user");
+    setUser(initialState); // Context 제거
+    localStorage.removeItem("user"); // localStorage 제거
   };
 
   return (
