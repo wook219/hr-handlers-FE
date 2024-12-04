@@ -41,7 +41,7 @@ const Login = () => {
         name: userInfo.name,
         role: userInfo.role,
         deptName: userInfo.deptName,
-        // TODO: 프로필 사진 추가 예정 
+        profileImage: userInfo.profileImage
       });
 
       alert(`${userInfo.name}님 환영합니다.`);
