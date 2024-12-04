@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // 배포할때 API_BASE_URL값 수정해주면 됌
-// export const API_BASE_URL = 'http://localhost:8080';
-export const API_BASE_URL = 'http://34.47.90.224:8080';
+ export const API_BASE_URL = 'http://localhost:8080';
+//export const API_BASE_URL = 'http://34.47.90.224:8080';
 
 // Axios 기본 설정 
 const instance = axios.create({

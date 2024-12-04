@@ -6,36 +6,59 @@ import {
     deletePostAPI,
     getCommentsByPostAPI,
     createCommentAPI,
+    deleteCommentAPI,
 } from '../../api/post';
 import './PostDetailPage.css';
 import { useUser } from '../../context/UserContext';
 import PostModal from './PostModal';
 import { useToast } from '../../context/ToastContext';
 
-const CommentItem = ({ comment, onReply }) => {
+const CommentItem = ({ comment, onReply, onDelete}) => {
+    console.log("onDelete:", onDelete);
+    const { user } = useUser();
     return (
         <li key={comment.id} className="comment-item">
-            <div className="comment-header">
-                <span className="comment-employeeName">{comment.employeeName}</span>
-                <span className="comment-date">
-                    {new Date(comment.createdAt).toLocaleString('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                    })}
-                </span>
+           <div className="comment-header">
+            <span className="comment-employeeName">{comment.employeeName}</span>
+            <span className="comment-date">
+                {new Date(comment.createdAt).toLocaleString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                })}
+            </span>
+        </div>
+        <p className="comment-content">{comment.content}</p>
+                <div className="comment-actions">
+            <div className="comment-reply">
+                <button 
+                    className="reply-button" 
+                    onClick={() => onReply(comment.id)}
+                >
+                    답글 달기
+                </button>
             </div>
-            <p className="comment-content">{comment.content}</p>
-            <button 
-                className="reply-button" 
-                onClick={() => onReply(comment.id)}
-            >
-                답글 달기
-            </button>
-            
+            {user.name === comment.employeeName && (
+                <div className="comment-edit-delete">
+                    <button 
+                        className="reply-button"
+                        onClick={() => console.log("수정 기능 추가 예정")}
+                    >
+                        수정
+                    </button>
+                    <button 
+                        className="reply-button"
+                        onClick={() => onDelete(comment.id)}
+                    >
+                        삭제
+                    </button>
+                </div>
+            )}
+        </div>
+
             {comment.replies?.length > 0 && (
                 <ul className="nested-comment">
                     {comment.replies.map(reply => (
@@ -43,6 +66,7 @@ const CommentItem = ({ comment, onReply }) => {
                             key={reply.id} 
                             comment={reply} 
                             onReply={onReply}
+                            onDelete={onDelete}
                         />
                     ))}
                 </ul>
@@ -190,6 +214,20 @@ const PostDetailPage = () => {
         }
     };
 
+    const handleCommentDelete = async (commentId) => {
+        console.log("Deleting comment ID:", commentId);
+        if (!window.confirm("이 댓글을 삭제하시겠습니까?")) return;
+    
+        try {
+            await deleteCommentAPI(commentId);
+            showToast("댓글이 삭제되었습니다.", "success");
+            fetchComments(pagination.currentPage, pagination.size); // 최신 댓글 목록 불러오기
+        } catch (error) {
+            console.error("댓글 삭제 실패:", error);
+            showToast("댓글 삭제에 실패했습니다.", "error");
+        }
+    };
+    
     const totalPages = Math.ceil(pagination.totalElements / pagination.size);
 
     if (!post.title?.length) {
@@ -280,6 +318,7 @@ const PostDetailPage = () => {
                                 key={comment.id} 
                                 comment={comment}
                                 onReply={setReplyToId}
+                                onDelete={handleCommentDelete}
                             />
                         ))}
                     </ul>
