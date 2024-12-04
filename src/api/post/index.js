@@ -132,19 +132,25 @@ export const createCommentAPI = async (postId, commentData) => {
     }
 };
 
+
 // 댓글 수정 API
-export const updateCommentAPI = async (commentId, commentData) => {
+export const updateCommentAPI = async (commentId, content) => {
+    console.log("Sending content:", content); // 여기서 content 확인
     try {
         const token = localStorage.getItem("access_token");
         if (!token) {
             throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
         }
 
-        const response = await axios.put(`/comment/${commentId}`, commentData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axios.put(
+            `/comment/${commentId}`, content, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json", // JSON 형식 명시
+                },
+            }
+        );
 
         return response.data;
     } catch (error) {
@@ -152,6 +158,8 @@ export const updateCommentAPI = async (commentId, commentData) => {
         throw error;
     }
 };
+
+
 
 // 댓글 삭제 API
 export const deleteCommentAPI = async (commentId) => {
