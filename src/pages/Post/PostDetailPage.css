@@ -306,3 +306,20 @@
     pointer-events: none;
     background-color: #f9f9f9;
 }
+
+.comment-actions {
+    display: flex;
+    justify-content: space-between; /* 좌우로 배치 */
+    align-items: center;
+    margin-top: 10px;
+}
+
+.comment-reply {
+    flex: 1; /* 왼쪽에 정렬 */
+}
+
+.comment-edit-delete {
+    display: flex;
+    gap: 5px; /* 수정/삭제 버튼 간격 */
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
