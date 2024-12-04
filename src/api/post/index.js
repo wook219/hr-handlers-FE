@@ -96,9 +96,14 @@ export const deletePostAPI = async (postId) => {
 
 
 // 댓글 조회 API
-export const getCommentsByPostAPI = async (postId) => {
+export const getCommentsByPostAPI = async (postId, page = 0, size = 5) => {
     try {
-        const response = await axios.get(`/post/${postId}/comment`);
+        const response = await axios.get(`/post/${postId}/comment`, {
+            params: {
+                page: page,
+                size: size,
+            },
+        });
         return response.data;
     } catch (error) {
         console.error(`Failed to fetch comments for post (ID: ${postId}):`, error);
