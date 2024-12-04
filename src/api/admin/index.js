@@ -8,3 +8,8 @@ export {
     excelDownloadSalaryAPI
 }
 from './salary';
+
+export {
+    searchEmployeeAPI
+}
+from './employee';

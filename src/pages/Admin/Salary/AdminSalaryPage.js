@@ -47,9 +47,6 @@ const AdminSalaryPage = () => {
     ];
     const nameOptions = [
         { name: '선택', value: '' },
-        { name: '홍길동', value: '1' },
-        { name: '김철수', value: '2' },
-        { name: '엘리스', value: '3' }
     ];
     const [searchData, setSearchData] = useState([
         { key: 'startDate', value: '', label: '시작날짜', type: 'inputDate', isDisable: false },
@@ -114,6 +111,7 @@ const AdminSalaryPage = () => {
         const createFormData = formData.map((field) => ({
             ...field,
             value: '',
+            options: ['name'].includes(field.key) ? [{ name: "선택", value: "" }] : field.options,
             isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false :
                 ['netSalary'].includes(field.key) ? true : field.isDisable,
         }));
@@ -135,19 +133,31 @@ const AdminSalaryPage = () => {
 
     // row 더블클릭시 실행되는 함수(수정관련)
     const handleRowDoubleClick = (salary) => {
+
+        const nameOptions = [{
+            name: salary.name,
+            value: salary.employeeId
+        }];
+        console.log('nameOptions : ', nameOptions);
         // 폼 데이터 업데이트
         const updatedFormData = formData.map((field) => {
             let updatedValue = salary[field.key];
-
-            // select 타입의 경우 value를 options에서 매칭된 값으로 변환
-            if (field.type === 'select' && field.options) {
-                const matchedOption = field.options.find(option => option.value === updatedValue || option.name === updatedValue);
-                updatedValue = matchedOption ? matchedOption.value : ''; // 매칭되지 않으면 기본값 설정
-            }
             
             // 직위, 부서, 이름 셀렉트 박스 disable로 변경
             // 실지급액 disable 변경
             const isDisable = ['position', 'deptName', 'name', 'netSalary'].includes(field.key) ? true : field.isDisable;
+
+            // 이름 필드일 경우 options 업데이트
+            if (field.key === 'name') {
+                // name 필드의 options만 업데이트
+                return { 
+                    ...field, 
+                    value: updatedValue || "",
+                    options: [...nameOptions],
+                    isDisable
+                };
+            }
+            
             
             return { ...field, value: updatedValue, isDisable };
         });
@@ -233,6 +243,9 @@ const AdminSalaryPage = () => {
         // 급여 정보 데이터 세팅
         data.forEach((item) => {
             if (item.value) {
+                if(item.key === 'name') {
+                    params['employeeId'] = item.value;
+                }
                 params[item.key] = item.value;
             }
         });
@@ -245,7 +258,6 @@ const AdminSalaryPage = () => {
         // api에 전달한 데이터 세팅
         params = {
             ...params,
-            employeeId: 1, // todo 아이디는 나중에
             payDate: `${year}-${month.toString().padStart(2, '0')}-${day}`
         }
 
