@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigation } from './useNavigation';
 import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt } from 'react-icons/fa';
-import { useUser } from '../../context/UserContext'; 
+import { useUser } from '../../context/UserContext';
 
 function Sidebar() {
   const { user, logout } = useUser(); // context 사용 부분 참고
@@ -17,7 +17,11 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="profile" onClick={navigation.toMyPage} style={{ cursor: 'pointer' }}>
-        <img className="profile-img" src="https://via.placeholder.com/80" alt="프로필 사진" />
+        <img
+          className="profile-img"
+          src={user.profileImage || "/profile_image.png"}
+          alt="프로필 사진"
+        />
         <div className="profile-name">{user.name}</div>
         <div className="profile-team">{user.deptName}</div>
       </div>
@@ -54,10 +58,10 @@ function Sidebar() {
             <span>급여관리</span>
           </li>
           {user.role === 'ROLE_ADMIN' && (
-          <li onClick={navigation.toAdminHome}>
-            <FaDollarSign className="icon" />
-            <span>통합관리</span>
-          </li>
+            <li onClick={navigation.toAdminHome}>
+              <FaDollarSign className="icon" />
+              <span>통합관리</span>
+            </li>
           )}
         </ul>
       </nav>
