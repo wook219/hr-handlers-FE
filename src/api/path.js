@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://localhost:8080';
+import { API_BASE_URL } from './axios';
 
 export const path = {
     SALARY: `${API_BASE_URL}/salary`
