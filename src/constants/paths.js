@@ -11,4 +11,5 @@ export const PATHS = {
 
 export const ADMINPATHS = {
   HOME: '/admin/home',
+  EMP: '/admin/emp', 
 };
