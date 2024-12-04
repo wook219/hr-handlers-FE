@@ -342,6 +342,7 @@ const ChatRoom = () => {
               }}
               className="context-menu"
             >
+              <div>채팅 초대</div>
               <div onClick={handleParticipants}>참여 목록</div>
               <div onClick={handleExitChatRoom}>퇴장</div>
             </div>
