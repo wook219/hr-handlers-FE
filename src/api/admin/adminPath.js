@@ -8,4 +8,7 @@ export const path = {
         EXCELUPLOAD: `${ADMIN_BASE_URL}/salary/excel/upload`,
         EXCELDOWNLOAD: `${ADMIN_BASE_URL}/salary/excel/download`,
     },
+    ADMINEMPLOYEE: {
+        SEARCH: `${ADMIN_BASE_URL}/emp/search`
+    }
 }
