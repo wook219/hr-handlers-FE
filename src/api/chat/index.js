@@ -152,3 +152,14 @@ export const getInvitedEmployees = async (chatRoomId, empNo) => {
     throw error;
   }
 };
+
+// 채팅방 삭제 API
+export const deleteChatRoomAPI = async (chatRoomId) => {
+  try {
+    const response = await axios.delete(`/chatroom/${chatRoomId}`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 삭제에 실패했습니다.', error);
+    throw error;
+  }
+};
