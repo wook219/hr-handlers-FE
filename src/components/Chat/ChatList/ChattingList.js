@@ -10,7 +10,11 @@ const ChattingList = () => {
     const fetchChatRooms = async () => {
       try {
         const response = await getAllChatRoomAPI();
-        setChatRooms(response.data);
+
+        // 비공개가 아닌 채팅방만 필터링
+        const publicChatRooms = response.data.filter((chatroom) => chatroom.isSecret === 'N');
+
+        setChatRooms(publicChatRooms);
       } catch (error) {
         console.error('Failed to fetch chatrooms: ', error);
       }
