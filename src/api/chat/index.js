@@ -137,3 +137,18 @@ export const getJoinedEmployees = async (chatRoomId) => {
     throw error;
   }
 };
+
+// 채팅방 초대 API
+export const getInvitedEmployees = async (chatRoomId, empNo) => {
+  try {
+    const requestBody = {
+      empNo: empNo,
+    };
+
+    const response = await axios.post(`/chat/${chatRoomId}`, requestBody);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 초대에 실패했습니다.', error);
+    throw error;
+  }
+};

@@ -12,6 +12,7 @@ import './ChatRoom.css';
 import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModal';
 import ChatParticipantsModal from '../../components/Chat/ChatModals/ChatParticipantsModal';
 import { exitChatRoomAPI } from '../../api/chat';
+import InviteChatRoomModal from '../../components/Chat/ChatModals/InviteChatRoomModal';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
@@ -27,6 +28,7 @@ const ChatRoom = () => {
   const [modal, setModal] = useState({
     showExitModal: false,
     showParticipantsModal: false,
+    showInviteModal: false,
   });
 
   const handleClickMenu = (e) => {
@@ -69,9 +71,16 @@ const ChatRoom = () => {
   const handleParticipants = () => {
     setModal((prevState) => ({ ...prevState, showParticipantsModal: true }));
   };
-
   const handleCloseParticipants = () => {
     setModal((prevState) => ({ ...prevState, showParticipantsModal: false }));
+  };
+
+  // 채팅방 초대 목록 모달 컴포넌트
+  const handleInvite = () => {
+    setModal((prevState) => ({ ...prevState, showInviteModal: true }));
+  };
+  const handleCloseInvite = () => {
+    setModal((prevState) => ({ ...prevState, showInviteModal: false }));
   };
 
   const chatBodyRef = useRef(null);
@@ -342,13 +351,14 @@ const ChatRoom = () => {
               }}
               className="context-menu"
             >
-              <div>채팅 초대</div>
+              <div onClick={handleInvite}>채팅 초대</div>
               <div onClick={handleParticipants}>참여 목록</div>
               <div onClick={handleExitChatRoom}>퇴장</div>
             </div>
           )}
         </div>
       </div>
+      <InviteChatRoomModal show={modal.showInviteModal} handleClose={handleCloseInvite} chatRoomId={chatRoomId} />
 
       <ExitChatRoomModal show={modal.showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
 
