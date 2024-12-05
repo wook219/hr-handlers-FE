@@ -17,6 +17,7 @@ const PostModal = ({
     hashtags,
     setHashtags,
     isEditMode = false,
+    isNotice = false, // 공지사항 모드 추가
 }) => {
     const [pendingUploads, setPendingUploads] = useState([]); // 업로드 대기 이미지 파일 리스트
     const { showToast } = useToast();
@@ -84,7 +85,8 @@ const PostModal = ({
             await handleSubmit({
                 title,
                 content: updatedEditorData,
-                hashtags: hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
+                hashtags: isNotice ? ["공지사항"] : hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
+                postType: isNotice ? 'NOTICE' : 'POST', // 공지사항 모드 여부에 따라 PostType 결정
             });
     
             // 초기화
@@ -104,7 +106,7 @@ const PostModal = ({
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
             <Modal.Header className="post-modal-header" closeButton>
                 <Modal.Title className="post-modal-title">
-                    {isEditMode ? '글 수정' : '글 쓰기'}
+                    {isNotice ? (isEditMode ? '공지사항 수정' : '공지사항 작성') : isEditMode ? '글 수정' : '글 쓰기'}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body className="post-modal-body">
@@ -137,8 +139,9 @@ const PostModal = ({
                             className="post-modal-editor"
                         />
                     </Form.Group>
-
+                                
                     {/* 해시태그 입력 */}
+                    {!isNotice && (
                     <Form.Group className="mb-3 post-modal-hashtags-group">
                         <Form.Label className="post-modal-label">해시태그</Form.Label>
                         <Form.Control
@@ -149,6 +152,7 @@ const PostModal = ({
                             onChange={(e) => setHashtags(e.target.value)}
                         />
                     </Form.Group>
+                    )}
                 </Form>
             </Modal.Body>
             <Modal.Footer className="post-modal-footer">
