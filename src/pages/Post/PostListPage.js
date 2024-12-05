@@ -53,6 +53,7 @@ const PostListPage = () => {
         employeeId: user.empNo, // 로그인된 사용자 ID 사용
         content: postData.content,
         hashtagContent: hashtagArray,
+        postType: "POST", // 게시판의 경우 postType을 POST로 고정
       };
 
       await createPostAPI(newPost);
