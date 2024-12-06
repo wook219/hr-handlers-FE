@@ -1,0 +1,153 @@
+.dept-management-container {
+    padding: 20px;
+    background-color: white;
+    font-family: Arial, sans-serif;
+}
+
+.dept-management-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dept-button {
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.dept-button:hover {
+    opacity: 0.8;
+}
+
+.dept-add-department-button {
+    margin-bottom: 20px;
+    padding: 8px 10px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dept-active-tab {
+    font-weight: bold;
+    color: #000;
+    background: none;
+    cursor: default;
+}
+
+.dept-department-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+    word-break: break-word;
+}
+
+.dept-department-table th,
+.dept-department-table td {
+    border: 1px solid #d4d2d2; /* 테두리 색 변경 */
+    padding: 10px;
+    text-align: center;
+}
+
+.dept-department-table td{
+    border-top: 1px solid #bdbdbd; 
+    border-bottom: 1px solid #bdbdbd; 
+    border-left: none;
+    border-right: none;
+}
+
+.dept-department-table th {
+    background-color: #1a2b50; /* 헤더 색상 */
+    font-weight: bold;
+    text-align: center;
+    color: white;
+}
+
+.dept-edit-button,
+.dept-delete-button {
+    padding: 4px 10px; /* 버튼 크기 통일 */
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold; /* 굵은 글씨 */
+    cursor: pointer;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+    transition: all 0.3s ease; /* 부드러운 효과 */
+}
+
+.dept-edit-button {
+    background-color: white; /* 수정 버튼 색상 */
+    color: black;
+    margin-right: 15px;
+}
+
+.dept-edit-button:hover {
+    background-color: white; /* 수정 버튼 호버 색상 */
+}
+
+.dept-delete-button {
+    background-color: #1a2b50; /* 삭제 버튼 색상 */
+    color: white;
+}
+
+.dept-delete-button:hover {
+    background-color: #1a2b50; /* 삭제 버튼 호버 색상 */
+}
+
+.dept-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dept-modal {
+    position: relative;
+    background: white;
+    padding: 30px;
+    border-radius: 5px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dept-save-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 4px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.dept-save-button:hover {
+    background-color: #45a049;
+}
+
+.dept-cancel-button {
+    position: absolute; /* 모달 우측 상단에 위치 */
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #333;
+}
+
+.dept-cancel-button:hover {
+    color: #1a2b50;
+}

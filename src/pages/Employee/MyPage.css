@@ -80,6 +80,8 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
+    font-weight: 500;
+    color: #7f8081;
 }
 
 .mypage-info-item-tab {
@@ -102,6 +104,7 @@
 .mypage-info-item textarea,
 .mypage-intro textarea {
     border: none;
+    margin-bottom: 10px;
     background-color: transparent; 
     outline: none; 
     font-size: 1rem;
@@ -124,6 +127,12 @@
 
 .mypage-edit-buttons {
     margin-top: 20px;
+    text-align: right; 
+}
+
+.mypage-save-button{
+    color: white;
+    background-color: #1a2b50;
 }
 
 .mypage-save-button, .mypage-cancel-button {
@@ -182,4 +191,21 @@
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer; /* 클릭 가능 표시 */
+}
+
+.mypage-password-toggle {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    gap: 10px; /* 체크박스와 텍스트 사이 간격 */
+    margin-top: 5px; /* 입력 필드와 간격 */
+}
+
+.mypage-password-checkbox {
+    width: 16px;
+    height: 16px;
+}
+
+.mypage-password-label {
+    font-size: 0.8rem;
+    color: #333;
 }

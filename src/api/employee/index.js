@@ -38,6 +38,7 @@ export const updateMyPageAPI = async (formData) => {
 
     const response = await instance.patch("/emp", formData, {
         headers: {
+           'Content-Type': 'multipart/form-data',
             access: token,
         },
     });
@@ -53,6 +54,7 @@ export const registerEmployeeAPI = async (empData) => {
                 access: token,
             },
         });
+        console.log('data 확인', response.data);
         return response.data;
     } catch (error) {
         console.error("사원 등록 오류:", error.response?.data || error.message);
@@ -62,6 +64,7 @@ export const registerEmployeeAPI = async (empData) => {
 
 // 관리자: 사원 전체 조회 API
 export const getAllEmployeesAPI = async (searchParams) => {
+    console.log("요청 매개변수:", searchParams);
     try {
         const token = localStorage.getItem("access_token");
         const response = await instance.get("/admin/emp", {
@@ -136,6 +139,54 @@ export const sendResetPasswordAPI = async (empNo, email) => {
     }
 };
 
+// 부서 조회 
+export const getDepartmentAPI = async () => {
+    try {
+        const response = await instance.get(`/admin/dept`, {
+            headers: {
+                access: `${localStorage.getItem("access_token")}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error("부서 데이터 가져오기 오류:", error);
+        throw error;
+    }
+};
+
+// 부서 등록 
+export const addDepartmentAPI = async (deptName) => {
+    const response = await instance.post(`/admin/dept`,null, {
+        params: { deptName },
+        headers: {
+            access: `${localStorage.getItem("access_token")}`,
+        },
+    });
+    return response.data;
+};
+
+// 부서 삭제 
+export const deleteDepartmentAPI = async (departmentId) => {
+    const response = await instance.delete(`/admin/dept/${departmentId}`,{
+         headers: {
+            access: `${localStorage.getItem("access_token")}`,
+        },
+    });
+    return response.data;
+};
+
+// 부서 수정 
+export const updateDepartmentAPI = async (departmentId, updatedData) => {
+    const response = await instance.put(`/admin/dept/${departmentId}`, null,
+        {
+            params: updatedData, // Query String 형식으로 전달
+            headers: {
+                access: `${localStorage.getItem("access_token")}`,
+            },
+        }
+    );
+    return response.data;
+};
 
 // 사용자 정보 API
 export const fetchUserInfo = async () => {
