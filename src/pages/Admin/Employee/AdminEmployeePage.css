@@ -48,17 +48,28 @@
 
 .admin-employee-table th, 
 .admin-employee-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    border: 1px solid #ede8e8;
+    padding: 5px;
     text-align: left;
     vertical-align: middle;
+    line-height: 1.2; 
+    height: 30px;
+}
+
+.admin-employee-table td {
+    border-top: 1px solid #bdbdbd; 
+    border-bottom: 1px solid #bdbdbd; 
+    border-left: none;
+    border-right: none;
+    padding: 10px;
 }
 
 
 .admin-employee-table th {
-    background-color: #f9f9f9;
-    font-weight: bold;
+    background-color: #1a2b50;
+    font-weight: 500;
     text-align: center;
+    color: white;
 }
 
 .admin-employee-table .group-header {
@@ -101,11 +112,11 @@
 }
 
 .admin-employee-delete-button {
-    background-color: #f44336; /* 삭제 버튼 색상 */
+    background-color: #1a2b50; /* 삭제 버튼 색상 */
 }
 
 .admin-employee-delete-button:hover {
-    background-color: #d32f2f; /* 삭제 버튼 호버 색상 */
+    background-color: #1a2b50; /* 삭제 버튼 호버 색상 */
 }
 
 .admin-employee-edit-button[disabled] {
@@ -141,7 +152,19 @@
 .admin-employee-modal-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
+    font-weight: 400;
+    border-color: #bdbdbd;
+    font-size: 0.9rem;
+}
+
+.admin-employee-modal-content input,
+.admin-employee-modal-content select {
+    border: 1px solid #e0e0e0; 
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    outline: none;
 }
 
 .admin-employee-search-button {
@@ -160,6 +183,7 @@
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
+    border-radius: 10px;
     gap: 10px;
 }
 
@@ -171,6 +195,11 @@
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.admin-employee-edit-cell{
+    align-items: center;
+    text-align: center;
 }
 
 .admin-employee-table .admin-employee-edit-cell input {
@@ -190,7 +219,7 @@
 .admin-employee-pagination button {
     padding: 5px 10px;
     border: none;
-    background-color: #4caf50;
+    background-color: #1a2b50;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -209,4 +238,5 @@
 .admin-employee-edit-cell {
     word-break: break-word;
     white-space: normal; 
+    text-align: center;
 }
