@@ -52,6 +52,7 @@
   flex-grow: 1; /* 채팅 영역이 가용 공간을 차지하도록 설정 */
   overflow-y: auto; /* 채팅 내용이 많을 경우 스크롤 */
   max-height: '500px';
+  padding: 3px;
 }
 
 /* 입력란과 버튼 영역 */
@@ -81,8 +82,28 @@
   background-color: #325298; /* 버튼 hover 시 색상 변경 */
 }
 
-@media (max-width: 1000px) {
+.message-group {
+  margin-right: 2px;
+  margin-bottom: 20px;
+}
+
+.message-date {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #3e3e3e;
+  background-color: #f1f1f1d1;
+  padding: 5px;
+  border-radius: 50px;
+}
+
+.chat-calendar-icon {
+  margin-right: 2px;
+  margin-bottom: 3px;
+}
+
+@media (max-width: 1200px) {
   .chatroom-page {
+    margin-top: 100px;
     flex-direction: column; /* 세로로 배치 */
   }
 
@@ -98,7 +119,7 @@
   }
 
   .chatroom-page-container {
-    max-height: 60vh; /* 화면의 60% 정도만 높이 사용 */
+    max-height: 70vh; /* 화면의 60% 정도만 높이 사용 */
   }
 
   .chat-input input {

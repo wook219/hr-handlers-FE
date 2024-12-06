@@ -7,10 +7,12 @@ import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
 import { getChatMessagesAPI } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { SendFill } from 'react-bootstrap-icons';
+import { SendFill, Calendar2WeekFill } from 'react-bootstrap-icons';
 import './ChatRoom.css';
 import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModal';
+import ChatParticipantsModal from '../../components/Chat/ChatModals/ChatParticipantsModal';
 import { exitChatRoomAPI } from '../../api/chat';
+import InviteChatRoomModal from '../../components/Chat/ChatModals/InviteChatRoomModal';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
@@ -22,7 +24,12 @@ const ChatRoom = () => {
   const location = useLocation(); // useLocation 훅을 사용하여 state에 접근
   const [contextMenu, setContextMenu] = useState(null);
   const contextMenuRef = useRef(null);
-  const [showExitModal, setShowExitModal] = useState(false);
+  // 모달 통합
+  const [modal, setModal] = useState({
+    showExitModal: false,
+    showParticipantsModal: false,
+    showInviteModal: false,
+  });
 
   const handleClickMenu = (e) => {
     const mouseX = e.clientX;
@@ -45,19 +52,35 @@ const ChatRoom = () => {
     };
   }, [contextMenu]); // contextMenu가 변할 때마다 실행되도록 설정
 
-  // 채팅방 퇴장 컴포넌트 실행
+  // 채팅방 퇴장 모달 컴포넌트 실행
   const handleExitChatRoom = () => {
-    setShowExitModal(true);
+    setModal((prevState) => ({ ...prevState, showExitModal: true }));
   };
 
   const handleCloseModal = () => {
-    setShowExitModal(false);
+    setModal((prevState) => ({ ...prevState, showExitModal: false }));
   };
 
   const handleConfirmExit = async () => {
     const response = await exitChatRoomAPI(chatRoomId);
-    setShowExitModal(false); // 모달을 닫는다
+    setModal((prevState) => ({ ...prevState, showExitModal: false }));
     console.log('채팅방 퇴장', response);
+  };
+
+  // 채팅방 참여 목록 모달 컴포넌트
+  const handleParticipants = () => {
+    setModal((prevState) => ({ ...prevState, showParticipantsModal: true }));
+  };
+  const handleCloseParticipants = () => {
+    setModal((prevState) => ({ ...prevState, showParticipantsModal: false }));
+  };
+
+  // 채팅방 초대 목록 모달 컴포넌트
+  const handleInvite = () => {
+    setModal((prevState) => ({ ...prevState, showInviteModal: true }));
+  };
+  const handleCloseInvite = () => {
+    setModal((prevState) => ({ ...prevState, showInviteModal: false }));
   };
 
   const chatBodyRef = useRef(null);
@@ -105,6 +128,7 @@ const ChatRoom = () => {
           id: message.messageId,
           text: message.message,
           name: message.employeeName,
+          timestamp: message.createdAt,
           sent: true,
           received: false,
           isTemp: false,
@@ -117,6 +141,7 @@ const ChatRoom = () => {
             id: message.messageId,
             text: message.message,
             name: message.employeeName,
+            timestamp: message.createdAt,
             sent: false,
             received: true,
             fromServer: true,
@@ -159,7 +184,7 @@ const ChatRoom = () => {
           empNo: msg.empNo,
           sent: msg.empNo === empNo,
           received: msg.empNo !== empNo,
-          timestamp: new Date(msg.timestamp),
+          timestamp: new Date(msg.createdAt),
         }));
 
         setMessages(formattedMessages);
@@ -224,6 +249,46 @@ const ChatRoom = () => {
     }
   };
 
+  // 메시지 불러오기 후 날짜별 그룹화
+  const groupMessagesByDate = (messages) => {
+    const groupedMessages = [];
+
+    for (let i = 0; i < messages.length; i++) {
+      const message = messages[i];
+      const messageDate = new Date(message.timestamp);
+      const formattedDate = formatDate(messageDate); // 날짜 포맷팅 함수
+
+      // 첫 번째 메시지이거나 이전 메시지와 날짜가 다르면 날짜를 표시
+      if (i === 0 || formattedDate !== formatDate(new Date(messages[i - 1].timestamp))) {
+        groupedMessages.push({
+          date: formattedDate,
+          messages: [message],
+        });
+      } else {
+        groupedMessages[groupedMessages.length - 1].messages.push(message);
+      }
+    }
+
+    return groupedMessages;
+  };
+
+  // 날짜 포맷팅 함수: 2024년 12월 3일 화요일 형식
+  const formatDate = (timestamp) => {
+    const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
+    const messageDate = new Date(timestamp);
+
+    const year = messageDate.getFullYear();
+    const month = messageDate.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = messageDate.getDate();
+    const weekDay = dayOfWeek[messageDate.getDay()]; // 요일 숫자에 해당하는 이름 가져오기
+
+    // "2024년 12월 3일 화요일" 형태로 포맷팅
+    return `${year}년 ${month}월 ${day}일 ${weekDay}요일`;
+  };
+
+  // 메시지 불러오기 후 날짜별 그룹화
+  const groupedMessages = groupMessagesByDate(messages);
+
   return (
     <div className="chatroom-page">
       <div className="chatroom-list-all-container mt-5">
@@ -233,19 +298,29 @@ const ChatRoom = () => {
       <div className="chatroom-entire-container">
         <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} />
         <div className="chatroom-page-container">
-          <div ref={chatBodyRef} style={{}} className="chat-body">
-            {messages.map((message) => (
-              <ChatMessage
-                key={message.id}
-                message={message.text}
-                name={message.name}
-                empNo={message.empNo}
-                messageId={message.id}
-                onEdit={handleEditMessage}
-                onDelete={handleDeleteMessage}
-                selectedMessageId={selectedMessageId}
-                setSelectedMessageId={setSelectedMessageId}
-              />
+          <div ref={chatBodyRef} className="chat-body">
+            {groupedMessages.map((group, index) => (
+              <div key={index} className="message-group">
+                {/* 날짜를 상단에 표시 */}
+                <div className="message-date">
+                  <Calendar2WeekFill className="chat-calendar-icon" /> {group.date}
+                </div>
+                {/* 각 날짜 그룹에 속한 메시지들을 렌더링 */}
+                {group.messages.map((message) => (
+                  <ChatMessage
+                    key={message.id}
+                    message={message.text}
+                    name={message.name}
+                    empNo={message.empNo}
+                    messageId={message.id}
+                    timestamp={message.timestamp}
+                    onEdit={handleEditMessage}
+                    onDelete={handleDeleteMessage}
+                    selectedMessageId={selectedMessageId}
+                    setSelectedMessageId={setSelectedMessageId}
+                  />
+                ))}
+              </div>
             ))}
           </div>
 
@@ -276,14 +351,22 @@ const ChatRoom = () => {
               }}
               className="context-menu"
             >
-              <div>새 탭으로 열기</div>
+              <div onClick={handleInvite}>채팅 초대</div>
+              <div onClick={handleParticipants}>참가자 목록</div>
               <div onClick={handleExitChatRoom}>퇴장</div>
             </div>
           )}
         </div>
       </div>
+      <InviteChatRoomModal show={modal.showInviteModal} handleClose={handleCloseInvite} chatRoomId={chatRoomId} />
 
-      <ExitChatRoomModal show={showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
+      <ExitChatRoomModal show={modal.showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
+
+      <ChatParticipantsModal
+        show={modal.showParticipantsModal}
+        handleClose={handleCloseParticipants}
+        chatRoomId={chatRoomId}
+      />
     </div>
   );
 };

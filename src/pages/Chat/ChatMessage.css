@@ -3,9 +3,8 @@
   color: #333;
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
   width: fit-content;
-  max-width: 60%;
+  max-width: 65%;
   align-self: flex-start; /* 왼쪽 정렬 */
 }
 
@@ -14,15 +13,28 @@
   color: white;
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-right: 5px;
   width: fit-content;
-  max-width: 60%;
+  max-width: 65%;
   align-self: flex-end; /* 오른쪽 정렬 */
 }
 
 .chat-message-right {
   display: flex;
+  flex-direction: column; /* 세로로 배치 */
   justify-content: flex-end;
+}
+
+.chat-message-left {
+  display: flex;
+  flex-direction: column; /* 세로로 배치 */
+  justify-content: flex-start;
+}
+
+.chat-message-name {
+  font-weight: bold; /* 이름 강조 */
+  margin-left: 2px;
+  display: block;
 }
 
 .chat-message-input {
@@ -47,4 +59,22 @@
 /* 호버 시 효과 */
 .message-change-button:hover {
   background-color: #f0f0f0; /* 호버 시 배경색이 연한 회색으로 변경 */
+}
+
+.chat-message-time-right {
+  font-size: 12px;
+  color: #b9b9b9;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 7px;
+  margin-bottom: 10px;
+}
+
+.chat-message-time-left {
+  font-size: 12px;
+  color: #b9b9b9;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 2px;
+  margin-bottom: 10px;
 }

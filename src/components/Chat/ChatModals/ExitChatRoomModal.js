@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import './CreateChatRoomModal.css';
+import { useToast } from '../../../context/ToastContext';
+import './ChatRoomModal.css';
 
 const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
   const [isExited, setIsExited] = useState(false);
+  const { showToast } = useToast();
 
   const handleExitChat = async () => {
     try {
       await handleExit();
       setIsExited(true);
+      showToast('채팅방 퇴장이 완료되었습니다.', 'success');
+
+      setTimeout(() => {
+        window.location.href = '/chat'; // 채팅방 목록 페이지로 이동
+      }, 200);
     } catch (error) {
       console.error('퇴장 처리 중 오류 발생', error);
+      showToast('퇴장 처리 중 오류가 발생했습니다.', 'error');
     }
   };
 
@@ -22,32 +30,17 @@ const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
   return (
     <>
       <Modal show={show} onHide={handleClose} centered className="chatroom-modal-content">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title className="text-center">채팅방 퇴장</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center chatroom-exit-check">채팅방에서 퇴장하시겠습니까?</Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-button chatroom-modal-button-color" size="lg" onClick={handleExitChat}>
+          <button className="chatroom-button chatroom-modal-button-color" onClick={handleExitChat}>
             퇴장
-          </Button>
-          <Button className="chatroom-button ml-2" variant="secondary" size="lg" onClick={handleClose}>
+          </button>
+          <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={handleClose}>
             취소
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* 채팅방 퇴장 완료 모달 */}
-      <Modal show={isExited} onHide={() => setIsExited(false)} centered className="chatroom-modal-content">
-        <Modal.Header closeButton>
-          <Modal.Title className="text-center">채팅방 퇴장 완료</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center">
-          <p className="chatroom-modal-success-text">채팅방 퇴장이 완료되었습니다.</p>
-        </Modal.Body>
-        <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-modal-button-color chatroom-button" onClick={handleCloseExitModal} size="lg">
-            확인
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>

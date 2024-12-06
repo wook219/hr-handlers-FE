@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { PATHS } from '../../constants/paths';
+import { ADMINPATHS, PATHS } from '../../constants/paths';
 
 export const useNavigation = () => {
   const navigate = useNavigate();
@@ -12,5 +12,9 @@ export const useNavigation = () => {
     toBoard: () => navigate(PATHS.BOARD),
     toChatRoom: () => navigate(PATHS.CHATROOM),
     toSalary: () => navigate(PATHS.SALARY),
+    toVacation : () => navigate(PATHS.VACATION),
+    toAdminHome : () => navigate(ADMINPATHS.HOME),
+    toAdminEmp: () => navigate(ADMINPATHS.EMP),
+    toAdminVacation : () => navigate(ADMINPATHS.VACATION),
   };
 };

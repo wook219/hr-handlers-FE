@@ -3,6 +3,7 @@ import AppRouter from './router/Router';
 import Sidebar from "./components/Sidebar/Sidebar";
 import './components/Sidebar/Sidebar.css';
 import { UserProvider } from "./context/UserContext";
+import { ToastProvider } from "./context/ToastContext";
 import { useLocation } from "react-router-dom";
 import HiddenUtils from "./utils/HiddenUtils"; 
 
@@ -12,12 +13,14 @@ function App() {
 
   return (
     <UserProvider>
-      <div className="app">
-      {!isSidebarHidden && <Sidebar />} 
-        <div className={`content ${isSidebarHidden ? "full-width" : ""}`}>
-          <AppRouter />
+      <ToastProvider>
+        <div className="app">
+        {!isSidebarHidden && <Sidebar />} 
+          <div className={`content ${isSidebarHidden ? "full-width" : ""}`}>
+            <AppRouter />
+          </div>
         </div>
-      </div>
+      </ToastProvider>
     </UserProvider>
   );
 }

@@ -4,6 +4,8 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useToast } from '../../../context/ToastContext';
+import { searchEmployeeAPI } from '../../../api/admin/index.js';
 
 const AdminSalaryModalPage = (props) => {
     const [formData, setFormData] = useState([
@@ -24,6 +26,7 @@ const AdminSalaryModalPage = (props) => {
     ]);
 
     const [modalType, setModalType] = useState('');
+    const { showToast } = useToast();
 
     useEffect(() => {
         if (props.formData) {
@@ -53,13 +56,72 @@ const AdminSalaryModalPage = (props) => {
         }
     }, [props.modalType]);
 
+    useEffect(() => {
+        const positionField = formData.find((field) => field.key === "position");
+        const deptNameField = formData.find((field) => field.key === "deptName");
+    
+        const positionValue = positionField?.value || "";
+        const deptNameValue = deptNameField?.value || "";
+
+        if(positionValue && deptNameValue && modalType == 'create') {
+            getUserData();
+        }
+    }, [
+        formData.find((field) => field.key === "position")?.value,
+        formData.find((field) => field.key === "deptName")?.value,
+    ]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevFormData) =>
-            prevFormData.map((field) =>
-                field.key === name ? { ...field, value } : field
-            )
-        );
+        setFormData((prevFormData) => {
+            const updatedFormData = prevFormData.map((field) => {
+                if (field.key === name) {
+                    if (field.type === "input") {
+                        const rawValue = value.replace(/,/g, "");
+                        if (!isNaN(rawValue) && rawValue !== "") {
+                            if (field.key === "deduction") {
+                                const basicSalaryField = prevFormData.find((f) => f.key === "basicSalary");
+                                const basicSalary = basicSalaryField?.value
+                                    ? Number(basicSalaryField.value.replace(/,/g, ""))
+                                    : 0;
+                                const deduction = Number(rawValue);
+    
+                                if (deduction >= basicSalary) {
+                                    showToast('공제 금액은 지급 총액보다 클 수 없습니다.', 'error');
+                                    return field;
+                                }
+                            }
+                            return {
+                                ...field,
+                                value: Number(rawValue).toLocaleString("en-US"),
+                            };
+                        }
+                        return { ...field, value: "" };
+                    }
+                    return { ...field, value };
+                }
+                return field;
+            });
+    
+            // netSalary 계산
+            const basicSalaryField = updatedFormData.find((f) => f.key === "basicSalary");
+            const deductionField = updatedFormData.find((f) => f.key === "deduction");
+            const netSalaryFieldIndex = updatedFormData.findIndex((f) => f.key === "netSalary");
+    
+            const basicSalary = basicSalaryField?.value ? Number(basicSalaryField.value.replace(/,/g, "")) : 0;
+            const deduction = deductionField?.value ? Number(deductionField.value.replace(/,/g, "")) : 0;
+    
+            const calculatedNetSalary = Math.max(basicSalary - deduction, 0);
+    
+            if (netSalaryFieldIndex > -1) {
+                updatedFormData[netSalaryFieldIndex] = {
+                    ...updatedFormData[netSalaryFieldIndex],
+                    value: calculatedNetSalary.toLocaleString("en-US"),
+                };
+            }
+    
+            return updatedFormData;
+        });
     };
 
     const handleDateChange = (e) => {
@@ -69,6 +131,46 @@ const AdminSalaryModalPage = (props) => {
                 field.key === name ? { ...field, value } : field
             )
         );
+    };
+
+    const getUserData = async () => {
+        console.log('formData : ', formData);
+
+        // position과 deptName 추출
+        const position = formData.find((field) => field.key === "position")?.value || "";
+        const deptName = formData.find((field) => field.key === "deptName")?.value || "";
+
+        // params 객체 생성
+        const params = {
+            position,
+            deptName,
+        };
+
+        const { response, error } = await searchEmployeeAPI(params);
+        if (error) {
+            console.log('에러 발생');
+            return;
+        }
+
+        console.log("params : ", params);
+        console.log("response : ", response);
+        console.log("formData : ", formData);
+
+        const nameOptions = response.data.data.map(employee => ({
+            name: employee.name,
+            value: employee.empNo  // 예시로 empNo를 value로 사용
+        }));
+    
+        // name 필드의 options만 업데이트
+        const updatedFormData = formData.map((field) => {
+            if (field.key === 'name') {
+                // name 필드의 options만 업데이트
+                return { ...field, options: [{ name: "선택", value: "" }, ...nameOptions] };
+            }
+            return field; // 다른 필드는 그대로 유지
+        });
+
+        setFormData(updatedFormData);
     };
 
     return (
@@ -103,10 +205,11 @@ const AdminSalaryModalPage = (props) => {
                             </Form.Select>
                         ) : field.type === 'input' ? (
                             <Form.Control
-                                type="number"
+                                type="text"
                                 name={field.key}
                                 value={field.value}
                                 onChange={handleChange}
+                                disabled={field.isDisable}
                             />
                         ) : null}
                     </div>
