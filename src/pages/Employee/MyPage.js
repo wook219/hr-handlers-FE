@@ -11,6 +11,7 @@ const MyPage = () => {
     const [formData, setFormData] = useState({});
     const [selectedFile, setSelectedFile] = useState(null); // 업로드할 파일
     const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 URL
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +23,7 @@ const MyPage = () => {
                     password: "*********", // 기본값으로 더미 비밀번호 설정
                     phone: data.data.phone || "",
                     birthDate: data.data.birthDate || "",
-                    name: data.data.name || "", 
+                    name: data.data.name || "",
                     position: data.data.position || "",
                     profileImage,
                 });
@@ -74,10 +75,15 @@ const MyPage = () => {
 
             // 업데이트할 데이터를 준비
             const updatedData = {
-                ...formData,
+                email: formData.email,
                 password: passwordToSend,
+                phone: formData.phone,
+                introduction: formData.introduction,
                 profileImageUrl: uploadedImageUrl,
             };
+
+            // 디버깅용 로그
+            console.log("보낼 데이터:", updatedData);
 
             // API 호출로 데이터 업데이트
             await updateMyPageAPI(updatedData);
@@ -108,7 +114,7 @@ const MyPage = () => {
                     <label htmlFor="profileImageInput">
                         <img
                             className="mypage-profile-img"
-                            src={previewImage || formData.profileImageUrl} // public 폴더 기준 경로
+                            src={previewImage || formData.profileImageUrl || "/profile_image.png"} // public 폴더 기준 경로
                             alt={formData?.name || "프로필 사진"}
                         />
                     </label>
@@ -144,26 +150,41 @@ const MyPage = () => {
                     {isEditing ? (
                         <>
                             <div className="mypage-info-item">
-                                <label>이메일:</label>
+                                <label>이메일</label>
                                 <input
                                     type="email"
                                     name="email"
+                                    style={{ width: "200px" }}
                                     value={formData.email || ""}
                                     onChange={handleInputChange}
                                 />
                             </div>
                             <div className="mypage-info-item">
-                                <label>비밀번호:</label>
+                                <label>비밀번호</label>
                                 <input
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     name="password"
+                                    className="mypage-password-input"
                                     placeholder="*********"
                                     value={formData.password || ""}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 />
+                                <div className="mypage-password-toggle">
+                                    <input
+                                        type="checkbox"
+                                        id="showPassword"
+                                        className="mypage-password-checkbox"
+                                        checked={showPassword}
+                                        onChange={() => setShowPassword((prev) => !prev)}
+                                    />
+                                    <label htmlFor="showPassword" className="mypage-password-label">
+                                        비밀번호 보기
+                                    </label>
+                                </div>
                             </div>
+
                             <div className="mypage-info-item">
-                                <label>연락처:</label>
+                                <label>연락처</label>
                                 <input
                                     type="text"
                                     name="phone"
@@ -172,7 +193,7 @@ const MyPage = () => {
                                 />
                             </div>
                             <div className="mypage-info-item">
-                                <label>생일:</label>
+                                <label>생일</label>
                                 <input
                                     type="date"
                                     name="birthDate"
@@ -184,19 +205,19 @@ const MyPage = () => {
                     ) : (
                         <>
                             <div className="mypage-info-item">
-                                <span>이메일:</span>
+                                <span>이메일</span>
                                 <span>{userData?.data.email}</span>
                             </div>
                             <div className="mypage-info-item">
-                                <span>비밀번호:</span>
+                                <span>비밀번호</span>
                                 <span>***********</span>
                             </div>
                             <div className="mypage-info-item">
-                                <span>연락처:</span>
+                                <span>연락처</span>
                                 <span>{userData?.data.phone}</span>
                             </div>
                             <div className="mypage-info-item">
-                                <span>생일:</span>
+                                <span>생일</span>
                                 <span>{userData?.data.birthDate}</span>
                             </div>
                         </>
@@ -204,9 +225,7 @@ const MyPage = () => {
                 </div>
                 <div className="mypage-department-info">
                     <h5 style={{ fontWeight: "bold", marginTop: "40px" }}>부서</h5>
-                    <div className="mypage-info-item">
-                        <span style={{ marginTop: "10px", marginLeft: "20px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
-                    </div>
+                        <span style={{ marginTop: "10px", marginLeft: "50px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
                 </div>
                 {isEditing && (
                     <div className="mypage-edit-buttons">

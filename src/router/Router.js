@@ -13,6 +13,7 @@ import ChatRoom from '../pages/Chat/ChatRoom';
 import Home from '../pages/Home/Home';
 import VacationPage from '../pages/Vacation/VacationPage';
 import AdminEmp from '../pages/Admin/Employee/AdminEmployeePage'
+import AdminDept from '../pages/Admin/Department/AdminDepartmentPage'
 
 import AdminHome from '../pages/Admin/Home/AdminHomePage'
 import AdminVacation from '../pages/Admin/Vacation/AdminVacationPage'
@@ -39,6 +40,7 @@ function AppRouter() {
       <Route path="/admin/salary" element={<AdminSalary />} />
       <Route path="/admin/emp" element={<AdminEmp />} />
       <Route path="/admin/vacation" element={<AdminVacation />} />
+      <Route path="/admin/dept" element={<AdminDept />} />
     </Routes>
   );
 }
