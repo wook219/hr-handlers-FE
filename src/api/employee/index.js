@@ -38,6 +38,7 @@ export const updateMyPageAPI = async (formData) => {
 
     const response = await instance.patch("/emp", formData, {
         headers: {
+           'Content-Type': 'multipart/form-data',
             access: token,
         },
     });
