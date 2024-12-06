@@ -31,7 +31,7 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
   return (
     <>
       <Modal show={show} onHide={onClose} centered className="chatroom-modal-content">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title className="text-center">채팅방 개설하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -58,12 +58,12 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-button chatroom-modal-button-color" onClick={handleCreate} size="lg">
+          <button className="chatroom-button chatroom-modal-button-color" onClick={handleCreate} size="lg">
             생성
-          </Button>
-          <Button className="chatroom-button ml-2" variant="secondary" onClick={onClose} size="lg">
+          </button>
+          <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={onClose} size="lg">
             취소
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>

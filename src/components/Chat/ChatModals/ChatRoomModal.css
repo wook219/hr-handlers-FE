@@ -19,14 +19,45 @@
   background-color: #1a2b50;
   border: 1px solid #1a2b50;
   outline: none; /* 포커스 상태에서 나타나는 외곽선 제거 */
+  outline: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 18px;
 }
 
 .chatroom-modal-button-color:focus {
   box-shadow: none; /* 포커스 상태에서 그림자 제거 */
+  outline: none;
 }
 
 .chatroom-modal-button-color:hover {
   background-color: #111b32;
+  outline: none;
+}
+
+.chatroom-cancel-button-color {
+  border: 1px solid #999999;
+  background-color: #999999;
+  outline: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 18px;
+}
+
+.chatroom-cancel-button-color:hover {
+  background-color: #777777;
+  outline: none;
+}
+
+.chatroom-cancel-button-color:focus {
+  box-shadow: none; /* 포커스 상태에서 그림자 제거 */
+  outline: none;
 }
 
 .chatroom-modal-label {

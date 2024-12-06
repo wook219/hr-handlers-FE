@@ -19,6 +19,7 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
     }
   };
 
+  // 무한 스크롤 - 페이지네이션 적용 필요
   // useEffect(() => {
   //   // handleScroll을 이 내부에서 할 것
   //   // IntersectionObserver 실행

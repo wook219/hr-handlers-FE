@@ -25,12 +25,12 @@ const DeleteChatRoomModal = ({ show, onClose, onConfirm, chatRoomId }) => {
         <div>정말 이 채팅방을 삭제하시겠습니까?</div>
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-center">
-        <Button className="chatroom-button chatroom-modal-button-color" onClick={handleDeleteConfirm} size="lg">
+        <button className="chatroom-button chatroom-modal-button-color" onClick={handleDeleteConfirm} size="lg">
           삭제
-        </Button>
-        <Button className="chatroom-button ml-2" variant="secondary" onClick={onClose} size="lg">
+        </button>
+        <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={onClose} size="lg">
           취소
-        </Button>
+        </button>
       </Modal.Footer>
     </Modal>
   );
