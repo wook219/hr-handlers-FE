@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ChatRoomHeader.css';
-import { ThreeDotsVertical, ChevronLeft } from 'react-bootstrap-icons';
+import { ThreeDotsVertical, ChevronLeft, PersonFill } from 'react-bootstrap-icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getJoinedEmployees } from '../../api/chat';
 
@@ -35,18 +35,15 @@ const ChatRoomHeader = ({ title, handleClickMenu }) => {
         <ChevronLeft />
       </div>
       <div className="chatroom-center">
-        {title}({employeeCount})
+        {title}
+        <span className="chatroom-header-size">
+          <PersonFill className="chatroom-icon-margin" />
+          {employeeCount}
+        </span>
       </div>
       <div className="chatroom-right chatroom-header-icon-size" onClick={handleClickMenu}>
         <ThreeDotsVertical />
       </div>
-
-      {contextMenu && (
-        <div style={{ position: 'absolute', top: contextMenu.mouseY, left: contextMenu.mouseX }}>
-          <div>메뉴1</div>
-          <div>메뉴1</div>
-        </div>
-      )}
     </div>
   );
 };

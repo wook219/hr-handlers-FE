@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { getAllChatRoomAPI } from '../../../api/chat';
 import EnterChatRoomButton from '../ChatButtons/EnterChatRoomButton';
+import DeleteChatRoomButton from '../ChatButtons/DeleteChatRoomButton';
 import './ChattingList.css';
+import { useUser } from '../../../context/UserContext';
 
 const ChattingList = () => {
   const [chatrooms, setChatRooms] = useState([]);
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -22,6 +25,12 @@ const ChattingList = () => {
 
     fetchChatRooms();
   }, []);
+
+  const handleDeleteChatRoom = (chatRoomId) => {
+    setChatRooms(
+      (prevChatRooms) => prevChatRooms.filter((room) => room.chatRoomId !== chatRoomId) // 삭제된 채팅방을 목록에서 제외
+    );
+  };
   return (
     <div className="chatting-list-container">
       <div className="chatting-list">
@@ -37,6 +46,9 @@ const ChattingList = () => {
 
             <div className="col-3 text-center">
               <EnterChatRoomButton chatRoomId={chatroom.chatRoomId} title={chatroom.title} />
+              {user.role === 'ROLE_ADMIN' && (
+                <DeleteChatRoomButton chatRoomId={chatroom.chatRoomId} onDelete={handleDeleteChatRoom} />
+              )}
             </div>
           </div>
         ))}
