@@ -31,7 +31,7 @@ const ChatParticipantsModal = ({ show, handleClose, chatRoomId }) => {
       <Modal.Header closeButton>
         <Modal.Title>
           <div>
-            참여 목록 <PersonFill className="chat-participant-icon" />
+            참가자 목록 <PersonFill className="chat-participant-icon" />
             <span>{participants.length}</span>
           </div>
         </Modal.Title>
