@@ -58,14 +58,14 @@ const PostModal = ({
             const uploadedUrls = await Promise.all(
                 pendingUploads.map(async (file) => {
                     const formData = new FormData();
-                    formData.append('upload', file);
-                    const response = await axios.post('api/s3', formData, {
+                    formData.append('path', 'post/images'); // 경로 추가
+                    formData.append('file', file); // 'upload'에서 'file'로 변경
+                    const response = await axios.post('api/s3', formData, { // '/upload' 제거
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
-                    return response.data.url; // S3 URL 반환
+                    return response.data.url;
                 })
             );
-    
             // 에디터 데이터에서 임시 URL(blob)을 S3 URL로 대체
             let updatedEditorData = editorData;
     

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getMyPageAPI, updateMyPageAPI } from "../../api/employee/index";
 import "./MyPage.css";
+import axios from 'axios';
 
 const MyPage = () => {
     const [userData, setUserData] = useState("");
@@ -17,7 +18,8 @@ const MyPage = () => {
         const fetchData = async () => {
             try {
                 const data = await getMyPageAPI();
-                const profileImage = data?.data?.profileImageUrl || "/profile_image.png"; // 기본값 설정
+                console.log('API Response:', data); // 여기서 실제 데이터 확인
+                const profileImage = data.data.profileImage || "/profile_image.png"; // 기본값 설정
                 setFormData({
                     email: data.data.email || "",
                     password: "*********", // 기본값으로 더미 비밀번호 설정
@@ -56,38 +58,80 @@ const MyPage = () => {
 
 
     // 수정
+    /*
     const handleSave = async () => {
         try {
-
             const passwordToSend = formData.password !== "*********"
-                ? formData.password // 새 비밀번호를 전송
-                : undefined; // 사용자가 수정하지 않으면 undefined
-
-            // 프로필 사진 업로드 처리
-            let uploadedImageUrl = formData.profileImageUrl; // 기본 값으로 기존 URL 유지
-            if (selectedFile) {
-                const formDataToUpload = new FormData();
-                formDataToUpload.append("profileImage", selectedFile);
-
-                // 업로드 API 호출 (업로드 성공 시 URL 반환)
-                uploadedImageUrl = await updateMyPageAPI(formDataToUpload);
-            }
-
-            // 업데이트할 데이터를 준비
-            const updatedData = {
+                ? formData.password 
+                : undefined;
+    
+            const updateRequest = {
                 email: formData.email,
                 password: passwordToSend,
                 phone: formData.phone,
-                introduction: formData.introduction,
-                profileImageUrl: uploadedImageUrl,
+                introduction: formData.introduction
             };
+    
+            const formDataToSend = new FormData();
+            // updateRequest를 JSON 문자열로 변환하여 추가
+            formDataToSend.append('updateRequest', new Blob([JSON.stringify(updateRequest)], { 
+                type: 'application/json' 
+            }));
+            
+            // 새 이미지가 선택된 경우에만 추가
+            if (selectedFile) {
+                formDataToSend.append('profileImage', selectedFile);
+            }
+    
+            const response = await updateMyPageAPI(formDataToSend);
+            setUserData((prev) => ({ ...prev, data: { ...prev.data, ...updateRequest } }));
+            setIsEditing(false);
+            alert("프로필이 성공적으로 수정되었습니다!");
+        } catch (error) {
+            alert(`수정 중 오류가 발생했습니다: ${error.message}`);
+        }
+    };*/
 
-            // 디버깅용 로그
-            console.log("보낼 데이터:", updatedData);
 
+    const handleSave = async () => {
+        try {
+            const passwordToSend = formData.password !== "*********"
+                ? formData.password 
+                : undefined;
+    
+            const updateRequest = {
+                email: formData.email,
+                password: passwordToSend,
+                phone: formData.phone,
+                introduction: formData.introduction
+            };
+    
+            const formDataToSend = new FormData();
+            // updateRequest를 JSON 문자열로 변환하여 추가
+            formDataToSend.append('updateRequest', new Blob([JSON.stringify(updateRequest)], { 
+                type: 'application/json' 
+            }));
+            
+            // 새 이미지가 선택된 경우에만 추가
+            if (selectedFile) {
+                formDataToSend.append('profileImage', selectedFile);
+            }
+    
             // API 호출로 데이터 업데이트
-            await updateMyPageAPI(updatedData);
-            setUserData((prev) => ({ ...prev, data: { ...prev.data, ...updatedData } }));
+            await updateMyPageAPI(formDataToSend);
+            
+            // 서버에서 업데이트된 데이터 다시 가져오기
+            const updatedData = await getMyPageAPI();
+            setUserData(updatedData);
+            
+            // 상태 초기화
+            setPreviewImage(null);
+            setSelectedFile(null);
+            setFormData(prev => ({
+                ...prev,
+                profileImageUrl: updatedData.data.profileImage
+            }));
+            
             setIsEditing(false);
             alert("프로필이 성공적으로 수정되었습니다!");
         } catch (error) {
@@ -95,9 +139,10 @@ const MyPage = () => {
         }
     };
 
+
     const handleCancel = () => {
         setIsEditing(false); // 수정 모드 종료
-        setPreviewImage(userData?.data?.profileImageUrl || "/profile_image.png"); // 기본값 설정
+        setPreviewImage(userData?.data?.profileImage || "/profile_image.png"); // 기본값 설정
         setSelectedFile(null); // 선택된 파일 초기화
         setFormData(userData?.data || {}); // 원래 데이터로 복원
     };
@@ -114,7 +159,7 @@ const MyPage = () => {
                     <label htmlFor="profileImageInput">
                         <img
                             className="mypage-profile-img"
-                            src={previewImage || formData.profileImageUrl || "/profile_image.png"} // public 폴더 기준 경로
+                            src={previewImage || formData.profileImage || "/profile_image.png"} // public 폴더 기준 경로
                             alt={formData?.name || "프로필 사진"}
                         />
                     </label>
