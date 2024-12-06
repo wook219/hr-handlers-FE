@@ -160,9 +160,9 @@ const DepartmentManagement = () => {
                         <h5 style={{marginBottom: "20px"}}>부서 등록</h5>
                         <div style={{ alignItems: "center" }}>
                         <input
-                            style={{width: '100%', borderRadius: "5px", borderColor: "#bdbdbd" }}
+                            style={{width: '100%', borderRadius: "5px", border: "1px solid #e0e0e0", borderColor: "#bdbdbd" }}
                             type="text"
-                            placeholder="새로운 부서 이름을 입력해주세요."
+                            placeholder=" 새로운 부서 이름을 입력해주세요."
                             value={newDepartmentName}
                             onChange={(e) => setNewDepartmentName(e.target.value)}
                         />

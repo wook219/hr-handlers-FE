@@ -75,6 +75,7 @@ function Sidebar() {
             color: 'white',
             marginLeft: '150px',
             fontSize: '14px',
+            marginBottom: "50px"
           }}
         >
           로그아웃
