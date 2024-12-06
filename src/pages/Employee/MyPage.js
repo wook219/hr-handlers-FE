@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getMyPageAPI, updateMyPageAPI } from "../../api/employee/index";
 import "./MyPage.css";
-import axios from 'axios';
+import { useUser } from "../../context/UserContext";
 
 const MyPage = () => {
+    const { login } = useUser();
     const [userData, setUserData] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -96,42 +97,52 @@ const MyPage = () => {
     const handleSave = async () => {
         try {
             const passwordToSend = formData.password !== "*********"
-                ? formData.password 
+                ? formData.password
                 : undefined;
-    
+
             const updateRequest = {
                 email: formData.email,
                 password: passwordToSend,
                 phone: formData.phone,
                 introduction: formData.introduction
             };
-    
+
             const formDataToSend = new FormData();
             // updateRequest를 JSON 문자열로 변환하여 추가
-            formDataToSend.append('updateRequest', new Blob([JSON.stringify(updateRequest)], { 
-                type: 'application/json' 
+            formDataToSend.append('updateRequest', new Blob([JSON.stringify(updateRequest)], {
+                type: 'application/json'
             }));
-            
+
             // 새 이미지가 선택된 경우에만 추가
             if (selectedFile) {
                 formDataToSend.append('profileImage', selectedFile);
             }
-    
+
             // API 호출로 데이터 업데이트
             await updateMyPageAPI(formDataToSend);
-            
+
             // 서버에서 업데이트된 데이터 다시 가져오기
             const updatedData = await getMyPageAPI();
+
+            // Context 상태 업데이트 
+            login({
+                empNo: updatedData.data.empNo,
+                role: updatedData.data.role,
+                name: updatedData.data.name,
+                deptName: updatedData.data.deptName,
+                profileImage: updatedData.data.profileImage, // 업데이트된 프로필 이미지
+            });
+
             setUserData(updatedData);
-            
+
             // 상태 초기화
-            setPreviewImage(null);
+            setPreviewImage(updatedData.data.profileImage);
             setSelectedFile(null);
             setFormData(prev => ({
                 ...prev,
                 profileImageUrl: updatedData.data.profileImage
             }));
-            
+
             setIsEditing(false);
             alert("프로필이 성공적으로 수정되었습니다!");
         } catch (error) {
@@ -206,27 +217,31 @@ const MyPage = () => {
                             </div>
                             <div className="mypage-info-item">
                                 <label>비밀번호</label>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    className="mypage-password-input"
-                                    placeholder="*********"
-                                    value={formData.password || ""}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                />
-                                <div className="mypage-password-toggle">
+                                <div className="mypage-password-container">
                                     <input
-                                        type="checkbox"
-                                        id="showPassword"
-                                        className="mypage-password-checkbox"
-                                        checked={showPassword}
-                                        onChange={() => setShowPassword((prev) => !prev)}
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        className="mypage-password-input"
+                                        placeholder="*********"
+                                        value={formData.password || ""}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     />
-                                    <label htmlFor="showPassword" className="mypage-password-label">
-                                        비밀번호 보기
-                                    </label>
+                                    <div className="mypage-password-toggle">
+                                        <input
+                                            type="checkbox"
+                                            id="showPassword"
+                                            style={{marginleft: "100px"}}
+                                            className="mypage-password-checkbox"
+                                            checked={showPassword}
+                                            onChange={() => setShowPassword((prev) => !prev)}
+                                        />
+                                        <label htmlFor="showPassword" className="mypage-password-label">
+                                            비밀번호 보기
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
+
 
                             <div className="mypage-info-item">
                                 <label>연락처</label>
@@ -270,7 +285,7 @@ const MyPage = () => {
                 </div>
                 <div className="mypage-department-info">
                     <h5 style={{ fontWeight: "bold", marginTop: "40px" }}>부서</h5>
-                        <span style={{ marginTop: "10px", marginLeft: "50px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
+                    <span style={{ marginTop: "10px", marginLeft: "50px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
                 </div>
                 {isEditing && (
                     <div className="mypage-edit-buttons">
