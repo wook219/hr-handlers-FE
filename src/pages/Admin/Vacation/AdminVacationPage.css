@@ -1,0 +1,56 @@
+.admin-vacation-page {
+    padding: 20px;
+ }
+ 
+ .admin-section-tabs {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+ }
+ 
+ .admin-section-tab {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    font-size: 16px;
+ }
+ 
+ .admin-section-tab.active {
+    border-bottom: 2px solid #007bff;
+    color: #007bff;
+ }
+ 
+ .admin-section-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+ 
+ .admin-pending-vacation-section h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+ }
+ 
+ .admin-vacation-table {
+    width: 100%;
+    border-collapse: collapse;
+ }
+ 
+ .admin-vacation-table th {
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+ }
+ 
+ .admin-vacation-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+ }
+ 
+ .admin-vacation-table tr:hover {
+    background-color: #f8f9fa;
+ }

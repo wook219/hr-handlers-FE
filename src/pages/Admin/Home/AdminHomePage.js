@@ -8,7 +8,7 @@ function AdminHomePage() {
   const navItems = [
     { icon: <FaHome />, label: '사원 관리', action: navigate.toAdminEmp },
     { icon: <FaRegCalendarAlt />, label: '일정 관리' },
-    { icon: <FaPlane />, label: '휴가 관리' },
+    { icon: <FaPlane />, label: '휴가 관리', action: navigate.toAdminVacation},
     { icon: <FaDollarSign />, label: '급여 관리' },
   ];
 
