@@ -10,5 +10,11 @@ export const path = {
     },
     ADMINEMPLOYEE: {
         SEARCH: `${ADMIN_BASE_URL}/emp/search`
+    },
+    ADMINVACATION : {
+        BASE: `${ADMIN_BASE_URL}/vacation`,
+        STATUS : `${ADMIN_BASE_URL}/vacation/status`,
+        APPROVE: (id) => `${ADMIN_BASE_URL}/vacation/${id}/approve`,
+        REJECT: (id) => `${ADMIN_BASE_URL}/vacation/${id}/reject`
     }
 }

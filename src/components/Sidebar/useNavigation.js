@@ -14,6 +14,7 @@ export const useNavigation = () => {
     toSalary: () => navigate(PATHS.SALARY),
     toVacation : () => navigate(PATHS.VACATION),
     toAdminHome : () => navigate(ADMINPATHS.HOME),
-    toAdminEmp: () => navigate(ADMINPATHS.EMP)
+    toAdminEmp: () => navigate(ADMINPATHS.EMP),
+    toAdminVacation : () => navigate(ADMINPATHS.VACATION),
   };
 };
