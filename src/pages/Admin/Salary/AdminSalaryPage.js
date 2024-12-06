@@ -17,6 +17,7 @@ import "./AdminSalaryPage.css";
 
 import AdminSalaryModalPage from "./AdminSalaryModalPage";
 import AdminSalarySearchPage from "./AdminSalarySearchPage";
+import AdminSalaryExcelTypeModalPage from "./AdminSalaryExcelTypeModalPage";
 
 const AdminSalaryPage = () => {
     const [size, setSize] = useState(15); // 한 페이지에 표시할 게시글 수
@@ -31,7 +32,11 @@ const AdminSalaryPage = () => {
     const [modalShow, setModalShow] = useState(false); // 모달 사용 여부
     const [modalType, setModalType] = useState(''); // 모달 화면 타입(추가: create, 수정: update)
     const [checkItems, setCheckItems] = useState([]); // 체크된 아이템을 담을 배열
+
     const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
+    const [excelTypeModalShow, setExcelTypeModalShow] = useState(false); // 엑셀 다운로드 설정 모달 사용 여부
+
+
     const positionOptions = [
         { name: '선택', value: '' },
         { name: '사원', value: '사원' },
@@ -331,21 +336,40 @@ const AdminSalaryPage = () => {
 
     // 엑셀 다운로드 api
     const handleExcelDownload = async () => {
-        const params = {};
+        setExcelTypeModalShow(true);
+    };
+
+    const handleExcelSubmit = async (excelTypeData) => {
+        const excelTypeParam = {};
+        const searchParam = {};
+
         searchData.forEach((item) => {
             if (item.value) {
-                params[item.key] = item.value;
+                searchParam[item.key] = item.value;
             }
         });
+
+        excelTypeData.forEach((item) => {
+            if (item.value) {
+                excelTypeParam[item.key] = item.value;
+            }
+        });
+
+        const params =  {
+            excelTypeParam,
+            searchParam
+        }
+
+        console.log('searchData : ', searchData);
+        console.log('excelTypeData : ', excelTypeData);
+        console.log('params : ', params);
+
 
         const { response, error } = await excelDownloadSalaryAPI(params);
         if (error) {
             showToast('에러 발생', 'error');
             return;
         }
-
-        console.log("params : ", params);
-        console.log("response : ", response);
 
         // Blob을 사용하여 파일 다운로드
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -357,6 +381,7 @@ const AdminSalaryPage = () => {
         document.body.removeChild(link); // 링크 요소 제거
         
         handleSearch(searchData, currentPage, size);
+        setExcelTypeModalShow(false);
     };
 
     return (
@@ -506,6 +531,11 @@ const AdminSalaryPage = () => {
                 formData={formData}
                 selectedDate={selectedDate}
                 modalType={modalType}
+            />
+            <AdminSalaryExcelTypeModalPage
+                show={excelTypeModalShow}
+                onHide={() => setExcelTypeModalShow(false)}
+                onSubmit={handleExcelSubmit}
             />
         </div>
     );
