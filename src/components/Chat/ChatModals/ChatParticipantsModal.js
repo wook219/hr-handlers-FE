@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import './ChatRoomModal.css';
 import { getJoinedEmployees } from '../../../api/chat';
 import { PersonFill } from 'react-bootstrap-icons';

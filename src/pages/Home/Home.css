@@ -1,21 +1,23 @@
 /* 전체 컨테이너 스타일 */
 .home-notice-container {
-    margin-left: 20px; /* 왼쪽 여백 추가 */
-    width: 50%; /* 화면의 반만 차지 */
+    margin-left: 20px;
+    width: 50%;
 }
 
 .home-notice-card {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
     max-width: 100%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .home-notice-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 
 .notice-arrow {
@@ -24,31 +26,63 @@
     height: 12px;
     border-right: 2px solid #333;
     border-bottom: 2px solid #333;
-    transform: rotate(45deg); /* 기본 화살표 아래 방향 */
-    transition: transform 0.3s ease; /* 부드러운 애니메이션 */
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
 }
 
 .notice-arrow.arrow-up {
-    transform: rotate(-135deg); /* 위쪽 방향 */
+    transform: rotate(-135deg);
 }
 
 .notice-arrow.arrow-down {
-    transform: rotate(45deg); /* 아래쪽 방향 */
+    transform: rotate(45deg);
 }
 
 .home-notice-body {
     padding: 10px 0;
-    transition: all 0.3s ease-in-out; /* 부드러운 펼침 효과 */
+    transition: all 0.3s ease-in-out;
+    font-size: 0.95rem;
 }
 
 .home-notice-item {
-    padding: 5px 0;
-    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .home-notice-item:hover {
+    background-color: #f0f8ff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notice-icon {
+    font-size: 1.2rem;
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.notice-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.notice-content {
+    max-height: none; /* 기존 max-height 값을 제거 */
+    overflow: visible; /* 스크롤이나 잘림 방지 */
+    padding: 0 10px;
     background-color: #f9f9f9;
-    border-radius: 5px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 0.95rem;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+}
+
+.notice-content.expanded {
+    max-height: 500px;
+    padding: 10px 10px;
 }
 
 .text-muted {
@@ -56,38 +90,51 @@
     color: #6c757d;
 }
 
+/* 작성 버튼 */
 .add-notice-btn button {
-    background-color: #007bff;
+    background-color: #b7b7b7;
     color: #fff;
     border: none;
-    padding: 8px 15px;
+    padding: 8px 20px;
     border-radius: 5px;
     font-size: 0.9rem;
     transition: background-color 0.3s ease;
 }
 
 .add-notice-btn button:hover {
-    background-color: #0056b3;
+    background-color: #1a2b50;
 }
 
-/* 구분선 추가 */
+/* 구분선 */
 .divider {
-    margin: 10px 0;
+    margin: 15px 0;
     border-top: 1px solid #ddd;
 }
 
-.add-notice-btn button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
   }
   
-  .add-notice-btn button:hover {
-    background-color: #0056b3;
+  .pagination-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .pagination-btn:disabled {
+    color: #adb5bd;
+    cursor: not-allowed;
+  }
+  
+  .pagination-btn:hover:not(:disabled) {
+    color: #0056b3;
   }
   
