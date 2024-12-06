@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Home.css";
 import { getAllNoticesAPI } from "../../api/home"; // 공지사항 API
 import PostModal from "../Post/PostModal"; // 모달 컴포넌트
+import { useUser } from '../../context/UserContext';
 import {
   createPostAPI,
   getPostDetailAPI,
@@ -11,6 +12,8 @@ import {
 } from "../../api/post";
 
 const Home = () => {
+  const { user } = useUser();
+  
   const [notices, setNotices] = useState([]); // 공지사항 목록 상태
   const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
   const [totalPages, setTotalPages] = useState(0); // 전체 페이지 수 추가
@@ -154,11 +157,13 @@ const Home = () => {
       <div className="home-notice-card shadow-sm rounded">
         <div className="home-notice-header d-flex justify-content-between align-items-center">
           <h5 className="mb-0">공지사항</h5>
+          {user.role === 'ROLE_ADMIN' && (
           <div className="d-flex align-items-center">
             <div className="add-notice-btn me-3">
               <button onClick={handleAddNotice}>작성</button>
             </div>
           </div>
+            )}
         </div>
         <div className="divider"></div>
         <div className="home-notice-body mt-3">
@@ -175,6 +180,7 @@ const Home = () => {
                       <span className="notice-icon">📢</span>
                       <span>{notice.title}</span>
                     </div>
+                    {user.role === 'ROLE_ADMIN' && (
                     <div>
                       <span
                         className="edit-btn me-2"
@@ -197,6 +203,7 @@ const Home = () => {
                         삭제
                       </span>
                     </div>
+                    )}
                   </div>
                   {expandedNoticeId === notice.id && (
                     <div

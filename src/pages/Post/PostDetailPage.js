@@ -49,9 +49,9 @@ const CommentItem = ({ comment, onReply, onDelete, onUpdate }) => {
                         답글 달기
                     </button>
                 </div>
-                {user.name === comment.employeeName && (
+                {(user.name === comment.employeeName || user.role === 'ROLE_ADMIN') && (
                     <div className="comment-edit-delete">
-                        {isEditing ? (
+                       {user.name === comment.employeeName && isEditing ? (
                             <>
                                 <button
                                     className="reply-button"
@@ -74,12 +74,14 @@ const CommentItem = ({ comment, onReply, onDelete, onUpdate }) => {
                             </>
                         ) : (
                             <>
+                             {user.name === comment.employeeName && (
                                 <button
                                     className="reply-button"
                                     onClick={() => setIsEditing(true)}
                                 >
                                     수정
                                 </button>
+                                   )}
                                 <button
                                     className="reply-button"
                                     onClick={() => onDelete(comment.id)}
@@ -281,7 +283,7 @@ const PostDetailPage = () => {
                     <img src={post.imageUrl} alt="Post illustration" className="post-image" />
                 )}
             </div>
-            {post.isAuthor && (
+            {(post.isAuthor || user.role === 'ROLE_ADMIN') && (
                 <div className="post-actions">
                     <button className="edit-button" onClick={() => setModalOpen(true)}>
                         수정
