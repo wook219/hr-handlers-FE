@@ -1,6 +1,5 @@
 .mypage-container {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
     max-width: 1200px;
     margin: 50px auto;
@@ -9,6 +8,7 @@
     border-radius: 20px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     min-height: calc(100vh - 100px);
+    justify-content: space-between;
 }
 
 .mypage-left {
@@ -51,9 +51,9 @@
 .mypage-profile-edit-button {
     position: absolute;
     right: 20px;
-    background-color: transparent;
-    color: #1a2b50;
-    border: 2px solid #1a2b50; 
+    background-color: #1a2b50;
+    color: white;
+    border: none;
     border-radius: 10px;
     padding: 8px 13px;
     font-size: 1rem; 
@@ -62,7 +62,7 @@
 }
 
 .mypage-profile-edit-button:hover {
-    background-color: #1a2b50; 
+    background-color: #0f1c3c; 
     color: white;
 }
 
@@ -195,17 +195,29 @@
 
 .mypage-password-toggle {
     display: flex;
-    align-items: center; /* 세로 가운데 정렬 */
-    gap: 10px; /* 체크박스와 텍스트 사이 간격 */
-    margin-top: 5px; /* 입력 필드와 간격 */
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px; 
+    margin-left: 20px; 
 }
 
 .mypage-password-checkbox {
-    width: 16px;
-    height: 16px;
+    cursor: pointer;
 }
 
 .mypage-password-label {
     font-size: 0.8rem;
     color: #333;
+    margin-right: 100px;
+    white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+    margin-bottom: 10px;
+}
+
+.mypage-password-input{
+    flex: 1; /* 입력창의 너비를 최대로 확장 */
+    margin-right: 10px; /* 입력창과 체크박스 간 여백 */
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }

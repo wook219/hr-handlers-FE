@@ -44,7 +44,7 @@
 .dept-department-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 110px;
     table-layout: fixed;
     word-break: break-word;
 }
@@ -82,22 +82,24 @@
 }
 
 .dept-edit-button {
-    background-color: white; /* 수정 버튼 색상 */
-    color: black;
+    background-color: #1a2b50; /* 수정 버튼 색상 */
+    color: white;
     margin-right: 15px;
+    border: none;
 }
 
 .dept-edit-button:hover {
-    background-color: white; /* 수정 버튼 호버 색상 */
+    background-color: #0f1c3c; /* 수정 버튼 호버 색상 */
 }
 
 .dept-delete-button {
-    background-color: #1a2b50; /* 삭제 버튼 색상 */
+    background-color: #999999; /* 삭제 버튼 색상 */
     color: white;
+    border: none;
 }
 
 .dept-delete-button:hover {
-    background-color: #1a2b50; /* 삭제 버튼 호버 색상 */
+    background-color: #777777; /* 삭제 버튼 호버 색상 */
 }
 
 .dept-modal-overlay {
@@ -123,7 +125,7 @@
 }
 
 .dept-save-button {
-    background-color: #4caf50;
+    background-color: #1a2b50;
     color: white;
     padding: 4px 15px;
     border: none;
@@ -133,7 +135,7 @@
 }
 
 .dept-save-button:hover {
-    background-color: #45a049;
+    background-color: #0f1c3c;
 }
 
 .dept-cancel-button {

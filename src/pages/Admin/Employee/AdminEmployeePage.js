@@ -39,7 +39,7 @@ const EmployeeManagement = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const token = localStorage.getItem('access');
+        const token = localStorage.getItem('access_token');
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
@@ -119,40 +119,69 @@ const EmployeeManagement = () => {
     };
 
     const handleSave = async (empNo) => {
-        const employeeToSave = employees.find(employee => employee.empNo === empNo);
+        const employeeToSave = employees.find((employee) => employee.empNo === empNo);
 
         const updateData = {
             position: employeeToSave.position,
             contractType: employeeToSave.contractType,
             leaveBalance: employeeToSave.leaveBalance,
-            deptName: employeeToSave.deptName,
+            deptName: employeeToSave.deptName || null,
         };
 
         try {
-            await updateEmployeeAPI(empNo, updateData);
-            alert(`사원 ID ${empNo} 정보가 수정되었습니다.`);
-            setEmployees(employees.map(employee =>
-                employee.empNo === empNo
-                    ? { ...employee, isEditing: false }
-                    : employee
-            ));
+
+            // API 호출 및 응답 받기
+            const response = await updateEmployeeAPI(empNo, updateData);
+
+            console.log("API 응답 데이터:", response);
+
+            // 업데이트 후 상태 반영
+            setEmployees((prevEmployees) =>
+                prevEmployees.map((employee) =>
+                    employee.empNo === empNo
+                        ? { ...employee, ...response, isEditing: false } // 응답 데이터를 상태에 반영
+                        : employee
+                )
+            );
+
+            alert(`사원 ID ${empNo} 정보가 성공적으로 수정되었습니다.`);
         } catch (error) {
             console.error("사원 수정 중 오류가 발생했습니다:", error);
             alert('사원 정보를 수정하는 중 문제가 발생했습니다.');
         }
     };
 
+
     const handleAddEmployee = () => {
         setIsModalOpen(true);
     };
 
     const handleInputChange = (empNo, field, value) => {
-        setEmployees(employees.map(employee =>
-            employee.empNo === empNo
-                ? { ...employee, [field]: value }
-                : employee
-        ));
+        setEmployees((prevEmployees) =>
+            prevEmployees.map((employee) =>
+                employee.empNo === empNo
+                    ? {
+                        ...employee,
+                        [field]: value === "부서 없음" || value.trim() === "" ? null : value, // null 처리 유지
+                    }
+                    : employee
+            )
+        );
     };
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await getDepartmentAPI();
+                setDepartments(response.data || response);
+            } catch (error) {
+                console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
+            }
+        };
+        fetchDepartments();
+    }, []);
+
+
 
     const fetchEmployees = async () => {
         try {
@@ -163,6 +192,7 @@ const EmployeeManagement = () => {
                 sortDir: 'desc',
                 keyword: searchTerm,
             });
+            console.log("API 응답 데이터:", response.content);
             setEmployees(response.content); // 전체 리스트 업데이트
             setTotalPages(response.totalPages);
         } catch (error) {
@@ -185,11 +215,11 @@ const EmployeeManagement = () => {
                 alert("생년월일을 올바르게 입력해주세요.");
                 return;
             }
-    
+
             // 날짜 형식 변환
             const formattedJoinDate = new Date(newEmployee.joinDate).toISOString().split('T')[0];
             const formattedBirthDate = new Date(newEmployee.birthDate).toISOString().split('T')[0];
-    
+
             // 사원 등록 API 호출
             const response = await registerEmployeeAPI({
                 name: newEmployee.name,
@@ -205,13 +235,14 @@ const EmployeeManagement = () => {
                 leaveBalance: newEmployee.leaveBalance,
                 role: newEmployee.role,
             });
-    
+
             // 서버에서 반환된 사원 데이터 확인
-            fetchEmployees(); 
-    
+            await fetchEmployees(); // 최신 데이터 목록 가져오기
+            setIsModalOpen(false);
+
             // 새로운 사원을 리스트의 맨 앞에 추가
             setEmployees((prevEmployees) => [response.data, ...prevEmployees]);
-    
+
             // 입력 폼 초기화
             setNewEmployee({
                 name: '',
@@ -227,7 +258,7 @@ const EmployeeManagement = () => {
                 leaveBalance: 20,
                 role: 'ROLE_EMPLOYEE',
             });
-    
+
             // 모달 닫기
             setIsModalOpen(false);
             alert('사원이 추가되었습니다.');
@@ -236,8 +267,8 @@ const EmployeeManagement = () => {
             alert('사원을 등록하는 중 문제가 발생했습니다.');
         }
     };
-      
-    
+
+
     return (
         <div className="admin-employee-management-container">
             <div className="admin-employee-top-bar">
@@ -307,22 +338,30 @@ const EmployeeManagement = () => {
                                     <td>
                                         <img
                                             className="admin-employee-profile-img"
-                                            src={employee.profileImageUrl}
+                                            src={employee.profileImageUrl || "/profile_image.png"} // 기본 프로필 이미지
                                             alt={employee.name}
                                         />
+                                        <span className="admin-employee-name">{employee.name}</span>
                                     </td>
                                     <td className="admin-employee-info">{employee.empNo}</td>
                                     <td className="admin-employee-info">{employee.joinDate}</td>
                                     <td>
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
-                                                <input
-                                                    type="text"
-                                                    value={employee.deptName || '부서 없음'}
+                                                <select
+                                                    value={employee.deptName || ""}
                                                     onChange={(e) => handleInputChange(employee.empNo, "deptName", e.target.value)}
-                                                />
+                                                    style={{ width: "100px" }}
+                                                >
+                                                    <option value="">-- 부서 선택 --</option>
+                                                    {department.map((dept) => (
+                                                        <option key={dept.id} value={dept.deptName}>
+                                                            {dept.deptName}
+                                                        </option>
+                                                    ))}
+                                                </select>
                                             ) : (
-                                                employee.deptName || '부서 없음'
+                                                employee.deptName || "부서 없음"// 부서 이름이 없으면 "부서 없음"으로 표시
                                             )}
                                         </div>
                                     </td>
@@ -331,6 +370,7 @@ const EmployeeManagement = () => {
                                             {employee.isEditing ? (
                                                 <input
                                                     type="text"
+                                                    style={{ width: "30px" }}
                                                     value={employee.position}
                                                     onChange={(e) => handleInputChange(employee.empNo, "position", e.target.value)}
                                                 />
@@ -342,13 +382,25 @@ const EmployeeManagement = () => {
                                     <td>
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
-                                                <input
-                                                    type="text"
-                                                    value={employee.contractType}
-                                                    onChange={(e) => handleInputChange(employee.empNo, "contractType", e.target.value)}
-                                                />
+                                                <select
+                                                value={contractTypes.find((type) => type.label === employee.contractType)?.value || ""}
+                                                onChange={(e) => {
+                                                    const selectedValue = e.target.value; // 영어 값
+                                                    const selectedLabel = contractTypes.find((type) => type.value === selectedValue)?.label; // 한글 값
+                                                    handleInputChange(employee.empNo, "contractType", selectedLabel); // label(한글)을 저장
+                                                }}
+                                                style={{ width: "100px" }}
+                                            >
+                                                <option value="">-- 계약 형태 선택 --</option>
+                                                {contractTypes.map((type) => (
+                                                    <option key={type.value} value={type.value}>
+                                                        {type.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            
                                             ) : (
-                                                employee.contractType
+                                                employee.contractType || "계약형태 없음"
                                             )}
                                         </div>
                                     </td>
@@ -359,10 +411,10 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell"
                                             style={{ alignItems: "center", flex: "flex", justifyContent: "center" }}>
                                             {employee.isEditing ? (
-                                                <button onClick={() => handleSave(employee.empNo)}
+                                                <button className="admin-employee-update-button" onClick={() => handleSave(employee.empNo)}
                                                     style={{ borderRadius: "5px" }}>완료</button>
                                             ) : (
-                                                <button onClick={() => handleEdit(employee.empNo)}
+                                                <button className="admin-employee-update-button" onClick={() => handleEdit(employee.empNo)}
                                                     style={{ borderRadius: "5px" }}>수정</button>
                                             )}
                                             <button className="admin-employee-delete-button" onClick={() => handleDelete(employee.empNo)}>삭제</button>
@@ -496,10 +548,10 @@ const EmployeeManagement = () => {
                 </div>
                 <div className="admin-employee-modal-buttons">
                     <button onClick={handleSaveNewEmployee}
-                        style={{ borderRadius: "5px", backgroundColor: "#1a2b50", color: "white" }}
+                        style={{ borderRadius: "5px", backgroundColor: "#1a2b50", color: "white", border: "none" }}
                     >저장</button>
                     <button onClick={() => setIsModalOpen(false)}
-                        style={{ borderRadius: "5px" }}
+                        style={{ borderRadius: "5px", backgroundColor: "#999999", color: "white", border: "none" }}
                     >취소</button>
                 </div>
             </Modal>
