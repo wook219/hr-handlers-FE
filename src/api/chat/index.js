@@ -138,8 +138,24 @@ export const getJoinedEmployees = async (chatRoomId) => {
   }
 };
 
+// 채팅방 초대 목록 조회 API
+export const getInvitedEmployeesAPI = async (chatRoomId, keyword = '') => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}/invite`, {
+      params: {
+        keyword: keyword,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 초대 목록 조회 실패: ', error);
+    throw error;
+  }
+};
+
 // 채팅방 초대 API
-export const getInvitedEmployees = async (chatRoomId, empNo) => {
+export const invitedEmployeesChatRoomAPI = async (chatRoomId, empNo) => {
   try {
     const requestBody = {
       empNo: empNo,

@@ -1,45 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, InputGroup, Modal } from 'react-bootstrap';
-import { getAllEmployeesAPI } from '../../../api/employee';
 import { XCircle } from 'react-bootstrap-icons';
 import './ChatRoomModal.css';
 import InviteChatRoomButton from '../ChatButtons/InviteChatRoomButton';
-import { getJoinedEmployees } from '../../../api/chat';
+import { getInvitedEmployeesAPI } from '../../../api/chat';
 
 const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [employeeList, setEmployeeList] = useState([]);
-  const [joinedEmployees, setJoinedEmployees] = useState([]);
+  const loadMoreRef = useRef(null);
 
   const fetchEmployees = async (search = '') => {
     try {
-      const response = await getAllEmployeesAPI({
-        page: 0,
-        size: 10,
-        sortField: 'name',
-        sortDir: 'ASC',
-        keyword: search,
-      });
-      setEmployeeList(response.content);
+      const response = await getInvitedEmployeesAPI(chatRoomId, search);
+      setEmployeeList(response.data);
     } catch (error) {
       console.error('직원 목록 가져오기를 실패했습니다.', error);
     }
   };
 
-  const fetchJoinedEmployees = async () => {
-    try {
-      const response = await getJoinedEmployees(chatRoomId);
-      setJoinedEmployees(response.data);
-    } catch (error) {
-      console.error('채팅방 참여 직원 목록 가져오기를 실패했습니다.', error);
-    }
-  };
+  // useEffect(() => {
+  //   // handleScroll을 이 내부에서 할 것
+  //   // IntersectionObserver 실행
+  //   // 모달 최하위 위치한 element가 있을 것 그게 보일 때 (처음에 content가 있으면 안 보이다가) 호출되는 게 옵저버
+  //   // 보일 때 페이지 수를 하나 올리고 API를 호출하면 됨
+  //   const observer = new IntersectionObserver((entries) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting) {
+  //         fetchEmployees(searchKeyword, page + 1);
+  //         setPage((prevPage) => prevPage + 1);
+  //       }
+  //     });
+  //   });
+  //   observer.observe(target); // target은 useRef로 설정 -> useRef로 최하위에 있는 element를 담으면 됨.
+  // }, []);
 
   // 모달이 열릴 때 직원 목록을 가지고 옴
   useEffect(() => {
     if (show) {
       fetchEmployees();
-      fetchJoinedEmployees();
     }
   }, [show, chatRoomId]);
 
@@ -68,19 +67,14 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
     fetchEmployees(); // 초기 목록 불러오기
   };
 
-  // 참여하고 있는 직원 목록은 제외
-  const filteredEmployeeList = employeeList.filter(
-    (employee) => !joinedEmployees.some((joined) => joined.empNo === employee.empNo)
-  );
-
   // 초대 후 참여자 목록 갱신
   const handleInviteSuccess = () => {
-    fetchJoinedEmployees();
+    fetchEmployees();
   };
 
   // 검색 결과가 없을 때와 초대할 직원이 없을 때 구분
-  const isSearchEmpty = searchKeyword && filteredEmployeeList.length === 0;
-  const isEmployeeListEmpty = filteredEmployeeList.length === 0;
+  const isSearchEmpty = searchKeyword && employeeList.length === 0;
+  const isEmployeeListEmpty = employeeList.length === 0;
 
   return (
     <Modal show={show} onHide={handleClose} centered>
@@ -112,27 +106,21 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
 
         {/* 직원 목록 */}
         <div>
-          {filteredEmployeeList.length > 0
-            ? filteredEmployeeList.map((employee) => (
-                <div key={employee.empNo} className="chat-employee-item">
-                  <div className="chat-employee-info">
-                    <div className="chat-employee-name">{employee.name}</div>
-                    <div className="chat-employee-details">
-                      <div className="chat-employee-dept">{employee.deptName}</div>
-                      <div className="chat-employee-position">{employee.position}</div>
-                    </div>
-                  </div>
-
-                  <div className="chat-employee-button-container">
-                    <InviteChatRoomButton
-                      chatRoomId={chatRoomId}
-                      empNo={employee.empNo}
-                      onInvite={handleInviteSuccess}
-                    />
-                  </div>
+          {employeeList.map((employee) => (
+            <div key={employee.empNo} className="chat-employee-item">
+              <div className="chat-employee-info">
+                <div className="chat-employee-name">{employee.empName}</div>
+                <div className="chat-employee-details">
+                  <div className="chat-employee-dept">{employee.deptName}</div>
+                  <div className="chat-employee-position">{employee.position}</div>
                 </div>
-              ))
-            : null}
+              </div>
+
+              <div className="chat-employee-button-container">
+                <InviteChatRoomButton chatRoomId={chatRoomId} empNo={employee.empNo} onInvite={handleInviteSuccess} />
+              </div>
+            </div>
+          ))}
         </div>
       </Modal.Body>
     </Modal>

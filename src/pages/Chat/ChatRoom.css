@@ -103,6 +103,7 @@
 
 @media (max-width: 1200px) {
   .chatroom-page {
+    margin-top: 100px;
     flex-direction: column; /* 세로로 배치 */
   }
 
@@ -118,7 +119,7 @@
   }
 
   .chatroom-page-container {
-    max-height: 60vh; /* 화면의 60% 정도만 높이 사용 */
+    max-height: 70vh; /* 화면의 60% 정도만 높이 사용 */
   }
 
   .chat-input input {
