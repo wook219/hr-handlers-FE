@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation } from './useNavigation';
-import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt } from 'react-icons/fa';
+import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase   } from 'react-icons/fa';
 import { useUser } from '../../context/UserContext';
 
 function Sidebar() {
@@ -31,6 +31,11 @@ function Sidebar() {
           <li onClick={navigation.toHome}>
             <FaHome className="icon" />
             <span>홈</span>
+          </li>
+
+          <li onClick={navigation.toAttendance}>
+            <FaBriefcase className="icon" />
+            <span>출퇴근 기록</span>
           </li>
 
           <li onClick={navigation.toTodo}>

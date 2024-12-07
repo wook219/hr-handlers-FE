@@ -7,6 +7,7 @@ export const PATHS = {
   CHATROOM: '/chatroom',
   SALARY: '/admin/salary',
   VACATION : '/vacation',
+  ATTENDANCE : '/attendance',
 };
 
 export const ADMINPATHS = {
