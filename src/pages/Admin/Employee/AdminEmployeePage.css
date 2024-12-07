@@ -31,8 +31,9 @@
 }
 
 .admin-employee-table-search {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     display: flex; 
+    margin-top: 60px;
     gap: 10px;
     justify-content: flex-end; /* 오른쪽 정렬 */
     align-items: center; 
@@ -41,7 +42,7 @@
 .admin-employee-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; 
+    table-layout: auto; /* 가로 길이를 자동으로 조정 */
     white-space: normal;
     word-break: break-word;
 }
@@ -49,21 +50,30 @@
 .admin-employee-table th, 
 .admin-employee-table td {
     border: 1px solid #ede8e8;
-    padding: 5px;
+    padding: 10px;
     text-align: left;
     vertical-align: middle;
-    line-height: 1.2; 
-    height: 30px;
+    line-height: 1.2;
+    height: 40px; /* 고정 높이 설정 */
+    min-width: 100px; /* 각 칸의 최소 너비 */
+    max-width: 300px; /* 선택 사항: 최대 너비 설정 */
+    box-sizing: border-box; /* 크기 계산 시 패딩 포함 */
 }
 
-.admin-employee-table td {
-    border-top: 1px solid #bdbdbd; 
-    border-bottom: 1px solid #bdbdbd; 
-    border-left: none;
-    border-right: none;
-    padding: 10px;
+.admin-employee-update-button {
+    background-color: #1a2b50;
+    font-weight: bold;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+    color: white;
+    font-size: 14px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+.admin-employee-update-button:hover {
+    background-color: #0f1c3c;
+}
 
 .admin-employee-table th {
     background-color: #1a2b50;
@@ -89,39 +99,25 @@
     background-color: #fff; 
 }
 
-.admin-employee-edit-button, 
 .admin-employee-delete-button {
-    padding: 4px 10px; /* 버튼 크기 통일 */
+    padding: 8px 12px;
     border: none;
     border-radius: 5px;
+    font-weight: bold;
     color: white;
-    font-size: 14px; /* 글씨 크기 통일 */
-    font-weight: bold; /* 굵은 글씨 */
+    font-size: 14px; 
     cursor: pointer;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
-    transition: all 0.3s ease; /* 부드러운 효과 */
-}
-
-.admin-employee-edit-button {
-    background-color: #2196f3; /* 수정 버튼 색상 */
-    border-radius: 5px;
-}
-
-.admin-employee-edit-button:hover {
-    background-color: #1976d2; /* 수정 버튼 호버 색상 */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+    transition: all 0.3s ease;
 }
 
 .admin-employee-delete-button {
-    background-color: #1a2b50; /* 삭제 버튼 색상 */
+    background-color: #999999; 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 .admin-employee-delete-button:hover {
-    background-color: #1a2b50; /* 삭제 버튼 호버 색상 */
-}
-
-.admin-employee-edit-button[disabled] {
-    background-color: #bdbdbd; 
-    cursor: not-allowed;
+    background-color: #777777; 
 }
 
 .admin-employee-modal-overlay {
@@ -187,29 +183,52 @@
     gap: 10px;
 }
 
+.admin-employee-modal-buttons button{
+    padding: 6px 20px;
+}
+
 .admin-employee-table td {
     position: relative;
+    border-top: 1px solid #bdbdbd; 
+    border-bottom: 1px solid #bdbdbd; 
+    border-left: none;
+    border-right: none;
+    box-sizing: border-box; /* 패딩 포함하여 크기 계산 */
 }
 
 .admin-employee-table .admin-employee-edit-cell {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
 }
 
-.admin-employee-edit-cell{
+.admin-employee-edit-cell {
     align-items: center;
     text-align: center;
 }
 
 .admin-employee-table .admin-employee-edit-cell input {
     flex-grow: 1;
-    height: 30px; 
+    height: 30px;
     padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    width: 100%; /* 크기 고정 */
+}
+
+.admin-employee-table .admin-employee-edit-cell input:focus {
+    outline: none;
+}
+
+.admin-employee-table .admin-employee-edit-cell input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .admin-employee-pagination {
-    margin-top: 20px;
+    margin-top: 100px;
     display: flex;
     justify-content: center; 
     align-items: center;
