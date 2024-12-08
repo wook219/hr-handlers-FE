@@ -1,0 +1,38 @@
+/* AdminAttendancePage.css */
+.attendance-history-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.search-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.custom-table {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.custom-table thead th {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    padding: 15px 20px;
+    font-weight: 500;
+    color: #333;
+    text-align: left;
+}
+
+.custom-table tbody td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.pagination-container {
+    margin-top: 20px;
+}

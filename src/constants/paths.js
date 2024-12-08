@@ -13,5 +13,6 @@ export const PATHS = {
 export const ADMINPATHS = {
   HOME: '/admin/home',
   EMP: '/admin/emp', 
-  VACATION : '/admin/vacation'
+  VACATION : '/admin/vacation',
+  ATTENDANCE : '/admin/attendance'
 };

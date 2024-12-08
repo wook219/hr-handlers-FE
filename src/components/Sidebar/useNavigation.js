@@ -17,5 +17,6 @@ export const useNavigation = () => {
     toAdminEmp: () => navigate(ADMINPATHS.EMP),
     toAdminVacation : () => navigate(ADMINPATHS.VACATION),
     toAttendance : () => navigate(PATHS.ATTENDANCE),
+    toAdminAttendance : () => navigate(ADMINPATHS.ATTENDANCE),
   };
 };

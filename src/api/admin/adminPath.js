@@ -16,5 +16,8 @@ export const path = {
         STATUS : `${ADMIN_BASE_URL}/vacation/status`,
         APPROVE: (id) => `${ADMIN_BASE_URL}/vacation/${id}/approve`,
         REJECT: (id) => `${ADMIN_BASE_URL}/vacation/${id}/reject`
+    },
+    ADMINATTENDENCE : {
+        BASE: `${ADMIN_BASE_URL}/attendance`,
     }
 }

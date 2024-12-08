@@ -18,6 +18,7 @@ import AdminEmp from '../pages/Admin/Employee/AdminEmployeePage'
 import AdminDept from '../pages/Admin/Department/AdminDepartmentPage'
 import AdminHome from '../pages/Admin/Home/AdminHomePage'
 import AdminVacation from '../pages/Admin/Vacation/AdminVacationPage'
+import AdminAttendancePage from '../pages/Admin/Attendance/AdminAttendancePage';
 
 // 공통 레이아웃이 필요한 라우트 라면 조건 처리
 function AppRouter() {
@@ -43,6 +44,7 @@ function AppRouter() {
       <Route path="/admin/emp" element={<AdminEmp />} />
       <Route path="/admin/vacation" element={<AdminVacation />} />
       <Route path="/admin/dept" element={<AdminDept />} />
+      <Route path="/admin/attendance" element={<AdminAttendancePage />} />
     </Routes>
   );
 }

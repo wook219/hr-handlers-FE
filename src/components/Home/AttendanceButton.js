@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import './AttendanceButton.css';
 import { getAttendanceAPI, checkInAPI, checkOutAPI } from '../../api/home/index';
+import { useToast } from '../../context/ToastContext';
 
 const AttendanceButton = () => {
     const [isWorking, setIsWorking] = useState(false);
@@ -9,6 +10,7 @@ const AttendanceButton = () => {
     const [showModal, setShowModal] = useState(false);
     const [checkInTime, setCheckInTime] = useState(null);
     const [checkOutTime, setCheckOutTime] = useState(null);
+    const { showToast } = useToast();
 
     useEffect(() => {
         const checkCurrentStatus = async () => {
@@ -63,16 +65,18 @@ const AttendanceButton = () => {
                 setAttendanceId(response.id);
                 setCheckInTime(response.checkInTime);
                 setIsWorking(true);
+                showToast('출근 처리되었습니다.', 'success');
             } else {
                 // 퇴근 처리
                 const response = await checkOutAPI(attendanceId);
                 setCheckOutTime(response.checkOutTime);
                 setIsWorking(false);
                 setAttendanceId(null);
+                showToast('퇴근 처리되었습니다.', 'success');
             }
             handleClose();
         } catch (error) {
-            console.error('출/퇴근 처리 실패:', error);
+            showToast('처리중 오류가 발생하였습니다.', 'error');
         }
     };
 
