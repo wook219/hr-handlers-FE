@@ -2,6 +2,7 @@ import axios from '../axios';
 import * as api from '../path';
 
 const ATTENDANCE = api.attendancePath.ATTENDANCE;
+const TODO = api.todoPath.TODO;
 
 // 공지사항 가져오기 API
 export const getAllNoticesAPI = async (page = 0, size = 5) => {
@@ -61,6 +62,21 @@ export const checkOutAPI = async (id) => {
       return response.data.data;
   } catch (error) {
       console.error("Failed to check out:", error);
+      throw error;
+  }
+};
+
+// 오늘 할 일
+export const getTodayTodosAPI = async () => {
+  try {
+      const response = await axios.get(`${TODO}/today`, {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`
+          }
+      });
+      return response.data.data;
+  } catch (error) {
+      console.error('Failed to fetch today todos:', error);
       throw error;
   }
 };

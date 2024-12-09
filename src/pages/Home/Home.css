@@ -1,7 +1,15 @@
-/* 전체 컨테이너 스타일 */
+.home-container {
+    position: relative;
+    padding: 20px;
+}
+
+.main-content {
+    margin-right: 320px; /* TodayTodoList의 width + padding */
+}
+
 .home-notice-container {
     margin-left: 20px;
-    width: 50%;
+    width: 65%;
 }
 
 .home-notice-card {
