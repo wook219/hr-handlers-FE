@@ -12,3 +12,7 @@ export const todoPath = {
 export const vacationPath = {
     VACATION : `${API_BASE_URL}/vacation`
 }
+
+export const attendancePath = {
+    ATTENDANCE : `${API_BASE_URL}/attendance`
+}
