@@ -13,6 +13,8 @@ import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModa
 import ChatParticipantsModal from '../../components/Chat/ChatModals/ChatParticipantsModal';
 import { exitChatRoomAPI } from '../../api/chat';
 import InviteChatRoomModal from '../../components/Chat/ChatModals/InviteChatRoomModal';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
@@ -274,16 +276,9 @@ const ChatRoom = () => {
 
   // 날짜 포맷팅 함수: 2024년 12월 3일 화요일 형식
   const formatDate = (timestamp) => {
-    const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
-    const messageDate = new Date(timestamp);
+    const messageDate = dayjs(timestamp).locale('ko');
 
-    const year = messageDate.getFullYear();
-    const month = messageDate.getMonth() + 1; // 월은 0부터 시작하므로 +1
-    const day = messageDate.getDate();
-    const weekDay = dayOfWeek[messageDate.getDay()]; // 요일 숫자에 해당하는 이름 가져오기
-
-    // "2024년 12월 3일 화요일" 형태로 포맷팅
-    return `${year}년 ${month}월 ${day}일 ${weekDay}요일`;
+    return messageDate.format('YYYY년 M월 D일 dddd');
   };
 
   // 메시지 불러오기 후 날짜별 그룹화

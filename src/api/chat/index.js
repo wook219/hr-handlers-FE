@@ -179,3 +179,14 @@ export const deleteChatRoomAPI = async (chatRoomId) => {
     throw error;
   }
 };
+
+// 채팅방 참여 인원 수 조회 API
+export const getJoinedEmployeesCount = async (chatRoomId) => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}/count`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 인원 수 조회에 실패했습니다.', error);
+    throw error;
+  }
+};
