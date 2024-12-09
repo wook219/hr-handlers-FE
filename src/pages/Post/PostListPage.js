@@ -92,7 +92,7 @@ const PostListPage = () => {
   };
 
 
-  const totalPages = Math.ceil(pagination.totalElements / pagination.size);
+  const totalPages = Math.max(1, Math.ceil(pagination.totalElements / pagination.size));
   const currentPageGroup = Math.floor(pagination.currentPage / pagination.pageGroupSize);
 
   // 검색 필터
@@ -172,17 +172,11 @@ const PostListPage = () => {
             </button>
           </li>
 
-          <li
-            className={`page-item ${
-              currentPageGroup === 0 ? "disabled" : ""
-            }`}
-          >
+          <li className={`page-item ${pagination.currentPage === 0 ? "disabled" : ""}`}>
             <button
               className="page-link"
-              onClick={() =>
-                handlePageChange((currentPageGroup - 1) * pagination.pageGroupSize)
-              }
-              disabled={currentPageGroup === 0}
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              disabled={pagination.currentPage <= 0}
             >
               &lt;
             </button>
@@ -208,22 +202,11 @@ const PostListPage = () => {
             );
           })}
 
-          <li
-            className={`page-item ${
-              currentPageGroup === Math.floor(totalPages / pagination.pageGroupSize)
-                ? "disabled"
-                : ""
-            }`}
-          >
+          <li className={`page-item ${pagination.currentPage === totalPages - 1 ? "disabled" : ""}`}>
             <button
               className="page-link"
-              onClick={() =>
-                handlePageChange((currentPageGroup + 1) * pagination.pageGroupSize)
-              }
-              disabled={
-                currentPageGroup ===
-                Math.floor(totalPages / pagination.pageGroupSize)
-              }
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              disabled={pagination.currentPage >= totalPages - 1}
             >
               &gt;
             </button>

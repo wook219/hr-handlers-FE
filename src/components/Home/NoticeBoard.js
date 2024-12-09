@@ -183,7 +183,7 @@ const NoticeBoard = () => {
                           e.stopPropagation();
                           handleEditNotice(notice.id);
                         }}
-                        style={{ cursor: "pointer", color: "#007bff" }}
+                        style={{ cursor: "pointer", color: "#1a2b50" }}
                       >
                         수정
                       </span>
@@ -193,7 +193,7 @@ const NoticeBoard = () => {
                           e.stopPropagation();
                           handleDeleteNotice(notice.id);
                         }}
-                        style={{ cursor: "pointer", color: "red" }}
+                        style={{ cursor: "pointer", color: "#999999" }}
                       >
                         삭제
                       </span>
