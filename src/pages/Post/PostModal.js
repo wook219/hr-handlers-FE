@@ -60,8 +60,11 @@ const PostModal = ({
                     const formData = new FormData();
                     formData.append('path', 'post/images'); // 경로 추가
                     formData.append('file', file); // 'upload'에서 'file'로 변경
-                    const response = await axios.post('api/s3', formData, { // '/upload' 제거
+
+                    const token = localStorage.getItem("access_token");
+                    const response = await axios.post('http://localhost:8080/api/s3', formData, { // '/upload' 제거
                         headers: { 'Content-Type': 'multipart/form-data' },
+                        access: token,
                     });
                     return response.data.url;
                 })
