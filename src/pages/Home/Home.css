@@ -92,7 +92,7 @@
 
 /* 작성 버튼 */
 .add-notice-btn button {
-    background-color: #b7b7b7;
+    background-color: #1a2b50;
     color: #fff;
     border: none;
     padding: 8px 20px;
@@ -102,7 +102,7 @@
 }
 
 .add-notice-btn button:hover {
-    background-color: #1a2b50;
+    background-color: #0f1c3c;
 }
 
 /* 구분선 */
@@ -123,7 +123,7 @@
     border: none;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #007bff;
+    color: #1a2b50;
     margin: 0 10px;
     cursor: pointer;
     transition: color 0.3s ease;
@@ -135,6 +135,6 @@
   }
   
   .pagination-btn:hover:not(:disabled) {
-    color: #0056b3;
+    color: #0f1c3c;
   }
   
