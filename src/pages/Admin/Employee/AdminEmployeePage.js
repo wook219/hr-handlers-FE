@@ -3,6 +3,7 @@ import { registerEmployeeAPI, getAllEmployeesAPI, updateEmployeeAPI, deleteEmplo
 import './AdminEmployeePage.css';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../../context/ToastContext';
 import { jwtDecode } from 'jwt-decode';
 
 const contractTypes = [
@@ -37,6 +38,7 @@ const EmployeeManagement = () => {
         role: 'ROLE_EMPLOYEE',
     });
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -46,16 +48,16 @@ const EmployeeManagement = () => {
                 const role = decodedToken.role;
 
                 if (role !== 'ROLE_ADMIN') {
-                    alert('접근 권한이 없습니다. 관리자만 접근 가능합니다.');
+                    showToast('접근 권한이 없습니다. 관리자만 접근 가능합니다.', 'error');
                     navigate('/');
                 }
             } catch (error) {
                 console.error("토큰을 해석하는 중 오류가 발생했습니다:", error);
-                alert('잘못된 토큰입니다. 다시 로그인해주세요.');
+                showToast('잘못된 토큰입니다. 다시 로그인해주세요.', 'error');
                 navigate('/');
             }
         } else {
-            alert('로그인이 필요합니다.');
+            showToast('로그인이 필요합니다.', 'warning');
             navigate('/login');
         }
     }, [navigate]);
@@ -79,6 +81,7 @@ const EmployeeManagement = () => {
                 setTotalPages(response.totalPages);
             } catch (error) {
                 console.error("사원 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                showToast('사원 데이터를 가져오는 중 오류가 발생했습니다.', 'error');
             }
         };
         fetchEmployees();
@@ -92,6 +95,7 @@ const EmployeeManagement = () => {
                 setDepartments(response.data || response); // 데이터를 department 상태로 설정
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                showToast('부서 데이터를 가져오는 중 오류가 발생했습니다.', 'error');
             }
         };
         fetchDepartments();
@@ -102,10 +106,10 @@ const EmployeeManagement = () => {
         try {
             await deleteEmployeeAPI(empNo);
             setEmployees(employees.filter(employee => employee.empNo !== empNo));
-            alert('사원이 삭제되었습니다.');
+            showToast('사원이 성공적으로 삭제되었습니다.', 'success');
         } catch (error) {
             console.error("사원 삭제 중 오류가 발생했습니다:", error);
-            alert('사원을 삭제하는 중 문제가 발생했습니다.');
+            showToast('사원을 삭제하는 중 문제가 발생했습니다.', 'error');
         }
     };
 
@@ -120,6 +124,11 @@ const EmployeeManagement = () => {
 
     const handleSave = async (empNo) => {
         const employeeToSave = employees.find((employee) => employee.empNo === empNo);
+
+        if (!employeeToSave.position || employeeToSave.position.trim() === "") {
+            showToast('직급을 입력해야 합니다.', 'error'); 
+            return;
+        }
 
         const updateData = {
             position: employeeToSave.position,
@@ -144,10 +153,10 @@ const EmployeeManagement = () => {
                 )
             );
 
-            alert(`사원 ID ${empNo} 정보가 성공적으로 수정되었습니다.`);
+            showToast(`사원 번호 ${empNo}님의 정보가 성공적으로 수정되었습니다.`, 'success');
         } catch (error) {
             console.error("사원 수정 중 오류가 발생했습니다:", error);
-            alert('사원 정보를 수정하는 중 문제가 발생했습니다.');
+            showToast('사원 정보를 수정하는 중 문제가 발생했습니다.', 'error');
         }
     };
 
@@ -204,15 +213,15 @@ const EmployeeManagement = () => {
     const handleSaveNewEmployee = async () => {
         try {
             if (!newEmployee.contractType) {
-                alert("계약 형태를 선택해주세요.");
+                showToast("계약 형태를 선택해주세요.", 'warning');
                 return;
             }
             if (!newEmployee.joinDate || isNaN(new Date(newEmployee.joinDate))) {
-                alert("입사일을 올바르게 입력해주세요.");
+                showToast("입사일을 올바르게 입력해주세요.", 'warning');
                 return;
             }
             if (!newEmployee.birthDate || isNaN(new Date(newEmployee.birthDate))) {
-                alert("생년월일을 올바르게 입력해주세요.");
+                showToast("생년월일을 올바르게 입력해주세요.", 'warning');
                 return;
             }
 
@@ -261,10 +270,10 @@ const EmployeeManagement = () => {
 
             // 모달 닫기
             setIsModalOpen(false);
-            alert('사원이 추가되었습니다.');
+            showToast('사원이 성공적으로 추가되었습니다.', 'success');
         } catch (error) {
             console.error("사원 등록 중 오류가 발생했습니다:", error);
-            alert('사원을 등록하는 중 문제가 발생했습니다.');
+            showToast('사원을 등록하는 중 문제가 발생했습니다.', 'error');
         }
     };
 
@@ -350,7 +359,11 @@ const EmployeeManagement = () => {
                                             {employee.isEditing ? (
                                                 <select
                                                     value={employee.deptName || ""}
-                                                    onChange={(e) => handleInputChange(employee.empNo, "deptName", e.target.value)}
+                                                    onChange={(e) => {
+                                                        const selectedValue = e.target.value;
+                                                        if (selectedValue === "") return; // 아무것도 선택되지 않았으면 종료
+                                                        handleInputChange(employee.empNo, "deptName", selectedValue);
+                                                    }}
                                                     style={{ width: "100px" }}
                                                 >
                                                     <option value="">-- 부서 선택 --</option>
@@ -383,22 +396,23 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
                                                 <select
-                                                value={contractTypes.find((type) => type.label === employee.contractType)?.value || ""}
-                                                onChange={(e) => {
-                                                    const selectedValue = e.target.value; // 영어 값
-                                                    const selectedLabel = contractTypes.find((type) => type.value === selectedValue)?.label; // 한글 값
-                                                    handleInputChange(employee.empNo, "contractType", selectedLabel); // label(한글)을 저장
-                                                }}
-                                                style={{ width: "100px" }}
-                                            >
-                                                <option value="">-- 계약 형태 선택 --</option>
-                                                {contractTypes.map((type) => (
-                                                    <option key={type.value} value={type.value}>
-                                                        {type.label}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            
+                                                    value={contractTypes.find((type) => type.label === employee.contractType)?.value || ""}
+                                                    onChange={(e) => {
+                                                        const selectedValue = e.target.value; // 영어 값
+                                                        if (selectedValue === "") return;
+                                                        const selectedLabel = contractTypes.find((type) => type.value === selectedValue)?.label; // 한글 값
+                                                        handleInputChange(employee.empNo, "contractType", selectedLabel); // label(한글)을 저장
+                                                    }}
+                                                    style={{ width: "100px" }}
+                                                >
+                                                    <option value="">-- 계약 형태 선택 --</option>
+                                                    {contractTypes.map((type) => (
+                                                        <option key={type.value} value={type.value}>
+                                                            {type.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
                                             ) : (
                                                 employee.contractType || "계약형태 없음"
                                             )}
