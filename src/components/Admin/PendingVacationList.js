@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { getAdminVacationsAPI, approveVacationAPI, rejectVacationAPI } from '../../api/admin/vacation'
+import { useToast } from '../../context/ToastContext';
 
 const PendingVacationList = () => {
     const [vacations, setVacations] = useState([]);
@@ -8,6 +9,7 @@ const PendingVacationList = () => {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const { showToast } = useToast();
 
     
     const fetchVacations = async () => {
@@ -56,10 +58,10 @@ const PendingVacationList = () => {
             const response = await getAdminVacationsAPI(page);
             setVacations(response.content);
             setTotalPages(response.totalPages);
-            alert('휴가가 승인되었습니다.');
+            showToast('휴가를 승인처리 했습니다.', 'success');
         } catch (error) {
             console.error('Error approving vacation:', error);
-            alert('휴가 승인에 실패했습니다.');
+            showToast('휴가 승인에 실패했습니다.', 'error');
         }
     }
 
@@ -71,10 +73,10 @@ const PendingVacationList = () => {
             const response = await getAdminVacationsAPI(page);
             setVacations(response.content); 
             setTotalPages(response.totalPages);  
-            alert('휴가가 반려되었습니다.');
+            showToast('휴가를 반려처리 했습니다.', 'success');
         } catch (error) {
             console.error('Error rejecting vacation:', error);
-            alert('휴가 반려에 실패했습니다.');
+            showToast('휴가 승인에 실패했습니다.', 'error');
         }
     };
     

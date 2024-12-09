@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import AttendanceButton from "../../components/Home/AttendanceButton";
 import NoticeBoard from "../../components/Home/NoticeBoard";
 import TodayTodoList from "../../components/Home/TodayTodoList"
