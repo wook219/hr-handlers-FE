@@ -1,34 +1,37 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import './CreateChatRoomModal.css';
+import { useToast } from '../../../context/ToastContext';
+import './ChatRoomModal.css';
+import { useNavigate } from 'react-router-dom';
 
 const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
   const [title, setTitle] = useState('');
-  const [isCreated, setIsCreated] = useState(false); // 채팅방 생성 완료 상태
+  const [isSecret, setIsSecret] = useState(false);
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
 
-  const handleCreate = () => {
-    if (title.trim() !== '') {
-      onCreate(title);
-      setTitle(''); // 제목 초기화
-      setIsCreated(true); // 채팅방 생성 완료 모달 표시
-    } else {
-      alert('채팅방 제목을 입력해주세요.');
-    }
+  const handleSecretChange = (e) => {
+    setIsSecret(e.target.checked);
   };
 
-  const handleCloseCreatedModal = () => {
-    setIsCreated(false);
-    window.location.reload(); // 새로고침
+  const handleCreate = () => {
+    if (title.trim() !== '') {
+      onCreate(title, isSecret ? 'Y' : 'N');
+      setTitle(''); // 제목 초기화
+      showToast('채팅방이 생성되었습니다!', 'success'); // 채팅방 생성 성공 메시지
+    } else {
+      showToast('채팅방 제목을 입력해주세요.', 'error'); // 제목 입력을 하지 않았을 때 에러 메시지
+    }
   };
 
   return (
     <>
       <Modal show={show} onHide={onClose} centered className="chatroom-modal-content">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title className="text-center">채팅방 개설하기</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -43,30 +46,24 @@ const CreateChatRoomModal = ({ show, onClose, onCreate }) => {
                 className="text-center"
               />
             </Form.Group>
+
+            <Form.Group controlId="isSecret" className="d-flex justify-content-center align-items-center mt-3">
+              <Form.Check
+                type="checkbox"
+                label="비공개 채팅방으로 생성하시겠습니까?"
+                checked={isSecret}
+                onChange={handleSecretChange} // 체크박스 상태 변경
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-button chatroom-modal-button-color" onClick={handleCreate} size="lg">
+          <button className="chatroom-button chatroom-modal-button-color" onClick={handleCreate} size="lg">
             생성
-          </Button>
-          <Button className="chatroom-button ml-2" variant="secondary" onClick={onClose} size="lg">
+          </button>
+          <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={onClose} size="lg">
             취소
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      {/* 채팅방 생성 완료 모달 */}
-      <Modal show={isCreated} onHide={() => setIsCreated(false)} centered className="chatroom-modal-content">
-        <Modal.Header closeButton>
-          <Modal.Title className="text-center">채팅방 생성 완료</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center">
-          <p className="chatroom-modal-success-text">채팅방 생성이 완료되었습니다.</p>
-        </Modal.Body>
-        <Modal.Footer className="d-flex justify-content-center">
-          <Button className="chatroom-modal-button-color chatroom-button" onClick={handleCloseCreatedModal} size="lg">
-            확인
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
     </>

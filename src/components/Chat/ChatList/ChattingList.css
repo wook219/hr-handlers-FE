@@ -27,3 +27,8 @@
   font-weight: bold;
   word-wrap: break-word; /* 긴 제목도 화면에 맞게 줄 바꿈 */
 }
+
+.chat-secret-icon {
+  margin: 5px;
+  padding-bottom: 5px;
+}

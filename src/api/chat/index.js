@@ -33,9 +33,24 @@ export const getAllEnterChatAPI = async () => {
 };
 
 // 채팅방 생성 API
-export const createChatRoomAPI = async (chatRoomTitle) => {
+export const createChatRoomAPI = async (chatRoomTitle, isSecret) => {
   try {
-    const response = await axios.post('/chatroom', chatRoomTitle);
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      throw new Error('JWT 토큰이 없습니다. 로그인을 해주세요.');
+    }
+
+    const requestBody = {
+      title: chatRoomTitle,
+      isSecret: isSecret,
+    };
+
+    const response = await axios.post('/chatroom', requestBody, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response.data;
   } catch (error) {
@@ -107,7 +122,60 @@ export const exitChatRoomAPI = async (chatRoomId) => {
 
     return response.data;
   } catch (error) {
-    console.error('Failed to exit chatRoom: ', error);
+    console.error('채팅방 퇴장 실패: ', error);
+    throw error;
+  }
+};
+
+// 채팅방 참여 목록 조회 API
+export const getJoinedEmployees = async (chatRoomId) => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 참여 목록 조회 실패: ', error);
+    throw error;
+  }
+};
+
+// 채팅방 초대 목록 조회 API
+export const getInvitedEmployeesAPI = async (chatRoomId, keyword = '') => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}/invite`, {
+      params: {
+        keyword: keyword,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 초대 목록 조회 실패: ', error);
+    throw error;
+  }
+};
+
+// 채팅방 초대 API
+export const invitedEmployeesChatRoomAPI = async (chatRoomId, empNo) => {
+  try {
+    const requestBody = {
+      empNo: empNo,
+    };
+
+    const response = await axios.post(`/chat/${chatRoomId}`, requestBody);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 초대에 실패했습니다.', error);
+    throw error;
+  }
+};
+
+// 채팅방 삭제 API
+export const deleteChatRoomAPI = async (chatRoomId) => {
+  try {
+    const response = await axios.delete(`/chatroom/${chatRoomId}`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 삭제에 실패했습니다.', error);
     throw error;
   }
 };

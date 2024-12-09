@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigation } from './useNavigation';
 import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt } from 'react-icons/fa';
-import { useUser } from '../../context/UserContext'; 
+import { useUser } from '../../context/UserContext';
 
 function Sidebar() {
-  const { user, logout } = useUser();
+  const { user, logout } = useUser(); // context 사용 부분 참고
   const navigation = useNavigation();
 
   // 로그아웃
@@ -17,7 +17,11 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="profile" onClick={navigation.toMyPage} style={{ cursor: 'pointer' }}>
-        <img className="profile-img" src="https://via.placeholder.com/80" alt="프로필 사진" />
+        <img
+          className="profile-img"
+          src={user.profileImage || "/profile_image.png"}
+          alt="프로필 사진"
+        />
         <div className="profile-name">{user.name}</div>
         <div className="profile-team">{user.deptName}</div>
       </div>
@@ -34,9 +38,9 @@ function Sidebar() {
             <span>일정 관리</span>
           </li>
 
-          <li>
+          <li onClick={navigation.toVacation}>
             <FaPlane className="icon" />
-            <span>출퇴근기록</span>
+            <span>휴가 관리</span>
           </li>
 
           <li onClick={navigation.toChatRoom}>
@@ -53,6 +57,12 @@ function Sidebar() {
             <FaDollarSign className="icon" />
             <span>급여관리</span>
           </li>
+          {user.role === 'ROLE_ADMIN' && (
+            <li onClick={navigation.toAdminHome}>
+              <FaDollarSign className="icon" />
+              <span>통합관리</span>
+            </li>
+          )}
         </ul>
       </nav>
       <div className="logout">
@@ -65,6 +75,7 @@ function Sidebar() {
             color: 'white',
             marginLeft: '150px',
             fontSize: '14px',
+            marginBottom: "50px"
           }}
         >
           로그아웃

@@ -1,26 +1,42 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { getAllSalaryAPI, searchSalaryAPI, createSalaryAPI, updateSalaryAPI, deleteSalaryAPI, excelUploadSalaryAPI } from '../../../api/admin/index.js';
+import { 
+        getAllSalaryAPI,
+        searchSalaryAPI,
+        createSalaryAPI,
+        updateSalaryAPI,
+        deleteSalaryAPI,
+        excelUploadSalaryAPI,
+        excelDownloadSalaryAPI
+       } from '../../../api/admin/index.js';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { useToast } from '../../../context/ToastContext';
+import "./AdminSalaryPage.css";
 
 import AdminSalaryModalPage from "./AdminSalaryModalPage";
 import AdminSalarySearchPage from "./AdminSalarySearchPage";
+import AdminSalaryExcelTypeModalPage from "./AdminSalaryExcelTypeModalPage";
 
 const AdminSalaryPage = () => {
-    const [size, setSize] = useState(10); // 한 페이지에 표시할 게시글 수
+    const [size, setSize] = useState(15); // 한 페이지에 표시할 게시글 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
     const [pageGroupSize] = useState(10); // 한 번에 보여줄 페이지 번호 갯수
     const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
     const totalPages = Math.ceil(totalElements / size); // 전체 페이지 수
     const currentPageGroup = Math.floor(currentPage / pageGroupSize); // 현재 페이지 그룹 계산
+    const { showToast } = useToast();
 
     const [salaries, setSalaries] = useState([]); // 급여관리 조회 데이터
     const [modalShow, setModalShow] = useState(false); // 모달 사용 여부
     const [modalType, setModalType] = useState(''); // 모달 화면 타입(추가: create, 수정: update)
     const [checkItems, setCheckItems] = useState([]); // 체크된 아이템을 담을 배열
+
     const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
+    const [excelTypeModalShow, setExcelTypeModalShow] = useState(false); // 엑셀 다운로드 설정 모달 사용 여부
+
+
     const positionOptions = [
         { name: '선택', value: '' },
         { name: '사원', value: '사원' },
@@ -36,9 +52,6 @@ const AdminSalaryPage = () => {
     ];
     const nameOptions = [
         { name: '선택', value: '' },
-        { name: '홍길동', value: '1' },
-        { name: '김철수', value: '2' },
-        { name: '엘리스', value: '3' }
     ];
     const [searchData, setSearchData] = useState([
         { key: 'startDate', value: '', label: '시작날짜', type: 'inputDate', isDisable: false },
@@ -103,7 +116,9 @@ const AdminSalaryPage = () => {
         const createFormData = formData.map((field) => ({
             ...field,
             value: '',
-            isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false : field.isDisable,
+            options: ['name'].includes(field.key) ? [{ name: "선택", value: "" }] : field.options,
+            isDisable: ['position', 'deptName', 'name'].includes(field.key) ? false :
+                ['netSalary'].includes(field.key) ? true : field.isDisable,
         }));
     
         // SelectedDate 초기화
@@ -123,18 +138,31 @@ const AdminSalaryPage = () => {
 
     // row 더블클릭시 실행되는 함수(수정관련)
     const handleRowDoubleClick = (salary) => {
+
+        const nameOptions = [{
+            name: salary.name,
+            value: salary.employeeId
+        }];
+        console.log('nameOptions : ', nameOptions);
         // 폼 데이터 업데이트
         const updatedFormData = formData.map((field) => {
             let updatedValue = salary[field.key];
-
-            // select 타입의 경우 value를 options에서 매칭된 값으로 변환
-            if (field.type === 'select' && field.options) {
-                const matchedOption = field.options.find(option => option.value === updatedValue || option.name === updatedValue);
-                updatedValue = matchedOption ? matchedOption.value : ''; // 매칭되지 않으면 기본값 설정
-            }
             
             // 직위, 부서, 이름 셀렉트 박스 disable로 변경
-            const isDisable = ['position', 'deptName', 'name'].includes(field.key) ? true : field.isDisable;
+            // 실지급액 disable 변경
+            const isDisable = ['position', 'deptName', 'name', 'netSalary'].includes(field.key) ? true : field.isDisable;
+
+            // 이름 필드일 경우 options 업데이트
+            if (field.key === 'name') {
+                // name 필드의 options만 업데이트
+                return { 
+                    ...field, 
+                    value: updatedValue || "",
+                    options: [...nameOptions],
+                    isDisable
+                };
+            }
+            
             
             return { ...field, value: updatedValue, isDisable };
         });
@@ -163,6 +191,10 @@ const AdminSalaryPage = () => {
     // 엑셀 업로드 버튼 클릭시 실행되는 함수
     const triggerFileInput = () => {
         fileInputRef.current.click(); // 숨겨진 input을 클릭
+    };
+
+    const formatNumberWithCommas = (num) => {
+        return num.toLocaleString("en-US");
     };
 
     // 조회 api
@@ -196,8 +228,16 @@ const AdminSalaryPage = () => {
         console.log("params : ", params);
         console.log("response : ", response);
 
+        // 지급총액, 공제총액, 실지급액 세자리마다 , 붙이는 로직
+        const formattedData = response.data.data.content.map((item) => ({
+            ...item,
+            basicSalary: formatNumberWithCommas(item.basicSalary),
+            deduction: formatNumberWithCommas(item.deduction),
+            netSalary: formatNumberWithCommas(item.netSalary),
+        }));
+
         setSearchData(searchData);
-        setSalaries(response.data.data.content);
+        setSalaries(formattedData);
         setTotalElements(response.data.data.totalElements); // 총 게시글 수 설정
     }
 
@@ -208,6 +248,9 @@ const AdminSalaryPage = () => {
         // 급여 정보 데이터 세팅
         data.forEach((item) => {
             if (item.value) {
+                if(item.key === 'name') {
+                    params['employeeId'] = item.value;
+                }
                 params[item.key] = item.value;
             }
         });
@@ -220,9 +263,15 @@ const AdminSalaryPage = () => {
         // api에 전달한 데이터 세팅
         params = {
             ...params,
-            employeeId: 1, // todo 아이디는 나중에
             payDate: `${year}-${month.toString().padStart(2, '0')}-${day}`
         }
+
+        // 쉼표 제거 로직 추가
+        Object.keys(params).forEach((key) => {
+            if (typeof params[key] === "string" && params[key].includes(",")) {
+                params[key] = params[key].replace(/,/g, "");
+            }
+        });
 
         console.log('modalType : ', modalType);
         console.log("data : ", data);
@@ -232,15 +281,17 @@ const AdminSalaryPage = () => {
         if(modalType === 'create') {
             const { response, error } = await createSalaryAPI(params);
             if (error) {
-                console.log('에러 발생');
+                showToast('에러 발생', 'error');
                 return;
             }
+            showToast(response.data.message, 'success');
         } else if (modalType === 'update') {
             const { response, error } = await updateSalaryAPI(params);
             if (error) {
-                console.log('에러 발생');
+                showToast('에러 발생', 'error');
                 return;
             }
+            showToast(response.data.message, 'success');
         }
 
         setModalShow(false);
@@ -253,18 +304,19 @@ const AdminSalaryPage = () => {
         const { response, error } = await deleteSalaryAPI(checkItems);
         console.log("response : ", response);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
+        showToast(response.data.message, 'success');
 
         handleSearch(searchData, currentPage, size)
     };
 
     // 엑셀 업로드 api
-    const handleDrop = async (event) => {
+    const handleExcelUpload = async (event) => {
         const file = event.target.files[0]; // 첫 번째 파일만 처리
         if (!file) {
-            console.log("파일이 선택되지 않았습니다.");
+            showToast('파일이 선택되지 않았습니다.', 'error');
             return;
         }
 
@@ -274,20 +326,67 @@ const AdminSalaryPage = () => {
 
         const { response, error } = await excelUploadSalaryAPI(formData);
         if (error) {
-            console.log("에러 발생");
+            showToast('에러 발생', 'error');
             return;
         }
+        showToast(response.data.message, 'success');
 
         handleSearch(searchData, currentPage, size)
     };
 
+    // 엑셀 다운로드 api
+    const handleExcelDownload = async () => {
+        setExcelTypeModalShow(true);
+    };
+
+    const handleExcelSubmit = async (excelTypeData) => {
+        const excelTypeParam = {};
+        const searchParam = {};
+
+        searchData.forEach((item) => {
+            if (item.value) {
+                searchParam[item.key] = item.value;
+            }
+        });
+
+        excelTypeData.forEach((item) => {
+            if (item.value) {
+                excelTypeParam[item.key] = item.value;
+            }
+        });
+
+        const params =  {
+            excelTypeParam,
+            searchParam
+        }
+
+        console.log('searchData : ', searchData);
+        console.log('excelTypeData : ', excelTypeData);
+        console.log('params : ', params);
+
+
+        const { response, error } = await excelDownloadSalaryAPI(params);
+        if (error) {
+            showToast('에러 발생', 'error');
+            return;
+        }
+
+        // Blob을 사용하여 파일 다운로드
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', '급여관리.xlsx'); // 다운로드할 파일 이름
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // 링크 요소 제거
+        
+        handleSearch(searchData, currentPage, size);
+        setExcelTypeModalShow(false);
+    };
+
     return (
-        <div className="">
-            <h2 className="">급여 목록</h2>
-            <AdminSalarySearchPage
-                searchData={searchData}
-                handleSearch={handleSearch}
-            />
+        <div className="salary-container">
+            <h2 className="salary-container-h2">급여 목록</h2>
             <div className="mb-3" style={{ textAlign: "right" }}>
                 <Button className="me-2" variant="primary" onClick={handleCreate}>
                     추가
@@ -295,19 +394,26 @@ const AdminSalaryPage = () => {
                 <Button className="me-2" variant="danger" onClick={handleDelete}>
                     삭제
                 </Button>
-                <Button variant="success" onClick={triggerFileInput}>
+                <Button className="me-2" variant="success" onClick={triggerFileInput}>
                     엑셀 업로드
                     <input
                         type="file"
                         accept=".xlsx, .xls, .csv"
                         ref={fileInputRef}
-                        onChange={(e) => handleDrop(e)}
+                        onChange={(e) => handleExcelUpload(e)}
                         style={{ display: "none" }}
                     />
                 </Button>
+                <Button variant="success" onClick={handleExcelDownload}>
+                    엑셀 다운로드
+                </Button>
             </div>
-            <div>
-                <Table className="">
+            <AdminSalarySearchPage
+                searchData={searchData}
+                handleSearch={handleSearch}
+            />
+            <div className="salary-table-responsive">
+                <Table>
                     <thead>
                     <tr>
                         <th>
@@ -337,9 +443,9 @@ const AdminSalaryPage = () => {
                                 <td>{salary.position || 'N/A'}</td>
                                 <td>{salary.deptName || 'N/A'}</td>
                                 <td>{salary.name || 'N/A'}</td>
-                                <td>{salary.basicSalary || 'N/A'}</td>
-                                <td>{salary.deduction || 'N/A'}</td>
-                                <td>{salary.netSalary || 'N/A'}</td>
+                                <td>{salary.basicSalary ? `${salary.basicSalary}원` : 'N/A'}</td>
+                                <td>{salary.deduction ? `${salary.deduction}원` : 'N/A'}</td>
+                                <td>{salary.netSalary ? `${salary.netSalary}원` : 'N/A'}</td>
                                 <td>{salary.payDate || 'N/A'}</td>
                             </tr>
                         ))}
@@ -425,6 +531,11 @@ const AdminSalaryPage = () => {
                 formData={formData}
                 selectedDate={selectedDate}
                 modalType={modalType}
+            />
+            <AdminSalaryExcelTypeModalPage
+                show={excelTypeModalShow}
+                onHide={() => setExcelTypeModalShow(false)}
+                onSubmit={handleExcelSubmit}
             />
         </div>
     );

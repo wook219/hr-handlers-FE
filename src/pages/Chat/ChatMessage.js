@@ -7,6 +7,7 @@ const ChatMessage = ({
   name,
   empNo,
   messageId,
+  timestamp,
   onEdit,
   onDelete,
   selectedMessageId,
@@ -83,12 +84,28 @@ const ChatMessage = ({
     }
   }, [selectedMessageId, messageId]);
 
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    const period = hours < 12 ? '오전' : '오후'; // 오전/오후 구분
+    hours = hours % 12; // 12시간 형식으로 변환
+    if (hours === 0) hours = 12; // 12시인 경우, 0시를 12시로 변경
+
+    // 분이 1자리일 경우 0을 추가하여 두 자리로 표시
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+    return `${period} ${hours}:${formattedMinutes}`;
+  };
+
   let messageClass = empNo !== tokenEmpNo ? 'chat-message-received' : 'chat-message-sent';
-  let messageLayout = empNo !== tokenEmpNo ? null : 'chat-message-right';
+  let messageLayout = empNo !== tokenEmpNo ? 'chat-message-left' : 'chat-message-right';
+  let messageTime = empNo !== tokenEmpNo ? 'chat-message-time-left' : 'chat-message-time-right';
 
   return (
     <div className={messageLayout}>
-      {empNo !== tokenEmpNo ? <div>{name} </div> : null}
+      {empNo !== tokenEmpNo ? <div className="chat-message-name">{name} </div> : null}
       <div onContextMenu={handleRightClick} className={messageClass}>
         <div>
           {isEditing ? (
@@ -106,7 +123,6 @@ const ChatMessage = ({
             message
           )}
         </div>
-
         {/* 우클릭 메뉴 */}
         {contextMenu && (
           <div style={{ position: 'absolute', top: contextMenu.mouseY, left: contextMenu.mouseX }}>
@@ -119,6 +135,7 @@ const ChatMessage = ({
           </div>
         )}
       </div>
+      <div className={messageTime}>{formatTimestamp(timestamp)}</div>
     </div>
   );
 };

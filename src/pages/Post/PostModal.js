@@ -3,6 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
+import { useToast } from '../../context/ToastContext';
 import './PostModal.css'; // PostModal.css 파일 import
 
 const PostModal = ({
@@ -16,8 +17,10 @@ const PostModal = ({
     hashtags,
     setHashtags,
     isEditMode = false,
+    isNotice = false, // 공지사항 모드 추가
 }) => {
     const [pendingUploads, setPendingUploads] = useState([]); // 업로드 대기 이미지 파일 리스트
+    const { showToast } = useToast();
 
     // 수정 모드일 때 데이터를 초기화하거나 로그 출력
     useEffect(() => {
@@ -49,64 +52,61 @@ const PostModal = ({
             customUploadAdapter(loader);
     }
 
-    // 게시글 등록 핸들러
     const handleFinalSubmit = async () => {
         try {
+            // S3에 대기 중인 이미지를 업로드
             const uploadedUrls = await Promise.all(
                 pendingUploads.map(async (file) => {
                     const formData = new FormData();
-                    formData.append('upload', file);
-    
-                    const response = await axios.post('/api/s3/upload', formData, {
+                    formData.append('path', 'post/images'); // 경로 추가
+                    formData.append('file', file); // 'upload'에서 'file'로 변경
+                    const response = await axios.post('api/s3', formData, { // '/upload' 제거
                         headers: { 'Content-Type': 'multipart/form-data' },
                     });
                     return response.data.url;
                 })
             );
-    
+            // 에디터 데이터에서 임시 URL(blob)을 S3 URL로 대체
             let updatedEditorData = editorData;
+    
             const parser = new DOMParser();
             const doc = parser.parseFromString(editorData, 'text/html');
             const images = doc.querySelectorAll('img');
     
             images.forEach((img, index) => {
                 const blobUrl = img.getAttribute('src');
-                const s3Url = uploadedUrls[index];
-                updatedEditorData = updatedEditorData.split(blobUrl).join(s3Url);
+                if (blobUrl.startsWith('blob:')) {
+                    const s3Url = uploadedUrls[index];
+                    updatedEditorData = updatedEditorData.replace(blobUrl, s3Url); // blob -> S3 URL 대체
+                }
             });
     
-            console.log('Final updatedEditorData before submit:', updatedEditorData); // 디버깅용
-
-            // handleSubmit 호출 직전에 데이터 출력
-            console.log('Data passed to handleSubmit:', {
-                title,
-                content: updatedEditorData, // 최종 처리된 데이터 (이미지 URL 변환된 HTML)
-                hashtags: hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
-            });
-            
+            // 게시글 데이터와 업로드된 이미지 URL을 함께 제출
             await handleSubmit({
                 title,
                 content: updatedEditorData,
-                hashtags: hashtags.split(',').map((tag) => tag.trim()),
+                hashtags: isNotice ? ["공지사항"] : hashtags.split(',').map((tag) => tag.trim()), // 해시태그 배열
+                postType: isNotice ? 'NOTICE' : 'POST', // 공지사항 모드 여부에 따라 PostType 결정
             });
     
+            // 초기화
+            /*
             setPendingUploads([]);
             setEditorData('');
             setTitle('');
             setHashtags('');
+            */
         } catch (error) {
-            console.error('Error during final submit:', error);
-            alert('게시글 등록에 실패했습니다.');
+            console.error('게시글 등록 중 오류 발생:', error);
+            showToast('게시글 등록에 실패했습니다', 'error');
         }
     };
-
-    
     
     return (
         <Modal className="post-modal" show={show} onHide={handleClose} centered>
             <Modal.Header className="post-modal-header" closeButton>
                 <Modal.Title className="post-modal-title">
-                    {isEditMode ? '글 수정' : '글 쓰기'}
+                    {isNotice ? (isEditMode ? '공지사항 수정' : '공지사항 작성') : isEditMode ? '글 수정' : '글 쓰기'}
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body className="post-modal-body">
@@ -139,8 +139,9 @@ const PostModal = ({
                             className="post-modal-editor"
                         />
                     </Form.Group>
-
+                                
                     {/* 해시태그 입력 */}
+                    {!isNotice && (
                     <Form.Group className="mb-3 post-modal-hashtags-group">
                         <Form.Label className="post-modal-label">해시태그</Form.Label>
                         <Form.Control
@@ -151,6 +152,7 @@ const PostModal = ({
                             onChange={(e) => setHashtags(e.target.value)}
                         />
                     </Form.Group>
+                    )}
                 </Form>
             </Modal.Body>
             <Modal.Footer className="post-modal-footer">

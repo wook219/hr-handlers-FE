@@ -6,4 +6,11 @@ export const PATHS = {
   BOARD: '/post',
   CHATROOM: '/chatroom',
   SALARY: '/admin/salary',
+  VACATION : '/vacation',
+};
+
+export const ADMINPATHS = {
+  HOME: '/admin/home',
+  EMP: '/admin/emp', 
+  VACATION : '/admin/vacation'
 };

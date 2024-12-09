@@ -50,21 +50,134 @@ export const createPostAPI = async (postData) => {
 // 게시글 수정 API
 export const updatePostAPI = async (postId, postData) => {
     try {
-        const response = await axios.put(`/post/${postId}`, postData);
-        return response.data;
+        // 로컬스토리지에서 JWT 토큰 가져오기
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        // Authorization 헤더 포함하여 PUT 요청
+        const response = await axios.put(`/post/${postId}`, postData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Bearer 토큰 설정
+            },
+        });
+
+        return response.data; // 응답 데이터 반환
     } catch (error) {
         console.error(`Failed to update post (ID: ${postId}):`, error);
-        throw error;
+        throw error; // 에러 다시 던지기
     }
 };
+
 
 // 게시글 삭제 API
 export const deletePostAPI = async (postId) => {
     try {
-        const response = await axios.delete(`/post/${postId}`);
-        return response.data;
+        // 로컬스토리지에서 JWT 토큰 가져오기
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        // Authorization 헤더 포함하여 DELETE 요청
+        const response = await axios.delete(`/post/${postId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Bearer 토큰 설정
+            },
+        });
+
+        return response.data; // 응답 데이터 반환
     } catch (error) {
         console.error(`Failed to delete post (ID: ${postId}):`, error);
+        throw error; // 에러 다시 던지기
+    }
+};
+
+
+// 댓글 조회 API
+export const getCommentsByPostAPI = async (postId, page = 0, size = 5) => {
+    try {
+        const response = await axios.get(`/post/${postId}/comment`, {
+            params: {
+                page: page,
+                size: size,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to fetch comments for post (ID: ${postId}):`, error);
+        throw error;
+    }
+};
+
+// 댓글 생성 API (대댓글 포함)
+export const createCommentAPI = async (postId, commentData) => {
+    try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        const response = await axios.post(`/post/${postId}/comment`, commentData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to create comment for post (ID: ${postId}):`, error);
+        throw error;
+    }
+};
+
+
+// 댓글 수정 API
+export const updateCommentAPI = async (commentId, content) => {
+    console.log("Sending content:", content); // 여기서 content 확인
+    try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        const response = await axios.put(
+            `/comment/${commentId}`, content, 
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json", // JSON 형식 명시
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to update comment (ID: ${commentId}):`, error);
+        throw error;
+    }
+};
+
+
+
+// 댓글 삭제 API
+export const deleteCommentAPI = async (commentId) => {
+    try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
+        }
+
+        const response = await axios.delete(`/comment/${commentId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(`Failed to delete comment (ID: ${commentId}):`, error);
         throw error;
     }
 };
