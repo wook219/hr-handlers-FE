@@ -22,10 +22,8 @@ const PostModal = ({
     const [pendingUploads, setPendingUploads] = useState([]); // 업로드 대기 이미지 파일 리스트
     const { showToast } = useToast();
 
-    // 수정 모드일 때 데이터를 초기화하거나 로그 출력
     useEffect(() => {
         if (isEditMode && show) {
-            console.log('Editing mode active, pre-filling data for editing');
         }
     }, [isEditMode, show]);
 
