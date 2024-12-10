@@ -57,7 +57,7 @@ const TodayTodoList = () => {
 
     return (
         <div className="today-todo-sidebar">
-            <h4>오늘 할 일</h4>
+            <h5 className='today-todo-sidebar-title'>오늘 할 일</h5>
             <div className="today-date">
                 {new Date().toLocaleDateString('ko-KR', {
                     year: 'numeric',

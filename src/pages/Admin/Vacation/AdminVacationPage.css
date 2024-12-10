@@ -5,6 +5,11 @@
    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+.vacation-management-title{
+   font-weight: bold;
+   margin-bottom: 15px;
+}
+
 .admin-section-tabs {
    display: flex;
    gap: 10px;
@@ -33,18 +38,19 @@
    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.vacation-custom-table thead th {
+.admin-vacation-table thead th {
    background-color: white;
    border-bottom: 1px solid #eee;
    padding: 15px 20px;
-   font-weight: 500;
+   font-weight: bold;
    color: #333;
-   text-align: left;
+   text-align: center;
 }
 
-.vacation-custom-table tbody td {
+.admin-vacation-table tbody td {
    padding: 15px 20px;
    border-bottom: 1px solid #eee;
+   text-align: center;
 }
 
 .admin-approve-button,
@@ -58,11 +64,19 @@
 }
 
 .admin-approve-button {
-   background-color: #0d6efd;
+   background-color: #1a2b50;
    color: white;
 }
 
+.admin-approve-button:hover{
+   background-color: #0f1c3c;
+}
+
 .admin-reject-button {
-   background-color: #dc3545;
+   background-color: #999999;
    color: white;
+}
+
+.admin-reject-button:hover{
+   background-color: #777777;
 }
