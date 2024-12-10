@@ -34,7 +34,7 @@
     cursor: pointer;
 }
 
-.dept-management-search{
+.dept-management-search {
     margin-bottom: -20px;
     display: flex; 
     margin-top: 60px;
@@ -58,14 +58,14 @@
     word-break: break-word;
 }
 
-.admin-dept-search-button{
+.admin-dept-search-button {
     padding: 0; 
     border: none; 
     background: none;
     cursor: pointer; 
 }
 
-.dept-search-button-icon{
+.dept-search-button-icon {
     width: 25px; 
     height: 25px; 
 }
@@ -77,7 +77,7 @@
     text-align: center;
 }
 
-.dept-department-table td{
+.dept-department-table td {
     border-top: 1px solid #bdbdbd; 
     border-bottom: 1px solid #bdbdbd; 
     border-left: none;
@@ -176,29 +176,43 @@
 }
 
 .dept-pagination-container {
-    margin-top: 100px;
+    list-style: none;
+    padding: 0;
     display: flex;
-    justify-content: center; 
+    gap: 5px;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    margin-top: 40px;
 }
 
-.dept-pagination-container button {
-    padding: 8px 12px;
+.dept-pagination-container .page-item {
     border-radius: 5px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    color: #555;
     cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.dept-pagination-container button[disabled] {
-    background-color: #ddd;
-    cursor: not-allowed;
-}
-
-.dept-pagination-container span {
+.dept-pagination-container .page-item.active .page-link {
+    background-color: #ffffff;
+    color: #1a2b50;
+    border-color: #1a2b50;
+    border-width: 2px;
     font-weight: bold;
+    border-radius: 5px;
+}
+
+.dept-pagination-container .page-link {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: #555;
+}
+
+.dept-pagination-container .page-link:hover {
+    background-color: #f0f0f0;
+}
+
+.dept-pagination-container .page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
 }
