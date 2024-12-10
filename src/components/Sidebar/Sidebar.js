@@ -120,22 +120,12 @@ function Sidebar() {
             </TreeMenuItem>
           </li>
         )}
+        <li onClick={handleLogout}>
+            <FaSignOutAlt className="icon" />
+            <span>로그아웃</span>
+          </li>
         </ul>
       </nav>
-      <div className="logout">
-        <button
-          onClick={handleLogout}
-          className="logout-button"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'white',
-            fontSize: '20px',
-          }}
-        >
-          로그아웃
-        </button>
-      </div>
     </div>
   );
 }
