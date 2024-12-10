@@ -43,11 +43,20 @@ const VacationEnrollModal = ({ type, remainingDays, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const startDate = new Date(formData.startDate);
+        const endDate = new Date(formData.endDate);
+        
+        if (endDate < startDate) {
+            showToast('종료일이 시작일보다 빠를 수 없습니다.', 'error');
+            return;
+        }
+
         try {
             const requestData = {
                 ...formData,
-                startDate: new Date(formData.startDate).toISOString(),
-                endDate: new Date(formData.endDate).toISOString()
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString()
             };
 
             const response = await enrollVacationAPI(requestData);
@@ -57,7 +66,7 @@ const VacationEnrollModal = ({ type, remainingDays, onClose }) => {
             console.error('휴가 신청 실패:', error);
             if (error.message === '잔여 휴가 일수가 부족합니다.') {
                 showToast('잔여 휴가 일수가 부족합니다.', 'error');
-            } else {
+            }else {
                 showToast('휴가 신청에 실패했습니다.', 'error');
             }
         }
