@@ -1,9 +1,16 @@
 import axios from '../axios';
 
 // 채팅방 목록 조회 API
-export const getAllChatRoomAPI = async () => {
+export const getAllChatRoomAPI = async (keyword = '', page = 0, size = 10) => {
   try {
-    const response = await axios.get('/chatroom');
+    const response = await axios.get('/chatroom', {
+      params: {
+        keyword,
+        page,
+        size,
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error('Failed to fetch all chatrooms:', error);
@@ -12,7 +19,7 @@ export const getAllChatRoomAPI = async () => {
 };
 
 // 참여 중인 채팅방 목록 조회 API
-export const getAllEnterChatAPI = async () => {
+export const getAllEnterChatAPI = async (keyword = '', page = 0, size = 10) => {
   try {
     const token = localStorage.getItem('access_token');
 
@@ -23,6 +30,11 @@ export const getAllEnterChatAPI = async () => {
     const response = await axios.get('/chat', {
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      params: {
+        keyword,
+        page,
+        size,
       },
     });
     return response.data;
@@ -176,6 +188,17 @@ export const deleteChatRoomAPI = async (chatRoomId) => {
     return response.data;
   } catch (error) {
     console.error('채팅방 삭제에 실패했습니다.', error);
+    throw error;
+  }
+};
+
+// 채팅방 참여 인원 수 조회 API
+export const getJoinedEmployeesCount = async (chatRoomId) => {
+  try {
+    const response = await axios.get(`/chat/${chatRoomId}/count`);
+    return response.data;
+  } catch (error) {
+    console.error('채팅방 인원 수 조회에 실패했습니다.', error);
     throw error;
   }
 };

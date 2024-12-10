@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './ChatRoomHeader.css';
 import { ThreeDotsVertical, ChevronLeft, PersonFill } from 'react-bootstrap-icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getJoinedEmployees } from '../../api/chat';
+import { getJoinedEmployeesCount } from '../../api/chat';
 
 const ChatRoomHeader = ({ title, handleClickMenu }) => {
   const { chatroomId } = useParams();
-  const [contextMenu, setContextMenu] = useState(null); // 메뉴 상태
   const [employeeCount, setEmployeeCount] = useState(0); // 참여 인원 수
   const navigate = useNavigate();
 
@@ -18,9 +17,8 @@ const ChatRoomHeader = ({ title, handleClickMenu }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const employees = await getJoinedEmployees(chatroomId);
-        const count = employees.data.length;
-        setEmployeeCount(count);
+        const employees = await getJoinedEmployeesCount(chatroomId);
+        setEmployeeCount(employees.data);
       } catch (error) {
         console.error('Failed to fetch employees', error);
       }

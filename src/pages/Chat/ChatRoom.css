@@ -51,7 +51,6 @@
 .chat-body {
   flex-grow: 1; /* 채팅 영역이 가용 공간을 차지하도록 설정 */
   overflow-y: auto; /* 채팅 내용이 많을 경우 스크롤 */
-  max-height: '500px';
   padding: 3px;
 }
 
@@ -103,18 +102,20 @@
 
 @media (max-width: 1200px) {
   .chatroom-page {
-    margin-top: 100px;
+    margin-top: 300px;
     flex-direction: column; /* 세로로 배치 */
   }
 
   .chatroom-list-all-container {
     order: 2; /* chatroom-entire-container 아래로 가도록 순서 변경 */
+    max-width: 100%;
   }
 
   .chatroom-entire-container {
     order: 1; /* chatroom-list-all-container 위로 가도록 순서 변경 */
     max-width: 100%;
     margin: 10px 0;
+    margin-left: 120px;
     padding: 10px;
   }
 
