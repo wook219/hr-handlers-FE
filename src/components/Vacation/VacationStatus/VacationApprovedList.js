@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import VacationTable from './VacationTable';
 import { Button } from 'react-bootstrap';
 import './VacationStatus.css';
-import { getApprovedVacationsAPI } from '../../../api/vacation';
+import { getApprovedVacationsAPI } from '../../../api/vacation/index';
 
 const VacationApprovedList = () => {
     const [approvedVacations, setApprovedVacations] = useState([]);
@@ -54,35 +54,43 @@ const VacationApprovedList = () => {
 
     return (
         <div>
-            <h3>승인 휴가 목록</h3>
+            <h4 className='vacation-section-title'>승인 휴가 목록</h4>
             <VacationTable 
                 headers={headers}
                 data={approvedVacations}
                 rowRenderer={renderRow}
                 type="approved"  // 테이블 타입 지정
-                className = "approved-vacation"
             />
-            {approvedVacations.length > 0 && (
-                <div className="pagination-container d-flex justify-content-center gap-2 mt-3">
-                    <Button 
-                        variant="outline-primary" 
-                        onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                        disabled={page === 0}
-                    >
-                        이전
-                    </Button>
-                    <span className="mx-3 align-self-center">
-                        {page + 1} / {totalPages}
-                    </span>
-                    <Button 
-                        variant="outline-primary" 
-                        onClick={() => setPage(prev => prev + 1)}
-                        disabled={page >= totalPages - 1}
-                    >
-                        다음
-                    </Button>
-                </div>
-            )}
+            {/* 페이지네이션 */}
+            <div className="pagination-container d-flex justify-content-center">
+                <ul className="pagination">
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(0)} disabled={page === 0}>
+                            &laquo;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => Math.max(0, prev - 1))} disabled={page === 0}>
+                            &lt;
+                        </button>
+                    </li>
+                    <li className="page-item active">
+                        <button className="page-link">
+                            {page + 1}
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => prev + 1)} disabled={page >= totalPages - 1}>
+                            &gt;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1}>
+                            &raquo;
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     );
 };

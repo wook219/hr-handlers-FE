@@ -85,32 +85,32 @@
 
 /* 수정 버튼 */
 .todo-modal-actions button:first-child {
-  background-color: #4a90e2;
+  background-color: #1a2b50;
   color: white;
 }
 
 .todo-modal-actions button:first-child:hover {
-  background-color: #357abd;
+  background-color: #0f1c3c;
 }
 
 /* 삭제 버튼 */
 .todo-modal-actions button:nth-child(2) {
-  background-color: #ff4d4f;
+  background-color: #999999;
   color: white;
 }
 
 .todo-modal-actions button:nth-child(2):hover {
-  background-color: #ff7875;
+  background-color: #777777;
 }
 
 /* 닫기 버튼 */
 .todo-modal-actions button:last-child {
-  background-color: #f5f5f5;
-  color: #666;
+  background-color: #999999;
+  color: white;
 }
 
 .todo-modal-actions button:last-child:hover {
-  background-color: #e8e8e8;
+  background-color: #777777;
 }
 
 /* 입력 필드가 비활성화되었을 때의 스타일 */
@@ -118,4 +118,31 @@
 .todo-modal-field textarea:disabled {
   background-color: #f5f5f5;
   cursor: not-allowed;
+}
+
+.todo-modal-header {
+  position: relative;  /* X 버튼의 위치 기준점 */
+}
+
+.todo-modal-close {
+  position: absolute;
+  top: -10px;        /* 위치 조정 */
+  right: -10px;      /* 위치 조정 */
+  width: 30px;       /* 버튼 크기 */
+  height: 30px;      /* 버튼 크기 */
+  border: none;
+  background: none;
+  font-size: 26px;   /* X 표시 크기 */
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  font-weight: bold;
+}
+
+.todo-modal-close:hover {
+  color: #333;
 }

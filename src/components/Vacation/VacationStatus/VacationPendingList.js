@@ -60,7 +60,7 @@ const VacationPendingList = ({ onVacationUpdate }) => {
 
     return (
         <div>
-            <h5>승인 대기 휴가 목록</h5>
+            <h5 className='vacation-section-title'>승인 대기 휴가 목록</h5>
             <VacationTable 
                 headers={headers}
                 data={pendingVacations}

@@ -93,8 +93,8 @@ const TodoEnrollModal = ({ isOpen, onClose, onSubmit }) => {
           </div>
 
           <div className="todo-modal-actions">
-            <button type="submit">등록</button>
-            <button type="button" onClick={onClose}>취소</button>
+            <button type="submit" className='todo-enroll'>등록</button>
+            <button type="button" className='todo-cancel' onClick={onClose}>취소</button>
           </div>
         </form>
       </div>

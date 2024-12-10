@@ -85,7 +85,7 @@ const AdminAttendancePage = () => {
 
     return (
         <div className="attendance-history-container">
-            <h2>전체 출퇴근 기록</h2>
+            <h2 className='attendance-history-title'>전체 출퇴근 기록</h2>
             
             {/* 검색 폼 */}
             <div className="search-form mb-4">
@@ -139,12 +139,12 @@ const AdminAttendancePage = () => {
                         />
                     </Form.Group>
                     <div className="d-flex align-items-end gap-2">
-                        <Button variant="primary" onClick={handleSearch} className="mb-3">
+                        <button onClick={handleSearch} className="attendance-search-button">
                             검색
-                        </Button>
-                        <Button variant="secondary" onClick={handleReset} className="mb-3">
+                        </button>
+                        <button onClick={handleReset} className="attendance-reset-button">
                             초기화
-                        </Button>
+                        </button>
                     </div>
                 </Form>
             </div>
@@ -178,24 +178,34 @@ const AdminAttendancePage = () => {
             </Table>
 
             {/* 페이지네이션 */}
-            <div className="pagination-container d-flex justify-content-center gap-2">
-                <Button 
-                    variant="outline-primary" 
-                    onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                    disabled={page === 0}
-                >
-                    이전
-                </Button>
-                <span className="mx-3 align-self-center">
-                    {page + 1} / {totalPages}
-                </span>
-                <Button 
-                    variant="outline-primary" 
-                    onClick={() => setPage(prev => prev + 1)}
-                    disabled={page >= totalPages - 1}
-                >
-                    다음
-                </Button>
+            <div className="pagination-container d-flex justify-content-center">
+                <ul className="pagination">
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(0)} disabled={page === 0}>
+                            &laquo;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => Math.max(0, prev - 1))} disabled={page === 0}>
+                            &lt;
+                        </button>
+                    </li>
+                    <li className="page-item active">
+                        <button className="page-link">
+                            {page + 1}
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => prev + 1)} disabled={page >= totalPages - 1}>
+                            &gt;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1}>
+                            &raquo;
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     );
