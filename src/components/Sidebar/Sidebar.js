@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation } from './useNavigation';
-import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase   } from 'react-icons/fa';
+import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase, FaSignOutAlt} from 'react-icons/fa';
 import { useUser } from '../../context/UserContext';
 import { MdManageAccounts } from "react-icons/md";
 
@@ -70,24 +70,12 @@ function Sidebar() {
               <span>통합관리</span>
             </li>
           )}
+          <li onClick={handleLogout}>
+            <FaSignOutAlt className="icon" />
+            <span>로그아웃</span>
+          </li>
         </ul>
       </nav>
-      <div className="logout">
-        <button
-          onClick={handleLogout}
-          className="logout-button"
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'white',
-            marginLeft: '150px',
-            fontSize: '14px',
-            marginBottom: "50px"
-          }}
-        >
-          로그아웃
-        </button>
-      </div>
     </div>
   );
 }

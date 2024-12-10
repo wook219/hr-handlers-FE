@@ -244,7 +244,7 @@ const MyPage = () => {
 
                 <div className="mypage-department-info">
                     <h5 style={{ fontWeight: "bold", marginTop: "70px" }}>부서</h5>
-                    <span style={{ marginTop: "10px", marginLeft: "50px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
+                    <div style={{ marginTop: "30px", marginLeft: "30px" }}>{userData?.data.deptName || "등록된 부서 없음"}</div>
                 </div>
                 {isEditing && (
                     <div className="mypage-edit-buttons">

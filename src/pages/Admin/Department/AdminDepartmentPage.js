@@ -137,9 +137,9 @@ const DepartmentManagement = () => {
                 keyword: searchTerm,
             });
 
-            setDepartments(response.content || []); 
+            setDepartments(response.content || []);
             setTotalPages(response.totalPages || 0);
-            
+
             setShowEditModal(false); // 수정 모달 닫기
             setNewDepartmentName(""); // 입력 필드 초기화
             showToast("부서 이름이 성공적으로 수정되었습니다!", "success");
@@ -155,7 +155,7 @@ const DepartmentManagement = () => {
             if (confirmed) {
                 try {
                     await deleteDepartmentAPI(departmentId);
-                    
+
                     const response = await getDepartmentAPI({
                         page: currentPage,
                         size: pageSize,
@@ -257,33 +257,80 @@ const DepartmentManagement = () => {
 
             </table>
             <div className="dept-pagination-container">
-                <button
-                    onClick={() => setCurrentPage(0)}
-                    disabled={currentPage === 0}
-                >
-                    «
-                </button>
+                <ul className="pagination">
+                    {/* 첫 페이지로 이동 */}
+                    <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(0)}
+                            disabled={currentPage === 0}
+                        >
+                            «
+                        </button>
+                    </li>
 
-                <button
-                    onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 0))}
-                    disabled={currentPage === 0}
-                >
-                    ‹
-                </button>
-                <span>{`${currentPage + 1} / ${totalPages}`}</span>
-                <button
-                    onClick={() => setCurrentPage(prevPage => prevPage + 1)}
-                    disabled={currentPage + 1 >= totalPages}
-                >
-                    ›
-                </button>
-                <button
-                    onClick={() => setCurrentPage(totalPages - 1)}
-                    disabled={currentPage === totalPages - 1}
-                >
-                    »
-                </button>
+                    {/* 이전 페이지로 이동 */}
+                    <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                            disabled={currentPage === 0}
+                        >
+                            ‹
+                        </button>
+                    </li>
+
+                    {/* 페이지 번호 표시 */}
+                    {[...Array(5)].map((_, idx) => {
+                        const pageIndex = Math.floor(currentPage / 5) * 5 + idx;
+                        if (pageIndex >= totalPages) return null;
+                        return (
+                            <li
+                                key={pageIndex}
+                                className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
+                            >
+                                <button
+                                    className="page-link"
+                                    onClick={() => setCurrentPage(pageIndex)}
+                                >
+                                    {pageIndex + 1}
+                                </button>
+                            </li>
+                        );
+                    })}
+
+                    {/* 다음 페이지로 이동 */}
+                    <li
+                        className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                            }`}
+                    >
+                        <button
+                            className="page-link"
+                            onClick={() =>
+                                setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+                            }
+                            disabled={currentPage === totalPages - 1}
+                        >
+                            ›
+                        </button>
+                    </li>
+
+                    {/* 마지막 페이지로 이동 */}
+                    <li
+                        className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
+                            }`}
+                    >
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(totalPages - 1)}
+                            disabled={currentPage === totalPages - 1}
+                        >
+                            »
+                        </button>
+                    </li>
+                </ul>
             </div>
+
             {showAddModal && (
                 <div className="dept-modal-overlay">
                     <div className="dept-modal">
