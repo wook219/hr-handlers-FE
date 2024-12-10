@@ -10,30 +10,54 @@ const AttendanceButton = () => {
     const [showModal, setShowModal] = useState(false);
     const [checkInTime, setCheckInTime] = useState(null);
     const [checkOutTime, setCheckOutTime] = useState(null);
+    const [selectedButton, setSelectedButton] = useState(null); // 어떤 버튼이 클릭되었는지 추적
     const { showToast } = useToast();
 
-    useEffect(() => {
-        const checkCurrentStatus = async () => {
-            try {
-                const attendanceData = await getAttendanceAPI();
-                
-                if (attendanceData) {  // 오늘 출근 기록이 있는 경우
-                    setIsWorking(attendanceData.status === 'WORK');
-                    setAttendanceId(attendanceData.id);
-                    setCheckInTime(attendanceData.checkInTime);
-                    setCheckOutTime(attendanceData.checkOutTime);
-                } else {  // 오늘 출근 기록이 없는 경우
-                    setIsWorking(false);
-                    setAttendanceId(null);
-                    setCheckInTime(null);
-                    setCheckOutTime(null);
-                }
-            } catch (error) {
-                console.error('출근 상태 확인 실패:', error);
+    // 출근 상태 체크 함수
+    const checkCurrentStatus = async () => {
+        try {
+            const attendanceData = await getAttendanceAPI();
+            
+            if (attendanceData) {
+                setIsWorking(attendanceData.status === 'WORK');
+                setAttendanceId(attendanceData.id);
+                setCheckInTime(attendanceData.checkInTime);
+                setCheckOutTime(attendanceData.checkOutTime);
+            } else {
+                setIsWorking(false);
+                setAttendanceId(null);
+                setCheckInTime(null);
+                setCheckOutTime(null);
             }
-        };
-    
+        } catch (error) {
+            console.error('출근 상태 확인 실패:', error);
+        }
+    };
+
+    // 초기 로드 및 날짜 변경 감지
+    useEffect(() => {
         checkCurrentStatus();
+
+        // 현재 날짜의 자정 시간 계산
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const timeUntilMidnight = tomorrow - now;
+
+        // 자정에 상태 리셋
+        const midnightTimer = setTimeout(() => {
+            checkCurrentStatus();
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(midnightTimer);
+    }, []);
+
+    // 1분마다 현재 날짜 확인
+    useEffect(() => {
+        const interval = setInterval(() => {
+            checkCurrentStatus();
+        }, 60000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const formatTime = (timeString) => {
@@ -48,26 +72,28 @@ const AttendanceButton = () => {
         return `${year}-${month}-${day} ${hours}시 ${minutes}분`;
     };
  
-    const handleAttendanceClick = () => {
+    const handleAttendanceClick = (type) => {
+        if ((type === 'checkIn' && checkInTime) || (type === 'checkOut' && checkOutTime)) {
+            return; // 이미 처리된 버튼은 클릭 무시
+        }
+        setSelectedButton(type);
         setShowModal(true);
     };
  
     const handleClose = () => {
         setShowModal(false);
+        setSelectedButton(null);
     };
  
-    // 출/퇴근 처리
     const handleConfirm = async () => {
         try {
-            if (!isWorking) {
-                // 출근 처리
+            if (selectedButton === 'checkIn' && !checkInTime) {
                 const response = await checkInAPI();
                 setAttendanceId(response.id);
                 setCheckInTime(response.checkInTime);
                 setIsWorking(true);
                 showToast('출근 처리되었습니다.', 'success');
-            } else {
-                // 퇴근 처리
+            } else if (selectedButton === 'checkOut' && !checkOutTime) {
                 const response = await checkOutAPI(attendanceId);
                 setCheckOutTime(response.checkOutTime);
                 setIsWorking(false);
@@ -85,8 +111,12 @@ const AttendanceButton = () => {
             <div className="attendance-container">
                 <div className="attendance-buttons">
                     <div 
-                        className="attendance-card"
-                        onClick={handleAttendanceClick}
+                        className={`attendance-card ${checkInTime ? 'disabled' : ''}`}
+                        onClick={() => !checkInTime && handleAttendanceClick('checkIn')}
+                        style={{ 
+                            cursor: checkInTime ? 'default' : 'pointer',
+                            opacity: checkInTime ? 0.6 : 1
+                        }}
                     >
                         <h5>출근</h5>
                         {checkInTime && (
@@ -96,8 +126,12 @@ const AttendanceButton = () => {
                         )}
                     </div>
                     <div 
-                        className="attendance-card"
-                        onClick={handleAttendanceClick}
+                        className={`attendance-card ${checkOutTime || !checkInTime ? 'disabled' : ''}`}
+                        onClick={() => !checkOutTime && checkInTime && handleAttendanceClick('checkOut')}
+                        style={{ 
+                            cursor: (checkOutTime || !checkInTime) ? 'default' : 'pointer',
+                            opacity: (checkOutTime || !checkInTime) ? 0.6 : 1
+                        }}
                     >
                         <h5>퇴근</h5>
                         {checkOutTime && (
@@ -111,10 +145,12 @@ const AttendanceButton = () => {
  
             <Modal show={showModal} onHide={handleClose} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>{isWorking ? '퇴근 확인' : '출근 확인'}</Modal.Title>
+                    <Modal.Title>
+                        {selectedButton === 'checkIn' ? '출근 확인' : '퇴근 확인'}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {isWorking ? '퇴근 처리하시겠습니까?' : '출근 처리하시겠습니까?'}
+                    {selectedButton === 'checkIn' ? '출근 처리하시겠습니까?' : '퇴근 처리하시겠습니까?'}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
@@ -127,6 +163,6 @@ const AttendanceButton = () => {
             </Modal>
         </>
     );
- };
+};
 
 export default AttendanceButton;

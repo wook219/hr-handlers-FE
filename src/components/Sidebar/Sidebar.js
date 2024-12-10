@@ -130,9 +130,7 @@ function Sidebar() {
             background: 'none',
             border: 'none',
             color: 'white',
-            marginLeft: '150px',
-            fontSize: '14px',
-            marginBottom: "50px"
+            fontSize: '20px',
           }}
         >
           로그아웃
