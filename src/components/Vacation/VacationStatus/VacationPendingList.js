@@ -14,6 +14,7 @@ const VacationPendingList = ({ onVacationUpdate }) => {
         try {
             setLoading(true);
             const data = await getPendingVacationsAPI();
+            console.log('data', data);
             setPendingVacations(data);
         } catch (err) {
             setError('승인 대기 휴가 목록을 불러오는데 실패했습니다.');
@@ -27,7 +28,7 @@ const VacationPendingList = ({ onVacationUpdate }) => {
         fetchPendingVacations();
     }, []);
 
-    const headers = ['문서 번호', '신청 일자', '제목', '', ''];
+    const headers = ['문서 번호', '신청 일자', '제목', '시작 일자', '종료 일자', ' '];
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -40,6 +41,8 @@ const VacationPendingList = ({ onVacationUpdate }) => {
                 <td>{vacation.docNum}</td>
                 <td>{formatDate(vacation.createdAt)}</td>
                 <td>{vacation.title}</td>
+                <td>{formatDate(vacation.startDate)}</td>
+                <td>{formatDate(vacation.endDate)}</td>
                 <td>
                     <button 
                         className="vacation-detail-button"
