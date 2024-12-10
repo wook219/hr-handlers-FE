@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigation } from './useNavigation';
 import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase   } from 'react-icons/fa';
 import { useUser } from '../../context/UserContext';
+import { MdManageAccounts } from "react-icons/md";
+
 
 function Sidebar() {
   const { user, logout } = useUser(); // context 사용 부분 참고
@@ -64,7 +66,7 @@ function Sidebar() {
           </li>
           {user.role === 'ROLE_ADMIN' && (
             <li onClick={navigation.toAdminHome}>
-              <FaDollarSign className="icon" />
+              <MdManageAccounts className="icon" />
               <span>통합관리</span>
             </li>
           )}
