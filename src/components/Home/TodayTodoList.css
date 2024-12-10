@@ -44,7 +44,7 @@
 }
 
 .today-todo-title {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: bold;
     margin-bottom: 4px;
     padding-left: 10px;
@@ -52,7 +52,7 @@
 }
 
 .today-todo-time {
-    font-size: 13px;
+    font-size: 15px;
     color: #666;
     padding-left: 10px;  /* 왼쪽 여백 추가 */
     width: 100%;  /* 너비를 100%로 설정 */
