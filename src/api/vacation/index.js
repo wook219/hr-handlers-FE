@@ -20,7 +20,7 @@ export const getPendingVacationsAPI = async () => {
 }
 
 // 확정 휴가 조회 (승인, 반려)
-export const getApprovedVacationsAPI = async () => {
+export const getApprovedVacationsAPI = async (page) => {
     const token = localStorage.getItem("access_token");
 
     try {
@@ -28,6 +28,10 @@ export const getApprovedVacationsAPI = async () => {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+            params: {
+                page: page,
+                size: 4
+            }
         });
         return response.data.data;
     } catch (error) {

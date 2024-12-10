@@ -39,6 +39,15 @@ const VacationDetailModal = ({ vacationId, onClose, editable, onModify, onDelete
     };
 
     const handleSubmit = async () => {
+        // 날짜 유효성 검사
+        const startDate = new Date(editData.startDate);
+        const endDate = new Date(editData.endDate);
+        
+        if (endDate < startDate) {
+            showToast('종료일이 시작일보다 빠를 수 없습니다.', 'error');
+            return;
+        }
+        
         try {
             await modifyVacationAPI(vacationId, editData);
             setVacationDetail(editData);

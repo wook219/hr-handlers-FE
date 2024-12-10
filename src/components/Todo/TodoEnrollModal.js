@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useToast } from '../../context/ToastContext';
 
 const TodoEnrollModal = ({ isOpen, onClose, onSubmit }) => {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -19,11 +21,19 @@ const TodoEnrollModal = ({ isOpen, onClose, onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const startTime = new Date(formData.startTime);
+    const endTime = new Date(formData.endTime);  
+
+    if (endTime < startTime) {
+      showToast('종료시간이 시작시간보다 빠를 수 없습니다.', 'error');
+      return;
+    }
+
     // 시간대 조정을 위한 데이터 변환
     const adjustedFormData = {
       ...formData,
-      startTime: new Date(formData.startTime).toISOString(),
-      endTime: new Date(formData.endTime).toISOString()
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString()
     };
 
     onSubmit(adjustedFormData);
