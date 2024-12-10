@@ -105,7 +105,7 @@ const EmployeeManagement = () => {
     const handleDelete = async (empNo) => {
         toast.info(
             <div>
-                <p>해당 사원을 삭제하시겠습니까?</p>
+                <p style={{textAlign: "center"}}>해당 사원을 삭제하시겠습니까?</p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
                     <button
                         onClick={async () => {
