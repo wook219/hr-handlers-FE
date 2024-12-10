@@ -8,7 +8,6 @@ import {
         excelUploadSalaryAPI,
         excelDownloadSalaryAPI
        } from '../../../api/admin/index.js';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -126,9 +125,6 @@ const AdminSalaryPage = () => {
             ...dateField,
             value: '',
         }));
-
-        console.log("createFormData : ", createFormData);
-        console.log("createSelectedDate : ", createSelectedDate);
     
         setFormData(createFormData);
         setSelectedDate(createSelectedDate);
@@ -143,7 +139,6 @@ const AdminSalaryPage = () => {
             name: salary.name,
             value: salary.employeeId
         }];
-        console.log('nameOptions : ', nameOptions);
         // 폼 데이터 업데이트
         const updatedFormData = formData.map((field) => {
             let updatedValue = salary[field.key];
@@ -177,10 +172,6 @@ const AdminSalaryPage = () => {
             return { ...dateField, value };
         });
 
-        console.log("salary : ", salary);
-        console.log("updatedFormData : ", updatedFormData);
-        console.log("updatedSelectedDate : ", updatedSelectedDate);
-    
         setFormData(updatedFormData);
         setSelectedDate(updatedSelectedDate);
     
@@ -200,9 +191,7 @@ const AdminSalaryPage = () => {
     // 조회 api
     const getSalaries = async () => {
         const { response, error } = await getAllSalaryAPI();
-        console.log("response : ", response);
         if (error) {
-            console.log('에러 발생');
             return;
         }
         setSalaries(response.data.data);
@@ -220,13 +209,9 @@ const AdminSalaryPage = () => {
 
         const { response, error } = await searchSalaryAPI(params, page, size);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
-
-        console.log("searchData : ", searchData);
-        console.log("params : ", params);
-        console.log("response : ", response);
 
         // 지급총액, 공제총액, 실지급액 세자리마다 , 붙이는 로직
         const formattedData = response.data.data.content.map((item) => ({
@@ -273,11 +258,6 @@ const AdminSalaryPage = () => {
             }
         });
 
-        console.log('modalType : ', modalType);
-        console.log("data : ", data);
-        console.log("selectedDate : ", selectedDate);
-        console.log("params : ", params);
-
         if(modalType === 'create') {
             const { response, error } = await createSalaryAPI(params);
             if (error) {
@@ -300,9 +280,7 @@ const AdminSalaryPage = () => {
 
     // 삭제 api
     const handleDelete = async () => {
-        console.log('checkItems : ', checkItems);
         const { response, error } = await deleteSalaryAPI(checkItems);
-        console.log("response : ", response);
         if (error) {
             showToast('에러 발생', 'error');
             return;
@@ -359,11 +337,6 @@ const AdminSalaryPage = () => {
             excelTypeParam,
             searchParam
         }
-
-        console.log('searchData : ', searchData);
-        console.log('excelTypeData : ', excelTypeData);
-        console.log('params : ', params);
-
 
         const { response, error } = await excelDownloadSalaryAPI(params);
         if (error) {
