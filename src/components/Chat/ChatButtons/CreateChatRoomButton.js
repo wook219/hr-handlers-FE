@@ -15,7 +15,6 @@ const CreateChatRoomButton = () => {
 
   const handleCreateChatRoom = async (title, isSecret) => {
     const response = await createChatRoomAPI(title, isSecret);
-    console.log('새로운 채팅방 생성:', title, '비공개 여부:', isSecret);
 
     navigate(`/chatroom/${response.data.chatRoomId}`, { state: { title } });
 

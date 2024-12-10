@@ -4,6 +4,7 @@ import './AdminEmployeePage.css';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../../../context/ToastContext';
+import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 
 const contractTypes = [
@@ -104,15 +105,68 @@ const EmployeeManagement = () => {
 
     // 삭제 
     const handleDelete = async (empNo) => {
-        try {
-            await deleteEmployeeAPI(empNo);
-            setEmployees(employees.filter(employee => employee.empNo !== empNo));
-            showToast('사원이 성공적으로 삭제되었습니다.', 'success');
-        } catch (error) {
-            console.error("사원 삭제 중 오류가 발생했습니다:", error);
-            showToast('사원을 삭제하는 중 문제가 발생했습니다.', 'error');
-        }
+        toast.info(
+            <div>
+                <p>해당 사원을 삭제하시겠습니까?</p>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+                    <button
+                        onClick={async () => {
+                            try {
+                                await deleteEmployeeAPI(empNo); // 사원 삭제 API 호출
+                                // 삭제 후 데이터를 다시 가져오기
+                                const response = await getAllEmployeesAPI({
+                                    page: currentPage,
+                                    size: pageSize,
+                                    sortField: 'createdAt',
+                                    sortDir: 'desc',
+                                    keyword: searchTerm,
+                                });
+                                setEmployees(response.content); // 새로 가져온 데이터를 상태에 설정
+                                setTotalPages(response.totalPages); // 총 페이지 수 업데이트
+                                showToast('사원이 성공적으로 삭제되었습니다.', 'success');
+                            } catch (error) {
+                                console.error("사원 삭제 중 오류가 발생했습니다:", error);
+                                showToast('사원을 삭제하는 중 문제가 발생했습니다.', 'error');
+                            } finally {
+                                toast.dismiss(); // 확인 창 닫기
+                            }
+                        }}
+                        style={{
+                            padding: "5px 10px",
+                            backgroundColor: "#1a2b50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        확인
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()} // 취소 버튼 클릭 시 창 닫기
+                        style={{
+                            padding: "5px 10px",
+                            backgroundColor: "#999999",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        취소
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-center",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                closeButton: false,
+            }
+        );
     };
+    
 
     // 수정 
     const handleEdit = (empNo) => {
@@ -312,7 +366,7 @@ const EmployeeManagement = () => {
                 <div className="admin-employee-table-search">
                     <input
                         type="text"
-                        placeholder="이름으로 검색..."
+                        placeholder="사원 이름 검색..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -376,8 +430,6 @@ const EmployeeManagement = () => {
                                                             </option>
                                                         ))}
                                                 </select>
-
-
                                             ) : (
                                                 employee.deptName || "부서 없음"// 부서 이름이 없으면 "부서 없음"으로 표시
                                             )}
@@ -445,33 +497,72 @@ const EmployeeManagement = () => {
                 </table>
 
                 <div className="admin-employee-pagination">
-                    <button
-                        onClick={() => setCurrentPage(0)}
-                        disabled={currentPage === 0}
-                    >
-                        «
-                    </button>
+                    <ul className="pagination">
+                        {/* 첫 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(0)}
+                                disabled={currentPage === 0}
+                            >
+                                «
+                            </button>
+                        </li>
 
-                    <button
-                        onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 0))}
-                        disabled={currentPage === 0}
-                    >
-                        ‹
-                    </button>
-                    <span>{`${currentPage + 1} / ${totalPages}`}</span>
-                    <button
-                        onClick={() => setCurrentPage(prevPage => prevPage + 1)}
-                        disabled={currentPage + 1 >= totalPages}
-                    >
-                        ›
-                    </button>
-                    <button
-                        onClick={() => setCurrentPage(totalPages - 1)}
-                        disabled={currentPage === totalPages - 1}
-                    >
-                        »
-                    </button>
+                        {/* 이전 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                disabled={currentPage === 0}
+                            >
+                                ‹
+                            </button>
+                        </li>
+
+                        {/* 페이지 번호 표시 */}
+                        {[...Array(5)].map((_, idx) => {
+                            const pageIndex = Math.floor(currentPage / 5) * 5 + idx;
+                            if (pageIndex >= totalPages) return null;
+                            return (
+                                <li
+                                    key={pageIndex}
+                                    className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
+                                >
+                                    <button
+                                        className="page-link"
+                                        onClick={() => setCurrentPage(pageIndex)}
+                                    >
+                                        {pageIndex + 1}
+                                    </button>
+                                </li>
+                            );
+                        })}
+
+                        {/* 다음 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+                                disabled={currentPage === totalPages - 1}
+                            >
+                                ›
+                            </button>
+                        </li>
+
+                        {/* 마지막 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(totalPages - 1)}
+                                disabled={currentPage === totalPages - 1}
+                            >
+                                »
+                            </button>
+                        </li>
+                    </ul>
                 </div>
+
             </div>
             <Modal
                 isOpen={isModalOpen}

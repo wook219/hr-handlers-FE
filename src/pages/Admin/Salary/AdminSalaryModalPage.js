@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -134,8 +133,6 @@ const AdminSalaryModalPage = (props) => {
     };
 
     const getUserData = async () => {
-        console.log('formData : ', formData);
-
         // position과 deptName 추출
         const position = formData.find((field) => field.key === "position")?.value || "";
         const deptName = formData.find((field) => field.key === "deptName")?.value || "";
@@ -148,13 +145,9 @@ const AdminSalaryModalPage = (props) => {
 
         const { response, error } = await searchEmployeeAPI(params);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
-
-        console.log("params : ", params);
-        console.log("response : ", response);
-        console.log("formData : ", formData);
 
         const nameOptions = response.data.data.map(employee => ({
             name: employee.name,

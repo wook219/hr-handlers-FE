@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigation } from './useNavigation';
-import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase   } from 'react-icons/fa';
+import { FaHome, FaPlane, FaComment, FaClipboardList, FaDollarSign, FaRegCalendarAlt, FaBriefcase, FaSignOutAlt} from 'react-icons/fa';
 import { useUser } from '../../context/UserContext';
 import { MdManageAccounts } from "react-icons/md";
 import TreeMenuItem from './TreeMenuItem';
@@ -130,7 +130,9 @@ function Sidebar() {
             background: 'none',
             border: 'none',
             color: 'white',
-            fontSize: '18px',
+            marginLeft: '150px',
+            fontSize: '14px',
+            marginBottom: "50px"
           }}
         >
           로그아웃

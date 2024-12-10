@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "./AdminSalaryPage.css";
 
@@ -15,7 +14,6 @@ const AdminSalarySearchPage = (props) => {
                 field.key === name ? { ...field, value } : field
             )
         );
-        console.log('searchData : ', searchData)
     };
 
     return (

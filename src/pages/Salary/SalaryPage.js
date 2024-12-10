@@ -35,9 +35,8 @@ const SalaryPage = () => {
 
     const getSalaries = async (page, size) => {
         const { response, error } = await getSalaryAPI(page, size);
-        console.log("response : ", response);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
 
