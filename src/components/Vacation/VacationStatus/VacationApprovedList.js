@@ -25,7 +25,7 @@ const VacationApprovedList = () => {
         fetchApprovedVacations();
     }, []);
 
-    const headers = ['문서 번호', '신청 일자', '제목', '승인 상태', '확정 일자', '결재자'];
+    const headers = ['문서 번호', '신청 일자', '제목', '시작 일자', '종료 일자', '승인 상태', '확정 일자', '결재자'];
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -37,6 +37,8 @@ const VacationApprovedList = () => {
             <td>{vacation.docNum}</td>
             <td>{formatDate(vacation.updatedAt)}</td>
             <td>{vacation.title}</td>
+            <td>{formatDate(vacation.startDate)}</td>
+            <td>{formatDate(vacation.endDate)}</td>
             <td>{vacation.status === "APPROVED" ? "확정" : "반려"}</td>
             <td>{formatDate(vacation.approvedAt)}</td>
             <td>{vacation.approver}</td>
