@@ -26,12 +26,12 @@
   }
   
   .sidebar .profile-name {
-    font-size: 20px; /* 이름 글씨 크기 확대 */
+    font-size: 22px; /* 이름 글씨 크기 확대 */
     font-weight: bold;
   }
   
   .sidebar .profile-team {
-    font-size: 16px; /* 팀명 글씨 크기 확대 */
+    font-size: 18px; /* 팀명 글씨 크기 확대 */
     color: #d1d1d1;
   }
   
@@ -69,7 +69,7 @@
   }
   
   .sidebar nav ul li span {
-    font-size: 18px; /* 메뉴 글씨 크기 확대 */
+    font-size: 20px; /* 메뉴 글씨 크기 확대 */
   }
 
   .sidebar-link {
@@ -111,3 +111,37 @@
   .logout-button:hover {
     background-color: #b02a37;
   }
+
+  /* TreeMenuItem 관련 추가 스타일 */
+.tree-menu-children > div {
+  margin-bottom: 25px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tree-menu-children > div:hover {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin-left: -15px;
+}
+
+.tree-menu-children > div:last-child {
+  margin-bottom: 0;
+}
+
+.active-menu-item {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+/* hover 효과와 함께 사용할 경우 */
+.sidebar nav ul li:hover,
+.active-menu-item:hover {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+}

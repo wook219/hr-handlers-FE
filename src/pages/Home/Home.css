@@ -60,6 +60,10 @@
     font-weight: bold;
 }
 
+.home-notice-title{
+    font-size: 25px;
+}
+
 .notice-arrow {
     display: inline-block;
     width: 12px;

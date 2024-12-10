@@ -1,7 +1,6 @@
 .App {
   display: flex;
   height: 100vh; /* 화면 전체 높이 */
-  font-family: Arial, sans-serif;
   background-color: #f8f9fa;
   flex-direction: row; /* 사이드바와 콘텐츠를 나란히 배치 */
 }
