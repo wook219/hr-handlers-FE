@@ -388,13 +388,13 @@ const AdminSalaryPage = () => {
         <div className="salary-container">
             <h2 className="salary-container-h2">급여 목록</h2>
             <div className="mb-3" style={{ textAlign: "right" }}>
-                <Button className="me-2" variant="primary" onClick={handleCreate}>
+                <button className="me-2 admin-salary-primary-btn" onClick={handleCreate}>
                     추가
-                </Button>
-                <Button className="me-2" variant="danger" onClick={handleDelete}>
+                </button>
+                <button className="me-2 admin-salary-secondary-btn" onClick={handleDelete}>
                     삭제
-                </Button>
-                <Button className="me-2" variant="success" onClick={triggerFileInput}>
+                </button>
+                <button className="me-2 admin-salary-primary-btn" onClick={triggerFileInput}>
                     엑셀 업로드
                     <input
                         type="file"
@@ -403,10 +403,10 @@ const AdminSalaryPage = () => {
                         onChange={(e) => handleExcelUpload(e)}
                         style={{ display: "none" }}
                     />
-                </Button>
-                <Button variant="success" onClick={handleExcelDownload}>
+                </button>
+                <button className='admin-salary-primary-btn' onClick={handleExcelDownload}>
                     엑셀 다운로드
-                </Button>
+                </button>
             </div>
             <AdminSalarySearchPage
                 searchData={searchData}
@@ -429,6 +429,7 @@ const AdminSalaryPage = () => {
                         <th>공제총액</th>
                         <th>실지급액</th>
                         <th>급여일</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -447,6 +448,11 @@ const AdminSalaryPage = () => {
                                 <td>{salary.deduction ? `${salary.deduction}원` : 'N/A'}</td>
                                 <td>{salary.netSalary ? `${salary.netSalary}원` : 'N/A'}</td>
                                 <td>{salary.payDate || 'N/A'}</td>
+                                <td>
+                                    <button className='admin-salary-table-btn' onClick={() => handleRowDoubleClick(salary)}>
+                                        수정
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
