@@ -57,6 +57,10 @@
     border-radius: 4px;
 }
 
+.vacation-table-container .approved-vacation{
+    height: 290px;
+}
+
 .vacation-table {
     width: 100%;
     border-collapse: collapse;
