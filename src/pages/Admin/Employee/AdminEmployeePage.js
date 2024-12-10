@@ -85,7 +85,7 @@ const EmployeeManagement = () => {
             }
         };
         fetchEmployees();
-    }, [showToast,currentPage, pageSize, searchTerm]);
+    }, [showToast, currentPage, pageSize, searchTerm]);
 
     // 부서 데이터 가져오기 
     useEffect(() => {
@@ -131,19 +131,22 @@ const EmployeeManagement = () => {
             return;
         }
 
+        const updatedDeptName =
+            employeeToSave.deptName === "--부서 선택--" || !employeeToSave.deptName
+                ? null
+                : employeeToSave.deptName;
+
         const updateData = {
             position: employeeToSave.position,
             contractType: employeeToSave.contractType,
             leaveBalance: employeeToSave.leaveBalance,
-            deptName: employeeToSave.deptName || null,
+            deptName: updatedDeptName,
         };
 
         try {
 
             // API 호출 및 응답 받기
             const response = await updateEmployeeAPI(empNo, updateData);
-
-            console.log("API 응답 데이터:", response);
 
             // 업데이트 후 상태 반영
             setEmployees((prevEmployees) =>
@@ -160,7 +163,6 @@ const EmployeeManagement = () => {
             showToast('사원 정보를 수정하는 중 문제가 발생했습니다.', 'error');
         }
     };
-
 
     const handleAddEmployee = () => {
         setIsModalOpen(true);
@@ -359,22 +361,23 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
                                                 <select
-                                                value={employee.deptName || ""}
-                                                onChange={(e) => {
-                                                    const selectedValue = e.target.value;
-                                                    if (selectedValue === "") return; // 아무것도 선택되지 않았으면 종료
-                                                    handleInputChange(employee.empNo, "deptName", selectedValue);
-                                                }}
-                                                style={{ width: "100px" }}
-                                            >
-                                                <option value="">-- 부서 선택 --</option>
-                                                {Array.isArray(department.content) && department.content.map((dept) => (
-                                                    <option key={dept.id} value={dept.deptName}>
-                                                        {dept.deptName}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            
+                                                    value={employee.deptName || "--부서 선택--"} // 기본값 설정
+                                                    onChange={(e) => {
+                                                        const selectedValue = e.target.value;
+                                                        handleInputChange(employee.empNo, "deptName", selectedValue === "--부서 선택--" ? null : selectedValue);
+                                                    }}
+                                                    style={{ width: "100px" }}
+                                                >
+                                                    <option value="--부서 선택--">--부서 선택--</option> {/* 기본 옵션 */}
+                                                    {Array.isArray(department.content) &&
+                                                        department.content.map((dept) => (
+                                                            <option key={dept.id} value={dept.deptName}>
+                                                                {dept.deptName}
+                                                            </option>
+                                                        ))}
+                                                </select>
+
+
                                             ) : (
                                                 employee.deptName || "부서 없음"// 부서 이름이 없으면 "부서 없음"으로 표시
                                             )}
@@ -514,10 +517,10 @@ const EmployeeManagement = () => {
                     >
                         <option value="">-- 부서 선택 --</option>
                         {Array.isArray(department.content) && department.content.map((dept) => (
-                                <option key={dept.id} value={dept.deptName}>
-                                    {dept.deptName}
-                                </option>
-                            ))}
+                            <option key={dept.id} value={dept.deptName}>
+                                {dept.deptName}
+                            </option>
+                        ))}
                     </select>
                     <label>직급</label>
                     <input

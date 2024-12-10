@@ -184,7 +184,6 @@ const MyPage = () => {
                                 <input
                                     type="email"
                                     name="email"
-                                    style={{ width: "200px" }}
                                     value={formData.email || ""}
                                     onChange={handleInputChange}
                                 />
@@ -204,7 +203,7 @@ const MyPage = () => {
                                     type="date"
                                     name="birthDate"
                                     value={formData.birthDate || ""}
-                                    onChange={handleInputChange}
+                                    disabled 
                                 />
                             </div>
                         </>
@@ -228,7 +227,7 @@ const MyPage = () => {
                 <div className="mypage-info-item">
                     <div className="mypage-info-item">
                         <span>비밀번호</span>
-                        <span style={{marginLeft: "270px"}}>***********</span>
+                        <span style={{marginLeft: "380px"}}>***********</span>
                     </div>
                     <button
                         className="mypage-change-password-button"
