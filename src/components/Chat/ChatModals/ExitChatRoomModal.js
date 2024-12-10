@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { useToast } from '../../../context/ToastContext';
 import './ChatRoomModal.css';
+import { useNavigate } from 'react-router-dom';
 
 const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
   const [isExited, setIsExited] = useState(false);
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleExitChat = async () => {
     try {
@@ -14,7 +16,7 @@ const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
       showToast('채팅방 퇴장이 완료되었습니다.', 'success');
 
       setTimeout(() => {
-        window.location.href = '/chat'; // 채팅방 목록 페이지로 이동
+        navigate('/chat'); // 채팅방 목록 페이지로 이동
       }, 200);
     } catch (error) {
       console.error('퇴장 처리 중 오류 발생', error);
@@ -24,7 +26,7 @@ const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
 
   const handleCloseExitModal = () => {
     setIsExited(false);
-    window.location.href = '/chat';
+    navigate('/chat');
   };
 
   return (
@@ -38,7 +40,7 @@ const ExitChatRoomModal = ({ show, handleClose, handleExit }) => {
           <button className="chatroom-button chatroom-modal-button-color" onClick={handleExitChat}>
             퇴장
           </button>
-          <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={handleClose}>
+          <button className="chatroom-button ml-2 chatroom-cancel-button-color" onClick={handleCloseExitModal}>
             취소
           </button>
         </Modal.Footer>
