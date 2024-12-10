@@ -130,8 +130,16 @@ const DepartmentManagement = () => {
             }
             const updatedData = { deptName: editDepartmentName.trim() };
             await updateDepartmentAPI(editDepartmentId, updatedData);
-            const updatedDepartments = await getDepartmentAPI(); // 변경된 데이터 다시 가져오기
-            setDepartments(updatedDepartments);
+
+            const response = await getDepartmentAPI({
+                page: currentPage,
+                size: pageSize,
+                keyword: searchTerm,
+            });
+
+            setDepartments(response.content || []); 
+            setTotalPages(response.totalPages || 0);
+            
             setShowEditModal(false); // 수정 모달 닫기
             setNewDepartmentName(""); // 입력 필드 초기화
             showToast("부서 이름이 성공적으로 수정되었습니다!", "success");
@@ -141,15 +149,21 @@ const DepartmentManagement = () => {
         }
     };
 
-
     // 부서 삭제 처리
     const handleDeleteDepartment = async (departmentId) => {
         confirmDelete(async (confirmed) => {
             if (confirmed) {
                 try {
                     await deleteDepartmentAPI(departmentId);
-                    const updatedDepartments = await getDepartmentAPI();
-                    setDepartments(updatedDepartments);
+                    
+                    const response = await getDepartmentAPI({
+                        page: currentPage,
+                        size: pageSize,
+                        keyword: searchTerm,
+                    });
+                    setDepartments(response.content || []); // 새로 가져온 데이터로 설정
+                    setTotalPages(response.totalPages || 0);
+
                     showToast("부서가 성공적으로 삭제되었습니다!", "success");
                 } catch (error) {
                     console.error("부서 삭제 중 오류가 발생했습니다:", error);
