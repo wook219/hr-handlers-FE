@@ -3,6 +3,9 @@
   height: 100vh; /* 화면 전체 높이 */
   background-color: #f8f9fa;
   flex-direction: row; /* 사이드바와 콘텐츠를 나란히 배치 */
+  zoom: 0.8;
+  -webkit-transform: scale(0.8);
+  -webkit-transform-origin: 0 0;
 }
 
 body {

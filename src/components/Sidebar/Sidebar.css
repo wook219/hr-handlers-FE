@@ -6,7 +6,6 @@
     padding-top: 40px; /* 최상단 간격 추가 */
     height: 100vh;
     position: fixed;
-    display: flex;
     flex-direction: column;
     justify-content: space-between; /* 하단 로그아웃 버튼 포함 */
     box-sizing: border-box;
@@ -39,7 +38,7 @@
   .sidebar .divider {
     height: 1px;
     background-color: #fff; /* 구분선 색상 */
-    margin: 20px 0; /* 위아래 간격 */
+    margin: 40px 0; /* 위아래 간격 */
     opacity: 0.5; /* 투명도 추가 */
   }
   

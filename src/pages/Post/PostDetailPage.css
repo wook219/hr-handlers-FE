@@ -1,6 +1,6 @@
 .post-detail-container {
     margin: 20px auto;
-    max-width: 800px;
+    max-width: 900px;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -202,6 +202,7 @@
 
 
 .comment-employeeName {
+    font-size: 15px;
     font-weight: 600;
     color: #2c3e50;
 }
@@ -212,7 +213,7 @@
 }
 
 .comment-content {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
     color: #34495e;
     margin-bottom: 10px;

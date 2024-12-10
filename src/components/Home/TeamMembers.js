@@ -26,7 +26,7 @@ const TeamMembers = () => {
                     <div key={index} className="team-member-card">
                         <div className="member-profile-image">
                             <img 
-                                src={member.profileImageUrl || '/default-profile.png'} 
+                                src={member.profileImageUrl || '/profile_image.png'} 
                                 alt={member.name} 
                                 className="profile-image"
                             />
