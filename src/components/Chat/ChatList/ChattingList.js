@@ -20,9 +20,8 @@ const ChattingList = () => {
   const { user } = useUser();
 
   // 페이지네이션 관련 페이지 번호 구하기
-  const totalPages = Math.floor(pagination.totalElements / pagination.size);
-  const startPage = Math.floor(pagination.currentPage / pagination.pageGroupSize) * pagination.pageGroupSize;
-  const endPage = Math.min(startPage + pagination.pageGroupSize - 1, totalPages - 1);
+  const totalPages = Math.max(1, Math.ceil(pagination.totalElements / pagination.size));
+  const currentPageGroup = Math.floor(pagination.currentPage / pagination.pageGroupSize);
 
   useEffect(() => {
     const fetchChatRooms = async () => {
@@ -48,7 +47,6 @@ const ChattingList = () => {
       (prevChatRooms) => prevChatRooms.filter((room) => room.chatRoomId !== chatRoomId) // 삭제된 채팅방을 목록에서 제외
     );
     if (chatrooms.length <= pagination.size) {
-      // 현재 페이지에서 남은 채팅방 수가 부족하면 추가 데이터를 가져옵니다.
       const newPage = pagination.currentPage; // 현재 페이지로 다시 요청
       const response = await getAllChatRoomAPI(search, newPage, pagination.size);
 
@@ -59,16 +57,18 @@ const ChattingList = () => {
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setPagination((prevState) => ({
-        ...prevState,
-        currentPage: newPage,
-      }));
-    }
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: newPage,
+    }));
   };
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: 0, // 검색 시 페이지를 0으로 초기화
+    }));
   };
 
   const handleClearSearch = () => {
@@ -119,30 +119,56 @@ const ChattingList = () => {
         </div>
       </div>
       {/* 페이지네이션 UI */}
-      <div className="chatroom-pagination">
-        {/* 이전 페이지 버튼 */}
-        <button onClick={() => handlePageChange(pagination.currentPage - 1)} disabled={pagination.currentPage === 0}>
-          이전
-        </button>
+      <div className="pagination mt-3 d-flex justify-content-center">
+        <ul className="pagination">
+          <li className={`page-item ${pagination.currentPage === 0 ? 'disabled' : ''}`}>
+            <button className="page-link" onClick={() => handlePageChange(0)} disabled={pagination.currentPage === 0}>
+              &laquo;
+            </button>
+          </li>
 
-        {/* 페이지 그룹 */}
-        {Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index).map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={pagination.currentPage === page ? 'active' : ''}
-          >
-            {page + 1}
-          </button>
-        ))}
+          <li className={`page-item ${pagination.currentPage === 0 ? 'disabled' : ''}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              disabled={pagination.currentPage <= 0}
+            >
+              &lt;
+            </button>
+          </li>
 
-        {/* 다음 페이지 버튼 */}
-        <button
-          onClick={() => handlePageChange(pagination.currentPage + 1)}
-          disabled={pagination.currentPage === totalPages - 1}
-        >
-          다음
-        </button>
+          {[...Array(pagination.pageGroupSize)].map((_, idx) => {
+            const pageIndex = currentPageGroup * pagination.pageGroupSize + idx;
+            if (pageIndex >= totalPages) return null;
+            return (
+              <li key={pageIndex} className={`page-item ${pagination.currentPage === pageIndex ? 'active' : ''}`}>
+                <button className="page-link" onClick={() => handlePageChange(pageIndex)}>
+                  {pageIndex + 1}
+                </button>
+              </li>
+            );
+          })}
+
+          <li className={`page-item ${pagination.currentPage === totalPages - 1 ? 'disabled' : ''}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              disabled={pagination.currentPage >= totalPages - 1}
+            >
+              &gt;
+            </button>
+          </li>
+
+          <li className={`page-item ${pagination.currentPage === totalPages - 1 ? 'disabled' : ''}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(totalPages - 1)}
+              disabled={pagination.currentPage === totalPages - 1}
+            >
+              &raquo;
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   );

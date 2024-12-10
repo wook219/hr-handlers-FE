@@ -66,7 +66,6 @@ const ChatRoom = () => {
   const handleConfirmExit = async () => {
     const response = await exitChatRoomAPI(chatRoomId);
     setModal((prevState) => ({ ...prevState, showExitModal: false }));
-    console.log('채팅방 퇴장', response);
   };
 
   // 채팅방 참여 목록 모달 컴포넌트
@@ -119,7 +118,6 @@ const ChatRoom = () => {
   }, [messages]);
 
   const handleMessageReceived = useCallback((message) => {
-    console.log('Received message: ', message);
     setMessages((prevMessages) => {
       const tempIndex = prevMessages.findIndex((msg) => msg.isTemp && msg.text === message.message);
 
@@ -177,7 +175,6 @@ const ChatRoom = () => {
     async (roomId) => {
       try {
         const chatMessages = await getChatMessagesAPI(roomId);
-        console.log('Loaded messages: ', chatMessages);
 
         const formattedMessages = chatMessages.data.map((msg) => ({
           id: msg.messageId,

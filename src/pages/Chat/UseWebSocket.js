@@ -33,7 +33,6 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
 
         // 메시지 수정
         stompClient.subscribe(`/topic/message/update/${chatRoomId}`, (updateMsg) => {
-          console.log('Update message: ', updateMsg.body);
           const updatedMessage = JSON.parse(updateMsg.body);
           if (typeof onMessageUpdated === 'function') {
             onMessageUpdated(updatedMessage);
@@ -42,7 +41,6 @@ const UseWebSocket = (chatRoomId, onMessageReceived, onMessageUpdated, onMessage
 
         // 메시지 삭제
         stompClient.subscribe(`/topic/message/delete/${chatRoomId}`, (deleteMsg) => {
-          console.log('Delete Message: ', deleteMsg.body);
           const deletedMessageId = JSON.parse(deleteMsg.body);
           if (typeof onMessageDeleted === 'function') {
             onMessageDeleted(deletedMessageId);
