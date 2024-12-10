@@ -3,7 +3,7 @@ import { getSalaryAPI, excelDownloadSalaryAPI } from '../../api/index.js';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import { useToast } from '../../context/ToastContext';
-
+import "./SalaryPage.css";
 
 const SalaryPage = () => {
     const [salaries, setSalaries] = useState([]);
@@ -77,9 +77,9 @@ const SalaryPage = () => {
         <div className="salary-container">
             <h2 className="salary-container-h2">급여 목록</h2>
             <div className="mb-3" style={{ textAlign: "right" }}>
-                <Button variant="success" onClick={handleExcelDownload}>
+                <button className="salary-primary-btn" onClick={handleExcelDownload}>
                     엑셀 다운로드
-                </Button>
+                </button>
             </div>
             <div className="salary-table-responsive">
                 <Table className="">
