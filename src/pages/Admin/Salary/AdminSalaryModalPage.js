@@ -236,12 +236,12 @@ const AdminSalaryModalPage = (props) => {
                 ))}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onHide}>
+                <button className='admin-salary-secondary-btn' onClick={props.onHide}>
                     닫기
-                </Button>
-                <Button variant="primary" onClick={() => props.handleSubmit(formData, selectedDate, modalType)}>
+                </button>
+                <button className='admin-salary-primary-btn' onClick={() => props.handleSubmit(formData, selectedDate, modalType)}>
                     저장
-                </Button>
+                </button>
             </Modal.Footer>
         </Modal>
     );

@@ -75,9 +75,9 @@ const AdminSalarySearchPage = (props) => {
                     ))}
                 {/* 조회 버튼 */}
                 <div className="col-md-3">
-                    <Button style={{ backgroundColor: "#1a2b50", borderRadius: "7px", border: "none"}} className="w-10" onClick={() => props.handleSearch(searchData)}>
+                    <button className="admin-salary-primary-btn" onClick={() => props.handleSearch(searchData)}>
                         조회
-                    </Button>
+                    </button>
                 </div>
             </div>
         </div>

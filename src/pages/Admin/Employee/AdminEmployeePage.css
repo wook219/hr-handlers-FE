@@ -170,7 +170,7 @@
     cursor: pointer; 
 }
 
-.search-button-icon {
+.employee-search-button-icon {
     width: 25px; 
     height: 25px; 
 }
@@ -236,12 +236,14 @@
 }
 
 .admin-employee-pagination button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #1a2b50;
-    color: white;
+    padding: 8px 12px;
     border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #555;
     cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .admin-employee-pagination button[disabled] {
