@@ -287,7 +287,6 @@ const ChatRoom = () => {
   return (
     <div className="chatroom-page">
       <div className="chatroom-list-all-container mt-5">
-        <div className="chatlist-box">참여 중인 메신저</div>
         <ActiveChatList />
       </div>
       <div className="chatroom-entire-container">

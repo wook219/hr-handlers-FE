@@ -4,6 +4,9 @@ import EnterChatRoomButton from '../ChatButtons/EnterChatRoomButton';
 import DeleteChatRoomButton from '../ChatButtons/DeleteChatRoomButton';
 import './ChattingList.css';
 import { useUser } from '../../../context/UserContext';
+import TabNavigation from '../ChatTabNavigation';
+import CreateChatRoomButton from '../ChatButtons/CreateChatRoomButton';
+import { IoClose } from 'react-icons/io5';
 
 const ChattingList = () => {
   const [chatrooms, setChatRooms] = useState([]);
@@ -13,15 +16,16 @@ const ChattingList = () => {
     size: 5,
     pageGroupSize: 5,
   });
+  const [search, setSearch] = useState('');
   const { user } = useUser();
 
   // 페이지네이션 관련 페이지 번호 구하기
-  const totalPages = Math.ceil(pagination.totalElements / pagination.size);
+  const totalPages = Math.floor(pagination.totalElements / pagination.size);
   const startPage = Math.floor(pagination.currentPage / pagination.pageGroupSize) * pagination.pageGroupSize;
   const endPage = Math.min(startPage + pagination.pageGroupSize - 1, totalPages - 1);
 
   useEffect(() => {
-    const fetchChatRooms = async (search = '') => {
+    const fetchChatRooms = async () => {
       try {
         // API 호출 시 page와 size를 파라미터로 전달
         const response = await getAllChatRoomAPI(search, pagination.currentPage, pagination.size);
@@ -37,12 +41,21 @@ const ChattingList = () => {
     };
 
     fetchChatRooms();
-  }, [pagination.currentPage, pagination.size]);
+  }, [pagination.currentPage, pagination.size, search]);
 
-  const handleDeleteChatRoom = (chatRoomId) => {
+  const handleDeleteChatRoom = async (chatRoomId) => {
     setChatRooms(
       (prevChatRooms) => prevChatRooms.filter((room) => room.chatRoomId !== chatRoomId) // 삭제된 채팅방을 목록에서 제외
     );
+    if (chatrooms.length <= pagination.size) {
+      // 현재 페이지에서 남은 채팅방 수가 부족하면 추가 데이터를 가져옵니다.
+      const newPage = pagination.currentPage; // 현재 페이지로 다시 요청
+      const response = await getAllChatRoomAPI(search, newPage, pagination.size);
+
+      setChatRooms((prevChatRooms) => [
+        ...response.data.content, // 새로운 데이터를 추가
+      ]);
+    }
   };
 
   const handlePageChange = (newPage) => {
@@ -54,8 +67,35 @@ const ChattingList = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearch(''); // 검색어 초기화
+  };
+
   return (
     <div>
+      <div className="create-chatroom-container">
+        <CreateChatRoomButton />
+      </div>
+      <div className="chat-tabs-container">
+        <TabNavigation />
+        <div className="mb-3">
+          <div className="input-group">
+            <input
+              type="text"
+              className="chatroom-search-input"
+              placeholder="채팅방 검색"
+              value={search}
+              onChange={handleSearchChange}
+            />
+            {search && <IoClose className="clear-search-icon" onClick={handleClearSearch} aria-label="Clear search" />}
+          </div>
+        </div>
+      </div>
+
       <div className="chatting-list-container">
         <div className="chatting-list">
           {chatrooms.map((chatroom, index) => (

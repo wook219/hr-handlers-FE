@@ -4,6 +4,9 @@ import EnterChatRoomButton from '../ChatButtons/EnterChatRoomButton';
 import './ChattingList.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaLock } from 'react-icons/fa6';
+import TabNavigation from '../ChatTabNavigation';
+import CreateChatRoomButton from '../ChatButtons/CreateChatRoomButton';
+import { IoClose } from 'react-icons/io5';
 
 const ActiveChatList = () => {
   const [chats, setChats] = useState([]);
@@ -13,14 +16,15 @@ const ActiveChatList = () => {
     size: 5,
     pageGroupSize: 5,
   });
+  const [search, setSearch] = useState('');
 
   // 페이지네이션 관련 페이지 번호 구하기
-  const totalPages = Math.ceil(pagination.totalElements / pagination.size);
+  const totalPages = Math.floor(pagination.totalElements / pagination.size);
   const startPage = Math.floor(pagination.currentPage / pagination.pageGroupSize) * pagination.pageGroupSize;
   const endPage = Math.min(startPage + pagination.pageGroupSize - 1, totalPages - 1);
 
   useEffect(() => {
-    const fetchChats = async (search = '') => {
+    const fetchChats = async () => {
       try {
         const response = await getAllEnterChatAPI(search, pagination.currentPage, pagination.size);
 
@@ -35,7 +39,7 @@ const ActiveChatList = () => {
     };
 
     fetchChats();
-  }, [pagination.currentPage, pagination.size]);
+  }, [pagination.currentPage, pagination.size, search]);
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -46,8 +50,35 @@ const ActiveChatList = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearch(''); // 검색어 초기화
+  };
+
   return (
     <div>
+      <div className="create-chatroom-container">
+        <CreateChatRoomButton />
+      </div>
+      <div className="chat-tabs-container">
+        <TabNavigation />
+        <div className="mb-3">
+          <div className="input-group">
+            <input
+              type="text"
+              className="chatroom-search-input"
+              placeholder="채팅방 검색"
+              value={search}
+              onChange={handleSearchChange}
+            />
+            {search && <IoClose className="clear-search-icon" onClick={handleClearSearch} aria-label="Clear search" />}
+          </div>
+        </div>
+      </div>
+
       <div className="chatting-list-container">
         <div className="chatting-list">
           {chats.map((chat, index) => (
