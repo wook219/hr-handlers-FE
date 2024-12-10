@@ -16,7 +16,6 @@ import AttendanceHistory from '../pages/Attendance/AttendanceHistoryPage';
 
 import AdminEmp from '../pages/Admin/Employee/AdminEmployeePage'
 import AdminDept from '../pages/Admin/Department/AdminDepartmentPage'
-import AdminHome from '../pages/Admin/Home/AdminHomePage'
 import AdminVacation from '../pages/Admin/Vacation/AdminVacationPage'
 import AdminAttendancePage from '../pages/Admin/Attendance/AdminAttendancePage';
 
@@ -39,7 +38,6 @@ function AppRouter() {
       <Route path="/vacation" element={<VacationPage />} />
       <Route path="/attendance" element={<AttendanceHistory />} />
       
-      <Route path="/admin/home" element={<AdminHome />} />
       <Route path="/admin/salary" element={<AdminSalary />} />
       <Route path="/admin/emp" element={<AdminEmp />} />
       <Route path="/admin/vacation" element={<AdminVacation />} />
