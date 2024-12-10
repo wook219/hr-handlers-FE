@@ -151,7 +151,7 @@ const NoticeBoard = () => {
     <div className="home-notice-container">
       <div className="home-notice-card shadow-sm rounded">
         <div className="home-notice-header d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">공지사항</h5>
+          <h5 className="home-notice-title mb-0">공지사항</h5>
           {user.role === 'ROLE_ADMIN' && (
           <div className="d-flex align-items-center">
             <div className="add-notice-btn me-3">
