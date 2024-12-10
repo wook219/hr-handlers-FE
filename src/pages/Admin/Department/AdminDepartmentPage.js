@@ -19,6 +19,10 @@ const DepartmentManagement = () => {
     const [editDepartmentName, setEditDepartmentName] = useState("");
     const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
     const { showToast } = useToast();
 
@@ -26,8 +30,13 @@ const DepartmentManagement = () => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const data = await getDepartmentAPI();
-                setDepartments(data);
+                const response = await getDepartmentAPI({
+                    page: currentPage,
+                    size: pageSize,
+                    keyword: searchTerm,
+                });
+                setDepartments(response.content || []);
+                setTotalPages(response.totalPages || 0);
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
                 showToast("부서 데이터를 가져오는 중 오류가 발생했습니다.", "error");
@@ -36,9 +45,16 @@ const DepartmentManagement = () => {
                 setLoading(false);
             }
         };
-
         fetchDepartments();
-    }, [showToast]);
+    }, [currentPage, pageSize, searchTerm, showToast]);
+
+    // 검색 처리
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(0); // 검색 시 첫 페이지로 초기화
+    };
+
+
 
     // 부서 삭제 확인 메시지
     const confirmDelete = (callback) => {
@@ -84,14 +100,18 @@ const DepartmentManagement = () => {
                 return;
             }
             await addDepartmentAPI(newDepartmentName);
-            const updatedDepartments = await getDepartmentAPI();
-            setDepartments(updatedDepartments);
+            const response = await getDepartmentAPI({
+                page: currentPage,
+                size: pageSize,
+                keyword: searchTerm,
+            });
+            setDepartments(response.content || []); // 배열로 설정
             setNewDepartmentName("");
             setShowAddModal(false);
             showToast("새 부서가 성공적으로 추가되었습니다!", "success");
         } catch (error) {
             console.error("부서 추가 중 오류가 발생했습니다:", error);
-            showToast("부서를 추가하는 중 문제가 발생했습니다.", "error");
+            showToast("부서가 이미 존재합니다.", "error");
         }
     };
 
@@ -108,7 +128,7 @@ const DepartmentManagement = () => {
                 showToast("부서 이름을 입력해주세요!", "warning");
                 return;
             }
-            const updatedData = { deptName: editDepartmentName.trim() }; 
+            const updatedData = { deptName: editDepartmentName.trim() };
             await updateDepartmentAPI(editDepartmentId, updatedData);
             const updatedDepartments = await getDepartmentAPI(); // 변경된 데이터 다시 가져오기
             setDepartments(updatedDepartments);
@@ -179,6 +199,17 @@ const DepartmentManagement = () => {
                 </button>
             </div>
 
+            <div className="dept-management-search">
+                <input
+                    type="text"
+                    placeholder="부서 이름 검색..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                />
+                <button className="admin-dept-search-button">
+                    <img src="/search.png" alt="검색" className="dept-search-button-icon" />
+                </button>
+            </div>
             <table className="dept-department-table">
                 <thead>
                     <tr>
@@ -188,14 +219,14 @@ const DepartmentManagement = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {departments.map((department) => (
+                    {Array.isArray(departments) && departments.map((department) => (
                         <tr key={department.id}>
                             <td>{department.id}</td>
                             <td>{department.deptName}</td>
                             <td>
                                 <button
                                     className="dept-edit-button"
-                                    onClick={() => handleEditDepartment(department.id)}
+                                    onClick={() => handleEditDepartment(department.id, department.deptName)}
                                 >
                                     수정
                                 </button>
@@ -209,15 +240,43 @@ const DepartmentManagement = () => {
                         </tr>
                     ))}
                 </tbody>
-            </table>
 
+            </table>
+            <div className="dept-pagination-container">
+                <button
+                    onClick={() => setCurrentPage(0)}
+                    disabled={currentPage === 0}
+                >
+                    «
+                </button>
+
+                <button
+                    onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 0))}
+                    disabled={currentPage === 0}
+                >
+                    ‹
+                </button>
+                <span>{`${currentPage + 1} / ${totalPages}`}</span>
+                <button
+                    onClick={() => setCurrentPage(prevPage => prevPage + 1)}
+                    disabled={currentPage + 1 >= totalPages}
+                >
+                    ›
+                </button>
+                <button
+                    onClick={() => setCurrentPage(totalPages - 1)}
+                    disabled={currentPage === totalPages - 1}
+                >
+                    »
+                </button>
+            </div>
             {showAddModal && (
                 <div className="dept-modal-overlay">
                     <div className="dept-modal">
                         <h5 style={{ marginBottom: "20px" }}>부서 등록</h5>
                         <div style={{ alignItems: "center" }}>
                             <input
-                                style={{ width: '100%', borderRadius: "5px", border: "1px solid #e0e0e0", borderColor: "#bdbdbd" }}
+                                style={{ width: '80%', borderRadius: "5px", border: "1px solid #e0e0e0", borderColor: "#bdbdbd" }}
                                 type="text"
                                 placeholder="등록할 부서 이름을 입력해주세요."
                                 value={newDepartmentName}
@@ -248,7 +307,7 @@ const DepartmentManagement = () => {
                                 value={editDepartmentName}
                                 onChange={(e) => setEditDepartmentName(e.target.value)}
                                 style={{
-                                    width: "100%",
+                                    width: "80%",
                                     padding: "5px",
                                     borderRadius: "5px",
                                     border: "1px solid #ddd",
