@@ -35,7 +35,6 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
 
         if (sendMailResponse && sendMailResponse.data) {
           setIsSubmitted(true);
-          showToast("임시 비밀번호가 이메일로 전송되었습니다.", "success");
         } else {
           showToast("메일 전송에 실패했습니다. 다시 시도해주세요.", "error");
         }
