@@ -49,6 +49,10 @@ const ActiveChatList = () => {
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
+    setPagination((prev) => ({
+      ...prev,
+      currentPage: 0, // 검색 시 페이지를 0으로 초기화
+    }));
   };
 
   const handleClearSearch = () => {
