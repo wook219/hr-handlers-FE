@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../context/UserContext"; 
 import { loginAPI, fetchUserInfo } from "../../api/employee/index"; 
+import { useToast } from "../../context/ToastContext";
 import FindPassword from "./FindPassword";
 import "./Login.css";
 
@@ -11,17 +12,18 @@ const Login = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
   const { login } = useUser();
+  const { showToast } = useToast();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     // 유효성 검사
     if (!empNo.trim()) {
-      alert("사원 번호를 입력해주세요.");
+      showToast("사원 번호를 입력해주세요.", "warning");
       return;
     }
     if (!password.trim()) {
-      alert("비밀번호를 입력해주세요.");
+      showToast("비밀번호를 입력해주세요.", "warning");
       return;
     }
 
@@ -44,11 +46,13 @@ const Login = () => {
         profileImage: userInfo.profileImage
       });
 
-      alert(`${userInfo.name}님 환영합니다.`);
+      showToast(`${userInfo.name}님 환영합니다.`, "success");
       navigate("/home");
     } catch (error) {
-      console.error("로그인 실패:", error);
-      alert(error.response?.data?.message || "아이디 또는 비밀번호를 잘못 입력했습니다.");
+      showToast(
+        error.response?.data?.message || "아이디 또는 비밀번호를 잘못 입력했습니다.",
+        "error"
+      );
     }
   };
 

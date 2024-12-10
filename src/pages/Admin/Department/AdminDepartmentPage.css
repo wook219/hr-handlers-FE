@@ -34,6 +34,15 @@
     cursor: pointer;
 }
 
+.dept-management-search{
+    margin-bottom: -20px;
+    display: flex; 
+    margin-top: 60px;
+    gap: 10px;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center;
+}
+
 .dept-active-tab {
     font-weight: bold;
     color: #000;
@@ -44,9 +53,21 @@
 .dept-department-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 110px;
+    margin-top: 40px;
     table-layout: fixed;
     word-break: break-word;
+}
+
+.admin-dept-search-button{
+    padding: 0; 
+    border: none; 
+    background: none;
+    cursor: pointer; 
+}
+
+.dept-search-button-icon{
+    width: 25px; 
+    height: 25px; 
 }
 
 .dept-department-table th,
@@ -127,7 +148,7 @@
 .dept-save-button {
     background-color: #1a2b50;
     color: white;
-    padding: 4px 15px;
+    padding: 4px 100px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -152,4 +173,32 @@
 
 .dept-cancel-button:hover {
     color: #1a2b50;
+}
+
+.dept-pagination-container {
+    margin-top: 100px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    gap: 10px;
+}
+
+.dept-pagination-container button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #555;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dept-pagination-container button[disabled] {
+    background-color: #ddd;
+    cursor: not-allowed;
+}
+
+.dept-pagination-container span {
+    font-weight: bold;
 }

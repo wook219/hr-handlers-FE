@@ -60,7 +60,7 @@ const EmployeeManagement = () => {
             showToast('로그인이 필요합니다.', 'warning');
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, showToast]);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -85,21 +85,22 @@ const EmployeeManagement = () => {
             }
         };
         fetchEmployees();
-    }, [currentPage, pageSize, searchTerm]);
+    }, [showToast,currentPage, pageSize, searchTerm]);
 
+    // 부서 데이터 가져오기 
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
                 const response = await getDepartmentAPI(); // API 호출
-                console.log("부서 데이터:", response.data || response); // 응답 확인
-                setDepartments(response.data || response); // 데이터를 department 상태로 설정
+                console.log("부서 API 응답:", response);
+                setDepartments(response);
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
                 showToast('부서 데이터를 가져오는 중 오류가 발생했습니다.', 'error');
             }
         };
         fetchDepartments();
-    }, []);
+    }, [showToast]);
 
     // 삭제 
     const handleDelete = async (empNo) => {
@@ -126,7 +127,7 @@ const EmployeeManagement = () => {
         const employeeToSave = employees.find((employee) => employee.empNo === empNo);
 
         if (!employeeToSave.position || employeeToSave.position.trim() === "") {
-            showToast('직급을 입력해야 합니다.', 'error'); 
+            showToast('직급을 입력해야 합니다.', 'error');
             return;
         }
 
@@ -314,7 +315,7 @@ const EmployeeManagement = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <button className="admin-employee-search-button">
-                        <img src="/search.png" alt="검색" className="search-button-icon" />
+                        <img src="/search.png" alt="검색" className="employee-search-button-icon" />
                     </button>
                 </div>
                 <table className="admin-employee-table">
@@ -358,21 +359,22 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
                                                 <select
-                                                    value={employee.deptName || ""}
-                                                    onChange={(e) => {
-                                                        const selectedValue = e.target.value;
-                                                        if (selectedValue === "") return; // 아무것도 선택되지 않았으면 종료
-                                                        handleInputChange(employee.empNo, "deptName", selectedValue);
-                                                    }}
-                                                    style={{ width: "100px" }}
-                                                >
-                                                    <option value="">-- 부서 선택 --</option>
-                                                    {department.map((dept) => (
-                                                        <option key={dept.id} value={dept.deptName}>
-                                                            {dept.deptName}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                value={employee.deptName || ""}
+                                                onChange={(e) => {
+                                                    const selectedValue = e.target.value;
+                                                    if (selectedValue === "") return; // 아무것도 선택되지 않았으면 종료
+                                                    handleInputChange(employee.empNo, "deptName", selectedValue);
+                                                }}
+                                                style={{ width: "100px" }}
+                                            >
+                                                <option value="">-- 부서 선택 --</option>
+                                                {Array.isArray(department.content) && department.content.map((dept) => (
+                                                    <option key={dept.id} value={dept.deptName}>
+                                                        {dept.deptName}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            
                                             ) : (
                                                 employee.deptName || "부서 없음"// 부서 이름이 없으면 "부서 없음"으로 표시
                                             )}
@@ -441,17 +443,30 @@ const EmployeeManagement = () => {
 
                 <div className="admin-employee-pagination">
                     <button
+                        onClick={() => setCurrentPage(0)}
+                        disabled={currentPage === 0}
+                    >
+                        «
+                    </button>
+
+                    <button
                         onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 0))}
                         disabled={currentPage === 0}
                     >
-                        이전
+                        ‹
                     </button>
-                    <span>{`페이지 ${currentPage + 1} / ${totalPages}`}</span>
+                    <span>{`${currentPage + 1} / ${totalPages}`}</span>
                     <button
                         onClick={() => setCurrentPage(prevPage => prevPage + 1)}
                         disabled={currentPage + 1 >= totalPages}
                     >
-                        다음
+                        ›
+                    </button>
+                    <button
+                        onClick={() => setCurrentPage(totalPages - 1)}
+                        disabled={currentPage === totalPages - 1}
+                    >
+                        »
                     </button>
                 </div>
             </div>
@@ -498,11 +513,11 @@ const EmployeeManagement = () => {
                         onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
                     >
                         <option value="">-- 부서 선택 --</option>
-                        {department.map((dept) => (
-                            <option key={dept.id} value={dept.deptName}>
-                                {dept.deptName}
-                            </option>
-                        ))}
+                        {Array.isArray(department.content) && department.content.map((dept) => (
+                                <option key={dept.id} value={dept.deptName}>
+                                    {dept.deptName}
+                                </option>
+                            ))}
                     </select>
                     <label>직급</label>
                     <input

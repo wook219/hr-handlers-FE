@@ -38,7 +38,7 @@ export const updateMyPageAPI = async (formData) => {
 
     const response = await instance.patch("/emp", formData, {
         headers: {
-           'Content-Type': 'multipart/form-data',
+            'Content-Type': 'multipart/form-data',
             access: token,
         },
     });
@@ -54,7 +54,6 @@ export const registerEmployeeAPI = async (empData) => {
                 access: token,
             },
         });
-        console.log('data 확인', response.data);
         return response.data;
     } catch (error) {
         console.error("사원 등록 오류:", error.response?.data || error.message);
@@ -64,7 +63,6 @@ export const registerEmployeeAPI = async (empData) => {
 
 // 관리자: 사원 전체 조회 API
 export const getAllEmployeesAPI = async (searchParams) => {
-    console.log("요청 매개변수:", searchParams);
     try {
         const token = localStorage.getItem("access_token");
         const response = await instance.get("/admin/emp", {
@@ -91,6 +89,22 @@ export const updateEmployeeAPI = async (empNo, updateData) => {
         return response.data;
     } catch (error) {
         console.error("사원 수정 오류:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// 비밀번호 수정 API
+export const updatePasswordAPI = async (formData) => {
+    try {
+        const response = await instance.put("/emp/password", formData, {
+            headers: {
+                "Content-Type": "application/json",
+                access: `${localStorage.getItem("access_token")}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("비밀번호 수정 오류:", error.response?.data || error.message);
         throw error;
     }
 };
@@ -131,7 +145,7 @@ export const sendResetPasswordAPI = async (empNo, email) => {
                 access: localStorage.getItem("access_token"),
             },
         });
-        console.log("메일 전송 API 응답:", response.data); 
+        console.log("메일 전송 API 응답:", response.data);
         return response.data;
     } catch (error) {
         console.error("임시 비밀번호 전송 오류:", error.response?.data || error.message);
@@ -140,9 +154,10 @@ export const sendResetPasswordAPI = async (empNo, email) => {
 };
 
 // 부서 조회 
-export const getDepartmentAPI = async () => {
+export const getDepartmentAPI = async (searchParams) => {
     try {
         const response = await instance.get(`/admin/dept`, {
+            params: searchParams,
             headers: {
                 access: `${localStorage.getItem("access_token")}`,
             },
@@ -156,7 +171,7 @@ export const getDepartmentAPI = async () => {
 
 // 부서 등록 
 export const addDepartmentAPI = async (deptName) => {
-    const response = await instance.post(`/admin/dept`,null, {
+    const response = await instance.post(`/admin/dept`, null, {
         params: { deptName },
         headers: {
             access: `${localStorage.getItem("access_token")}`,
@@ -167,8 +182,8 @@ export const addDepartmentAPI = async (deptName) => {
 
 // 부서 삭제 
 export const deleteDepartmentAPI = async (departmentId) => {
-    const response = await instance.delete(`/admin/dept/${departmentId}`,{
-         headers: {
+    const response = await instance.delete(`/admin/dept/${departmentId}`, {
+        headers: {
             access: `${localStorage.getItem("access_token")}`,
         },
     });
