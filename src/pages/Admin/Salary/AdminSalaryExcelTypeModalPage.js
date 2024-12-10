@@ -18,7 +18,6 @@ const AdminSalaryExcelTypeModalPage = (props) => {
             item.key === key ? { ...item, value, label } : item
           )
         );
-        console.log("excelTypeData : ", excelTypeData);
       };
 
     return (
