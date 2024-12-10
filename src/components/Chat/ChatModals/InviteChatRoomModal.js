@@ -19,23 +19,6 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
     }
   };
 
-  // 무한 스크롤 - 페이지네이션 적용 필요
-  // useEffect(() => {
-  //   // handleScroll을 이 내부에서 할 것
-  //   // IntersectionObserver 실행
-  //   // 모달 최하위 위치한 element가 있을 것 그게 보일 때 (처음에 content가 있으면 안 보이다가) 호출되는 게 옵저버
-  //   // 보일 때 페이지 수를 하나 올리고 API를 호출하면 됨
-  //   const observer = new IntersectionObserver((entries) => {
-  //     entries.forEach((entry) => {
-  //       if (entry.isIntersecting) {
-  //         fetchEmployees(searchKeyword, page + 1);
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     });
-  //   });
-  //   observer.observe(target); // target은 useRef로 설정 -> useRef로 최하위에 있는 element를 담으면 됨.
-  // }, []);
-
   // 모달이 열릴 때 직원 목록을 가지고 옴
   useEffect(() => {
     if (show) {
