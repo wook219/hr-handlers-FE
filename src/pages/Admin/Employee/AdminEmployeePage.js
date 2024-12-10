@@ -77,7 +77,6 @@ const EmployeeManagement = () => {
                     ...employee,
                     isEditing: false,
                 }));
-                console.log("API 응답 데이터:", data);
                 setEmployees(data);
                 setTotalPages(response.totalPages);
             } catch (error) {
@@ -93,7 +92,6 @@ const EmployeeManagement = () => {
         const fetchDepartments = async () => {
             try {
                 const response = await getDepartmentAPI(); // API 호출
-                console.log("부서 API 응답:", response);
                 setDepartments(response);
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
@@ -258,7 +256,6 @@ const EmployeeManagement = () => {
                 sortDir: 'desc',
                 keyword: searchTerm,
             });
-            console.log("API 응답 데이터:", response.content);
             setEmployees(response.content); // 전체 리스트 업데이트
             setTotalPages(response.totalPages);
         } catch (error) {
@@ -440,7 +437,7 @@ const EmployeeManagement = () => {
                                             {employee.isEditing ? (
                                                 <input
                                                     type="text"
-                                                    style={{ width: "30px" }}
+                                                    style={{ width: "70px" }}
                                                     value={employee.position}
                                                     onChange={(e) => handleInputChange(employee.empNo, "position", e.target.value)}
                                                 />
