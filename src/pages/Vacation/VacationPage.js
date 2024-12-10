@@ -46,8 +46,8 @@ const VacationPage = () => {
     if (error) return <div>{error}</div>;
 
   return (
-    <div>
-            <h2>휴가 신청</h2>
+    <div className='vacation-container'>
+            <h4 className='vacation-section-title'>휴가 신청</h4>
             <section className="vacation-section">
                 <VacationTypeList 
                 remainingDays={summaryData.remaining}
@@ -55,7 +55,7 @@ const VacationPage = () => {
                 />
             </section>
 
-            <h2>휴가 현황</h2>
+            <h4 className='vacation-section-title'>휴가 현황</h4>
             <section className="vacation-section vacation-chart-and-pending">
                 <VacationChart 
                     summaryData={summaryData}

@@ -82,7 +82,7 @@ const PendingVacationList = () => {
     
     return (
         <div>
-            <Table className="custom-table" hover>
+            <Table className="admin-vacation-table" hover>
                 <thead>
                     <tr>
                         <th>직급</th>
@@ -119,20 +119,20 @@ const PendingVacationList = () => {
                                 <td>{vacation.use}일</td>
                                 <td>{getStatusText(vacation.status)}</td>
                                 <td>
-                                    <Button 
-                                        className="admin-approve-button me-2"
+                                    <button 
+                                        className="admin-approve-button"
                                         onClick={() => handleApprove(vacation.id)}
                                         size="sm"
                                     >
                                         승인
-                                    </Button>
-                                    <Button 
+                                    </button>
+                                    <button 
                                         className="admin-reject-button"
                                         onClick={() => handleReject(vacation.id)}
                                         size="sm"
                                     >
                                         반려
-                                    </Button>
+                                    </button>
                                 </td>
                             </tr>
                         ))
@@ -140,24 +140,35 @@ const PendingVacationList = () => {
                 </tbody>
             </Table>
 
-            <div className="pagination-container d-flex justify-content-center gap-2">
-                <Button 
-                    variant="outline-primary" 
-                    onClick={() => setPage(prev => Math.max(0, prev - 1))}
-                    disabled={page === 0}
-                >
-                    이전
-                </Button>
-                <span className="mx-3 align-self-center">
-                    {page + 1} / {totalPages}
-                </span>
-                <Button 
-                    variant="outline-primary" 
-                    onClick={() => setPage(prev => prev + 1)}
-                    disabled={page >= totalPages - 1}
-                >
-                    다음
-                </Button>
+            {/* 페이지네이션 */}
+            <div className="pagination-container d-flex justify-content-center">
+                <ul className="pagination">
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(0)} disabled={page === 0}>
+                            &laquo;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page === 0 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => Math.max(0, prev - 1))} disabled={page === 0}>
+                            &lt;
+                        </button>
+                    </li>
+                    <li className="page-item active">
+                        <button className="page-link">
+                            {page + 1}
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(prev => prev + 1)} disabled={page >= totalPages - 1}>
+                            &gt;
+                        </button>
+                    </li>
+                    <li className={`page-item ${page >= totalPages - 1 ? "disabled" : ""}`}>
+                        <button className="page-link" onClick={() => setPage(totalPages - 1)} disabled={page >= totalPages - 1}>
+                            &raquo;
+                        </button>
+                    </li>
+                </ul>
             </div>
         </div>
     );

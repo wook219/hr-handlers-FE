@@ -130,6 +130,13 @@ const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
             일정 {isEditMode ? '수정' : '상세'}
             {isEditMode && <span className="edit-badge">수정 중</span>}
           </h2>
+          <button 
+            type="button" 
+            className="todo-modal-close" 
+            onClick={handleClose}
+          >
+            ×
+          </button>
         </div>
         
         <form onSubmit={handleSubmit}>
@@ -206,7 +213,6 @@ const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
                     >
                     삭제
                 </button>
-                <button type="button" onClick={handleClose}>닫기</button>
               </>
             )}
           </div>

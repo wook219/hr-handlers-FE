@@ -80,3 +80,18 @@ export const getTodayTodosAPI = async () => {
       throw error;
   }
 };
+
+// 팀 구성원 표시
+export const getTeamDetailAPI = async () => {
+    try {
+        const response = await axios.get('/emp/team', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error('Failed to fetch team details:', error);
+        throw error;
+    }
+};

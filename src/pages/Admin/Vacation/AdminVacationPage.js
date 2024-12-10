@@ -8,7 +8,7 @@ const AdminVacationPage = () => {
 
     return (
         <div className="vacation-management-container">
-            <h2>사원 휴가 관리</h2>
+            <h2 className='vacation-management-title'>사원 휴가 관리</h2>
             
             <div className="admin-section-tabs">
                 <button 

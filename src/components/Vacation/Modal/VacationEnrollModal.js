@@ -83,13 +83,17 @@ const VacationEnrollModal = ({ type, remainingDays, onClose }) => {
     return (
         <div className="vacation-modal-overlay">
             <div className="vacation-modal-content">
-                <button className="vacation-modal-close" onClick={() => onClose(false)}>
-                    <X size={20} />
-                </button>
+                
                 
                 <div className="vacation-modal-header">
                     {currentConfig.icon}
-                    <h2>{currentConfig.title}</h2>
+                    <h2 className='vacation-type'>{currentConfig.title}</h2>
+
+                    <button 
+                        className="vacation-modal-close" 
+                        onClick={() => onClose(false)}>
+                        ×
+                    </button>
                 </div>
 
                 <div className="vacation-info-section">
@@ -174,13 +178,7 @@ const VacationEnrollModal = ({ type, remainingDays, onClose }) => {
                     </div>
 
                     <div className="vacation-button-group">
-                        <button 
-                            type="button" 
-                            className="vacation-cancel-button"
-                            onClick={() => onClose(false)}
-                        >
-                            취소
-                        </button>
+                        
                         <button type="submit" className="vacation-submit-button">
                             휴가신청
                         </button>
