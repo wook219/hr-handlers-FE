@@ -60,7 +60,7 @@ const DepartmentManagement = () => {
     const confirmDelete = (callback) => {
         toast.info(
             <div>
-                <p>이 부서를 삭제하시겠습니까?</p>
+                <p style={{textAlign: "center"}}>이 부서를 삭제하시겠습니까?</p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginRight: "25px" }}>
                     <button
                         onClick={() => {
