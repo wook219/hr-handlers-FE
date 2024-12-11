@@ -96,7 +96,7 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
                 <div className="chat-employee-name">{employee.empName}</div>
                 <div className="chat-employee-details">
                   <div className="chat-employee-dept">{employee.deptName}</div>
-                  <div className="chat-employee-position">{employee.position}</div>
+                  <div className="chat-employee-position">{employee.empPosition}</div>
                 </div>
               </div>
 
