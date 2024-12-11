@@ -4,7 +4,7 @@ import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
 import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
-import { getChatMessagesAPI } from '../../api/chat';
+import { getChatMessagesAPI, getJoinedEmployeesCount } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SendFill, Calendar2WeekFill } from 'react-bootstrap-icons';
@@ -19,6 +19,7 @@ import 'dayjs/locale/ko';
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
   const [messages, setMessages] = useState([]); // 메시지 목록
+  const [employeeCount, setEmployeeCount] = useState(0);
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [empNo, setEmpNo] = useState('');
   const [messageInput, setMessageInput] = useState([]);
@@ -32,6 +33,24 @@ const ChatRoom = () => {
     showParticipantsModal: false,
     showInviteModal: false,
   });
+
+  const fetchEmployeeCount = async () => {
+    try {
+      const response = await getJoinedEmployeesCount(chatRoomId);
+      setEmployeeCount(response.data);
+    } catch (error) {
+      console.error('직원 수를 가져오는데 실패했습니다.', error);
+    }
+  };
+
+  // 초대 후 참여자 수를 1 증가시키는 함수
+  const handleInviteSuccess = () => {
+    setEmployeeCount((prevCount) => prevCount + 1);
+  };
+
+  useEffect(() => {
+    fetchEmployeeCount();
+  }, [chatRoomId]);
 
   const handleClickMenu = (e) => {
     const mouseX = e.clientX;
@@ -287,7 +306,7 @@ const ChatRoom = () => {
         <ActiveChatList />
       </div>
       <div className="chatroom-entire-container">
-        <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} />
+        <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} employeeCount={employeeCount} />
         <div className="chatroom-page-container">
           <div ref={chatBodyRef} className="chat-body">
             {groupedMessages.map((group, index) => (
@@ -349,7 +368,12 @@ const ChatRoom = () => {
           )}
         </div>
       </div>
-      <InviteChatRoomModal show={modal.showInviteModal} handleClose={handleCloseInvite} chatRoomId={chatRoomId} />
+      <InviteChatRoomModal
+        show={modal.showInviteModal}
+        handleClose={handleCloseInvite}
+        chatRoomId={chatRoomId}
+        onInviteSuccess={handleInviteSuccess}
+      />
 
       <ExitChatRoomModal show={modal.showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
 
