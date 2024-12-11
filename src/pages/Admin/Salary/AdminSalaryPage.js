@@ -47,7 +47,8 @@ const AdminSalaryPage = () => {
     const deptNameOptions = [
         { name: '선택', value: '' },
         { name: '개발팀', value: '개발팀' },
-        { name: '재무팀', value: '재무팀' }
+        { name: '재무팀', value: '재무팀' },
+        { name: '품질팀', value: '품질팀' }
     ];
     const nameOptions = [
         { name: '선택', value: '' },
