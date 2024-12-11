@@ -35,7 +35,7 @@ const AdminSalarySearchPage = (props) => {
                     ))}
             </div>
 
-            {/* 직위, 부서, 이름, 조회 버튼 그룹 */}
+            {/* 직급, 부서, 이름, 조회 버튼 그룹 */}
             <div className="row align-items-end">
                 {searchData
                     .filter(
