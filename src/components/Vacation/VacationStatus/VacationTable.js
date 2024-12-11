@@ -2,6 +2,8 @@ import React from 'react';
 import './VacationStatus.css';
 
 const VacationTable = ({ headers, data, rowRenderer, type = 'default' }) => {
+    const safeData = data || [];
+    
     return (
         <div className="vacation-table-container">
             <table className={`vacation-table ${type}`}>
@@ -13,8 +15,8 @@ const VacationTable = ({ headers, data, rowRenderer, type = 'default' }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, index) => rowRenderer(item, index))}
-                    {data.length === 0 && (
+                    {safeData.map((item, index) => rowRenderer(item, index))}
+                    {safeData.length === 0 && (
                         <tr>
                             <td colSpan={headers.length} style={{ textAlign: 'center' }}>
                                 데이터가 없습니다.
