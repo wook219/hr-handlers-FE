@@ -331,7 +331,6 @@ const EmployeeManagement = () => {
         }
     };
 
-
     return (
         <div className="admin-employee-management-container">
             <div className="admin-employee-top-bar">
