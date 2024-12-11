@@ -19,7 +19,7 @@ import AdminSalarySearchPage from "./AdminSalarySearchPage";
 import AdminSalaryExcelTypeModalPage from "./AdminSalaryExcelTypeModalPage";
 
 const AdminSalaryPage = () => {
-    const [size, setSize] = useState(15); // 한 페이지에 표시할 게시글 수
+    const [size, setSize] = useState(10); // 한 페이지에 표시할 게시글 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
     const [pageGroupSize] = useState(10); // 한 번에 보여줄 페이지 번호 갯수
     const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
@@ -55,13 +55,13 @@ const AdminSalaryPage = () => {
     const [searchData, setSearchData] = useState([
         { key: 'startDate', value: '', label: '시작날짜', type: 'inputDate', isDisable: false },
         { key: 'endDate', value: '', label: '종료날짜', type: 'inputDate', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', options: positionOptions, isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'inputText', isDisable: false },
     ]);
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', options: positionOptions, isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'select', options: nameOptions, isDisable: false },
         { key: 'basicSalary', value: '', label: '지급총액', type: 'input', isDisable: false },
@@ -143,7 +143,7 @@ const AdminSalaryPage = () => {
         const updatedFormData = formData.map((field) => {
             let updatedValue = salary[field.key];
             
-            // 직위, 부서, 이름 셀렉트 박스 disable로 변경
+            // 직급, 부서, 이름 셀렉트 박스 disable로 변경
             // 실지급액 disable 변경
             const isDisable = ['position', 'deptName', 'name', 'netSalary'].includes(field.key) ? true : field.isDisable;
 
@@ -395,7 +395,7 @@ const AdminSalaryPage = () => {
                             // 데이터 개수와 체크된 아이템의 개수가 다를 경우 선택 해제 (하나라도 해제 시 선택 해제)
                             checked={checkItems.length === salaries.length ? true : false} />
                         </th>
-                        <th>직위</th>
+                        <th>직급</th>
                         <th>부서</th>
                         <th>이름</th>
                         <th>지급총액</th>
