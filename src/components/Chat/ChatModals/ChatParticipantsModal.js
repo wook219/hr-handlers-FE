@@ -50,7 +50,7 @@ const ChatParticipantsModal = ({ show, handleClose, chatRoomId }) => {
               >
                 <div className="chat-participant-empName">{participant.empName}</div>
                 <div className="chat-participant-participant-details">
-                  <div className="chat-participant-deptName">{participant.deptName}</div>
+                  <div className="chat-participant-deptName">{participant.deptName || ''}</div>
                   <div className="chat-participant-empPosition">{participant.empPosition}</div>
                 </div>
               </div>
