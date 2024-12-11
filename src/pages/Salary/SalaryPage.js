@@ -84,7 +84,7 @@ const SalaryPage = () => {
                 <Table className="">
                     <thead>
                     <tr>
-                        <th>직위</th>
+                        <th>직급</th>
                         <th>부서</th>
                         <th>이름</th>
                         <th>지급총액</th>

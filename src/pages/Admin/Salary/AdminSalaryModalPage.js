@@ -9,7 +9,7 @@ import { searchEmployeeAPI } from '../../../api/admin/index.js';
 const AdminSalaryModalPage = (props) => {
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'select', isDisable: false },
         { key: 'basicSalary', value: '', label: '지급총액', type: 'input', isDisable: false },
