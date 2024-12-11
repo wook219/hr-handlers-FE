@@ -76,7 +76,7 @@ function Sidebar() {
 
           <li onClick={navigation.toBoard}>
             <FaClipboardList className="icon" />
-            <span>사내게시판</span>
+            <span>자유게시판</span>
           </li>
 
           <li onClick={navigation.toSalary}>
