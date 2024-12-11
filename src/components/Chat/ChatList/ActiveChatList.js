@@ -82,24 +82,28 @@ const ActiveChatList = () => {
 
       <div className="chatting-list-container">
         <div className="chatting-list">
-          {chats.map((chat, index) => (
-            <div className="row align-items-center mb-3" key={index}>
-              <div className="col-2 text-center">
-                <span>{index + 1 + pagination.currentPage * pagination.size}</span>
-              </div>
+          {chats && chats.length > 0 ? (
+            chats.map((chat, index) => (
+              <div className="row align-items-center mb-3" key={index}>
+                <div className="col-2 text-center">
+                  <span>{index + 1 + pagination.currentPage * pagination.size}</span>
+                </div>
 
-              <div className="col-7">
-                <span className="chatroom-list-title">
-                  {chat.title}
-                  {chat.isSecret === 'Y' && <FaLock className="chat-secret-icon" />}
-                </span>
-              </div>
+                <div className="col-7">
+                  <span className="chatroom-list-title">
+                    {chat.title}
+                    {chat.isSecret === 'Y' && <FaLock className="chat-secret-icon" />}
+                  </span>
+                </div>
 
-              <div className="col-3 text-center">
-                <EnterChatRoomButton chatRoomId={chat.chatRoomId} title={chat.title} />
+                <div className="col-3 text-center">
+                  <EnterChatRoomButton chatRoomId={chat.chatRoomId} title={chat.title} />
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="no-chatrooms">참여 중인 채팅방이 없습니다.</div>
+          )}
         </div>
       </div>
 
