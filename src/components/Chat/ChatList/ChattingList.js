@@ -98,24 +98,28 @@ const ChattingList = () => {
 
       <div className="chatting-list-container">
         <div className="chatting-list">
-          {chatrooms.map((chatroom, index) => (
-            <div className="row align-items-center mb-3" key={chatroom.chatRoomId}>
-              <div className="col-2 text-center">
-                <span>{index + 1 + pagination.currentPage * pagination.size}</span>
-              </div>
+          {chatrooms && chatrooms.length > 0 ? (
+            chatrooms.map((chatroom, index) => (
+              <div className="row align-items-center mb-3" key={chatroom.chatRoomId}>
+                <div className="col-2 text-center">
+                  <span>{index + 1 + pagination.currentPage * pagination.size}</span>
+                </div>
 
-              <div className="col-7">
-                <span className="chatroom-list-title">{chatroom.title}</span>
-              </div>
+                <div className="col-7">
+                  <span className="chatroom-list-title">{chatroom.title}</span>
+                </div>
 
-              <div className="col-3 text-center">
-                <EnterChatRoomButton chatRoomId={chatroom.chatRoomId} title={chatroom.title} />
-                {user.role === 'ROLE_ADMIN' && (
-                  <DeleteChatRoomButton chatRoomId={chatroom.chatRoomId} onDelete={handleDeleteChatRoom} />
-                )}
+                <div className="col-3 text-center">
+                  <EnterChatRoomButton chatRoomId={chatroom.chatRoomId} title={chatroom.title} />
+                  {user.role === 'ROLE_ADMIN' && (
+                    <DeleteChatRoomButton chatRoomId={chatroom.chatRoomId} onDelete={handleDeleteChatRoom} />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <div className="no-chatrooms">개설된 채팅방이 없습니다.</div>
+          )}
         </div>
       </div>
       {/* 페이지네이션 UI */}
