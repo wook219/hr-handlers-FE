@@ -110,7 +110,7 @@ const AttendanceHistory = () => {
                     <Button 
                         variant="secondary" 
                         onClick={handleSearchReset}
-                        className="mt-4"
+                        className='attendance-reset-button'
                     >
                         초기화
                     </Button>

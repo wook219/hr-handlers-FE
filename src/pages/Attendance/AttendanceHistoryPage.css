@@ -58,12 +58,12 @@
     background-color: #fafafa;
 }
 
-.mt-4{
+.attendance-reset-button{
     margin-top: 2rem !important;
     background-color: #1a2b50;
 }
 
-.mt-4:hover{
+.attendance-reset-button:hover{
     background-color: #0f1c3c;
 }
 
