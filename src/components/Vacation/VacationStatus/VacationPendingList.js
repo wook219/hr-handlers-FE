@@ -14,7 +14,6 @@ const VacationPendingList = ({ onVacationUpdate }) => {
         try {
             setLoading(true);
             const data = await getPendingVacationsAPI();
-            console.log('data', data);
             setPendingVacations(data);
         } catch (err) {
             setError('승인 대기 휴가 목록을 불러오는데 실패했습니다.');
