@@ -8,6 +8,9 @@ import {
         excelUploadSalaryAPI,
         excelDownloadSalaryAPI
        } from '../../../api/admin/index.js';
+import {
+        getDepartmentAPI,
+        } from "../../../api/employee/index";
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -35,7 +38,6 @@ const AdminSalaryPage = () => {
     const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
     const [excelTypeModalShow, setExcelTypeModalShow] = useState(false); // 엑셀 다운로드 설정 모달 사용 여부
 
-
     const positionOptions = [
         { name: '선택', value: '' },
         { name: '사원', value: '사원' },
@@ -44,12 +46,9 @@ const AdminSalaryPage = () => {
         { name: '팀장', value: '팀장' },
         { name: '대표', value: '대표' }
     ];
-    const deptNameOptions = [
-        { name: '선택', value: '' },
-        { name: '개발팀', value: '개발팀' },
-        { name: '재무팀', value: '재무팀' },
-        { name: '품질팀', value: '품질팀' }
-    ];
+    const [deptNameOptions, setDeptNameOptions] = useState([
+        { name: '선택', value: '' }
+    ]);
     const nameOptions = [
         { name: '선택', value: '' },
     ];
@@ -77,8 +76,53 @@ const AdminSalaryPage = () => {
     ]);
 
     useEffect(() => {
-        handleSearch(searchData, currentPage, size)
+        handleSearch(searchData, currentPage, size);
     }, [currentPage, size]);
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await getDepartmentAPI({
+                    page: 0,
+                    size: 100,
+                    keyword: "",
+                });
+                
+                const data = response.content;
+                setDeptNameOptions(prevOptions =>
+                    prevOptions.concat(
+                        data.map(item => ({
+                            name: item.deptName,
+                            value: item.deptName
+                        }))
+                    )
+                );
+                console.log("deptNameOptions : ", deptNameOptions);
+            } catch (error) {
+                showToast("부서 데이터를 가져오는 중 오류가 발생했습니다.", "error");
+                return;
+            }
+        };
+        fetchDepartments();
+    }, [showToast]);
+
+    useEffect(() => {
+        setSearchData(prevData =>
+            prevData.map(field =>
+                field.key === 'deptName'
+                    ? { ...field, options: deptNameOptions }
+                    : field
+            )
+        );
+
+        setFormData(prevData =>
+            prevData.map(field =>
+                field.key === 'deptName'
+                    ? { ...field, options: deptNameOptions }
+                    : field
+            )
+        );
+    }, [deptNameOptions]);
 
     // 페이지네이션 핸들러
     const handlePageChange = (newPage) => {
