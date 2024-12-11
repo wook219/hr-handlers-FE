@@ -54,8 +54,6 @@ const DepartmentManagement = () => {
         setCurrentPage(0); // 검색 시 첫 페이지로 초기화
     };
 
-
-
     // 부서 삭제 확인 메시지
     const confirmDelete = (callback) => {
         toast.info(
@@ -106,8 +104,9 @@ const DepartmentManagement = () => {
                 keyword: searchTerm,
             });
             setDepartments(response.content || []); // 배열로 설정
-            setNewDepartmentName("");
-            setShowAddModal(false);
+            setTotalPages(response.totalPages || 0);
+            // setNewDepartmentName("");
+            // setShowAddModal(false);
             showToast("새 부서가 성공적으로 추가되었습니다!", "success");
         } catch (error) {
             console.error("부서 추가 중 오류가 발생했습니다:", error);
