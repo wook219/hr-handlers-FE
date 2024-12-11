@@ -5,10 +5,9 @@ import './ChatRoomModal.css';
 import InviteChatRoomButton from '../ChatButtons/InviteChatRoomButton';
 import { getInvitedEmployeesAPI } from '../../../api/chat';
 
-const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
+const InviteChatRoomModal = ({ show, handleClose, chatRoomId, onInviteSuccess }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [employeeList, setEmployeeList] = useState([]);
-  const loadMoreRef = useRef(null);
 
   const fetchEmployees = async (search = '') => {
     try {
@@ -52,8 +51,9 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
   };
 
   // 초대 후 참여자 목록 갱신
-  const handleInviteSuccess = () => {
-    fetchEmployees();
+  const handleInviteSuccess = (empNo) => {
+    // 초대 후 부모 컴포넌트의 함수 호출
+    onInviteSuccess();
   };
 
   // 검색 결과가 없을 때와 초대할 직원이 없을 때 구분
@@ -101,7 +101,11 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
               </div>
 
               <div className="chat-employee-button-container">
-                <InviteChatRoomButton chatRoomId={chatRoomId} empNo={employee.empNo} onInvite={handleInviteSuccess} />
+                <InviteChatRoomButton
+                  chatRoomId={chatRoomId}
+                  empNo={employee.empNo}
+                  onInvite={() => handleInviteSuccess(employee.empNo)}
+                />
               </div>
             </div>
           ))}
