@@ -12,6 +12,18 @@ const AttendanceHistory = () => {
         checkOutTime: ''
     });
 
+    const addHours = (date, hours) => {
+        const newDate = new Date(date);
+        newDate.setHours(newDate.getHours() + hours);
+        return newDate;
+    };
+
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return '';
+        const date = addHours(new Date(dateString), 9);
+        return date.toISOString().split('T')[0];
+    };
+
     // 초기 데이터 로딩 (전체 조회)
     useEffect(() => {
         fetchAttendanceHistory();
@@ -25,6 +37,7 @@ const AttendanceHistory = () => {
         }
     }, [searchDates]);  // searchDates 변경시에만 재호출
 
+
     const fetchAttendanceHistory = async () => {
         try {
             const params = {
@@ -34,8 +47,13 @@ const AttendanceHistory = () => {
 
             // 날짜가 선택된 경우에만 날짜 파라미터 추가
             if (searchDates.checkInTime && searchDates.checkOutTime) {
-                params.checkInTime = `${searchDates.checkInTime} 00:00:00`;
-                params.checkOutTime = `${searchDates.checkOutTime} 23:59:59`;
+                // 시간대를 고려한 날짜 변환
+                const checkInDate = new Date(searchDates.checkInTime);
+                const checkOutDate = new Date(searchDates.checkOutTime);
+                
+                // 서버로 전송 시 로컬 시간 기준으로 설정
+                params.checkInTime = `${checkInDate.toLocaleDateString('ko-KR')} 00:00:00`;
+                params.checkOutTime = `${checkOutDate.toLocaleDateString('ko-KR')} 23:59:59`;
             }
 
             const response = await getAttendanceHistoryAPI(params);
