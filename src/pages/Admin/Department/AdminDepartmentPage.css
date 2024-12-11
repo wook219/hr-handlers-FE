@@ -132,16 +132,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .dept-modal {
-    position: relative;
-    background: white;
+    /* position: relative; */
+    background: #fff;
     padding: 30px;
     border-radius: 5px;
     width: 350px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
 }
 
 .dept-save-button {
