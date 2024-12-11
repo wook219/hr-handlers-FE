@@ -105,7 +105,7 @@ const EmployeeManagement = () => {
     const handleDelete = async (empNo) => {
         toast.info(
             <div>
-                <p style={{textAlign: "center"}}>해당 사원을 삭제하시겠습니까?</p>
+                <p style={{ textAlign: "center" }}>해당 사원을 삭제하시겠습니까?</p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
                     <button
                         onClick={async () => {
@@ -164,7 +164,7 @@ const EmployeeManagement = () => {
             }
         );
     };
-    
+
 
     // 수정 
     const handleEdit = (empNo) => {
@@ -330,6 +330,7 @@ const EmployeeManagement = () => {
             showToast('사원을 등록하는 중 문제가 발생했습니다.', 'error');
         }
     };
+
 
     return (
         <div className="admin-employee-management-container">
@@ -600,7 +601,12 @@ const EmployeeManagement = () => {
                     <label>부서</label>
                     <select
                         value={newEmployee.department || ''}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+                        onChange={(e) =>
+                            setNewEmployee({
+                                ...newEmployee,
+                                department: e.target.value === "부서 없음" ? null : e.target.value,
+                            })
+                        }
                     >
                         <option value="">-- 부서 선택 --</option>
                         {Array.isArray(department.content) && department.content.map((dept) => (
