@@ -50,12 +50,14 @@ const AdminAttendancePage = () => {
         }));
     };
 
-    const handleSearch = () => {
+    const handleSearch = (e) => {
+        e.preventDefault();
         setPage(0);
         fetchAttendanceList();
     };
 
-    const handleReset = () => {
+    const handleReset = (e) => {
+        e.preventDefault();
         setSearchParams({
             checkInTime: '',
             checkOutTime: '',
@@ -89,7 +91,7 @@ const AdminAttendancePage = () => {
             
             {/* 검색 폼 */}
             <div className="search-form mb-4">
-                <Form className="d-flex flex-wrap gap-3">
+                <Form className="d-flex flex-wrap gap-3" onSubmit={handleSearch}>
                     <Form.Group style={{ minWidth: '200px' }}>
                         <Form.Label>시작날짜</Form.Label>
                         <Form.Control
@@ -119,13 +121,13 @@ const AdminAttendancePage = () => {
                         />
                     </Form.Group>
                     <Form.Group style={{ minWidth: '150px' }}>
-                        <Form.Label>직위</Form.Label>
+                        <Form.Label>직급</Form.Label>
                         <Form.Control
                             type="text"
                             name="position"
                             value={searchParams.position}
                             onChange={handleSearchParamsChange}
-                            placeholder="직위"
+                            placeholder="직급"
                         />
                     </Form.Group>
                     <Form.Group style={{ minWidth: '150px' }}>
@@ -139,10 +141,10 @@ const AdminAttendancePage = () => {
                         />
                     </Form.Group>
                     <div className="d-flex align-items-end gap-2">
-                        <button onClick={handleSearch} className="attendance-search-button">
+                        <button type="submit" className="attendance-search-button">
                             검색
                         </button>
-                        <button onClick={handleReset} className="attendance-reset-button">
+                        <button type="button" onClick={handleReset} className="attendance-reset-button">
                             초기화
                         </button>
                     </div>
@@ -155,7 +157,7 @@ const AdminAttendancePage = () => {
                     <tr>
                         <th>날짜</th>
                         <th>부서</th>
-                        <th>직위</th>
+                        <th>직급</th>
                         <th>이름</th>
                         <th>출근 시간</th>
                         <th>퇴근 시간</th>
