@@ -26,7 +26,6 @@ const TodoPage = () => {
         const endDate = fetchInfo.endStr.split('T')[0];
 
         if (!calendarRef.current) {
-          console.log('Calendar ref not ready yet');
           const todos = await getAllTodosAPI(startDate, endDate);
           const formattedEvents = todos.map(todo => ({
             id: todo.id,
@@ -40,16 +39,11 @@ const TodoPage = () => {
           return;
         }
 
-        console.log('calendarRef : ', calendarRef);
         // 시작 날짜가 속한 월의 연도와 월 추출 (YYYY-MM-DD 형식에서)
         const calendarApi = calendarRef.current.getApi();
         const currentDate = calendarApi.getDate();
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth() + 1; // JavaScript의 월은 0부터 시작하므로 1을 더함
-
-        console.log('Fetching holidays for:', year, month);
-        console.log('Start date:', startDate);
-        console.log('End date:', endDate);
 
         const holidayPromises = [];
 
@@ -78,7 +72,6 @@ const TodoPage = () => {
 
         // 모든 공휴일 배열 합치기
         const holidays = holidaysArrays.flat();
-        console.log('Processed holidays:', holidays);
 
           // 이벤트 포맷팅
           const formattedEvents = [
@@ -99,8 +92,6 @@ const TodoPage = () => {
                 // UTC 기준으로 날짜 생성
                 const holidayDate = new Date(Date.UTC(year, month - 1, day));
                 const formattedDate = holidayDate.toISOString().split('T')[0];
-                
-                console.log(`Original holiday date: ${date}, Formatted date: ${formattedDate}`);
                 
                 return {
                     title: holiday.dateName,
@@ -178,7 +169,6 @@ const TodoPage = () => {
     const searchTodoDetail = async (info) => {
       try {
           const todoDetail = await getTodoDetailAPI(info.event.id);
-          console.log('todoDetail', todoDetail);
           setSelectedEvent(todoDetail);
           setIsDetailModalOpen(true);
       } catch (error) {
