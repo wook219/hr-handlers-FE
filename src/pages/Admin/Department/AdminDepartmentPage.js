@@ -54,13 +54,11 @@ const DepartmentManagement = () => {
         setCurrentPage(0); // 검색 시 첫 페이지로 초기화
     };
 
-
-
     // 부서 삭제 확인 메시지
     const confirmDelete = (callback) => {
         toast.info(
             <div>
-                <p style={{textAlign: "center"}}>이 부서를 삭제하시겠습니까?</p>
+                <p style={{ textAlign: "center" }}>이 부서를 삭제하시겠습니까?</p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginRight: "25px" }}>
                     <button
                         onClick={() => {
@@ -96,16 +94,19 @@ const DepartmentManagement = () => {
     const handleAddDepartment = async () => {
         try {
             if (!newDepartmentName.trim()) {
-                showToast("부서 이름을 입력해주세요!", "warning");
+                showToast("부서 이름을 입력해주세요.", "warning");
                 return;
             }
             await addDepartmentAPI(newDepartmentName);
+
             const response = await getDepartmentAPI({
                 page: currentPage,
                 size: pageSize,
                 keyword: searchTerm,
             });
             setDepartments(response.content || []); // 배열로 설정
+            setTotalPages(response.totalPages || 0);
+
             setNewDepartmentName("");
             setShowAddModal(false);
             showToast("새 부서가 성공적으로 추가되었습니다!", "success");
@@ -258,7 +259,6 @@ const DepartmentManagement = () => {
             </table>
             <div className="dept-pagination-container">
                 <ul className="pagination">
-                    {/* 첫 페이지로 이동 */}
                     <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
                         <button
                             className="page-link"
@@ -268,8 +268,6 @@ const DepartmentManagement = () => {
                             «
                         </button>
                     </li>
-
-                    {/* 이전 페이지로 이동 */}
                     <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
                         <button
                             className="page-link"
@@ -279,31 +277,17 @@ const DepartmentManagement = () => {
                             ‹
                         </button>
                     </li>
-
-                    {/* 페이지 번호 표시 */}
-                    {[...Array(5)].map((_, idx) => {
-                        const pageIndex = Math.floor(currentPage / 5) * 5 + idx;
-                        if (pageIndex >= totalPages) return null;
-                        return (
-                            <li
-                                key={pageIndex}
-                                className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
-                            >
-                                <button
-                                    className="page-link"
-                                    onClick={() => setCurrentPage(pageIndex)}
-                                >
-                                    {pageIndex + 1}
-                                </button>
-                            </li>
-                        );
-                    })}
-
-                    {/* 다음 페이지로 이동 */}
-                    <li
-                        className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
-                    >
+                    {[...Array(totalPages)].map((_, idx) => (
+                        <li
+                            key={idx}
+                            className={`page-item ${currentPage === idx ? "active" : ""}`}
+                        >
+                            <button className="page-link" onClick={() => setCurrentPage(idx)}>
+                                {idx + 1}
+                            </button>
+                        </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
                         <button
                             className="page-link"
                             onClick={() =>
@@ -314,12 +298,7 @@ const DepartmentManagement = () => {
                             ›
                         </button>
                     </li>
-
-                    {/* 마지막 페이지로 이동 */}
-                    <li
-                        className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""
-                            }`}
-                    >
+                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
                         <button
                             className="page-link"
                             onClick={() => setCurrentPage(totalPages - 1)}
