@@ -8,6 +8,9 @@ const PasswordUpdateModal = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
@@ -31,8 +34,6 @@ const PasswordUpdateModal = ({ isOpen, onClose }) => {
 
     try {
       const response = await updatePasswordAPI(formData);
-
-      console.log("서버 응답 데이터:", response);
 
       if (response) {
         showToast("비밀번호가 성공적으로 변경되었습니다.", "success");
@@ -61,40 +62,76 @@ const PasswordUpdateModal = ({ isOpen, onClose }) => {
         <button className="password-change-close-button" onClick={onClose}>
           &times;
         </button>
-        <h3 className="password-change-modal-title">비밀번호 수정</h3>
+        <h5 className="password-change-modal-title">비밀번호 수정</h5>
         <form onSubmit={handlePasswordUpdate}>
           <div className="password-change-form-group">
             <label htmlFor="currentPassword">현재 비밀번호</label>
             <input
-              type="password"
+              type={showCurrentPassword ? "text" : "password"}
               id="currentPassword"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="현재 비밀번호"
               required
             />
+            <button
+              type="button"
+              className="toggle-password-button"
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+            >
+              <img
+                src={showCurrentPassword ? "/password-show.png" : "/password-block.png"}
+                style={{ width: "20px", height: "20px" }}
+                alt={showCurrentPassword ? "비밀번호 숨기기" : "비밀번호 보이기"}
+                className="password-toggle-icon"
+              />
+            </button>
           </div>
           <div className="password-change-form-group">
             <label htmlFor="newPassword">새 비밀번호</label>
             <input
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               id="newPassword"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="새 비밀번호"
               required
             />
+            <button
+              type="button"
+              className="toggle-password-button"
+              onClick={() => setShowNewPassword(!showNewPassword)}
+            >
+              <img
+                src={showNewPassword ? "/password-show.png" : "/password-block.png"}
+                style={{ width: "20px", height: "20px" }}
+                alt={showNewPassword ? "비밀번호 숨기기" : "비밀번호 보이기"}
+                className="password-toggle-icon"
+              />
+            </button>
           </div>
           <div className="password-change-form-group">
             <label htmlFor="confirmNewPassword">새 비밀번호 확인</label>
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               id="confirmNewPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="새 비밀번호 확인"
               required
             />
+            <button
+              type="button"
+              className="toggle-password-button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              <img
+                src={showConfirmPassword ? "/password-show.png" : "/password-block.png"}
+                style={{ width: "20px", height: "20px" }}
+                alt={showConfirmPassword ? "비밀번호 숨기기" : "비밀번호 보이기"}
+                className="password-toggle-icon"
+              />
+            </button>
           </div>
           <button type="submit" className="password-change-save-button">
             저장
