@@ -6,6 +6,10 @@ import "./AdminSalaryPage.css";
 
 const AdminSalarySearchPage = (props) => {
     const [searchData, setSearchData] = useState(props.searchData || []);
+
+    useEffect(() => {
+        setSearchData(props.searchData);
+    }, [props.searchData]);
     
     const handleChange = (e) => {
         const { name, value } = e.target;
