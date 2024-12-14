@@ -270,6 +270,17 @@ const PostDetailPage = () => {
         return <p>Loading...</p>;
     }
 
+    const findCommentById = (commentId, commentsList) => {
+        for (let comment of commentsList) {
+            if (comment.id === commentId) return comment;
+            if (comment.replies) {
+                const found = findCommentById(commentId, comment.replies);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
     return (
         <div className="post-detail-container">
             <h1 className="post-title">{post.title}</h1>
@@ -324,7 +335,7 @@ const PostDetailPage = () => {
                 <h5>댓글</h5>
                 {replyToId && (
                     <p className="replying-to">
-                        답글 작성 중...
+                        {findCommentById(replyToId, comments)?.employeeName}님에게 답글 작성 중...
                         <button
                             className="cancel-reply"
                             onClick={() => setReplyToId(null)}

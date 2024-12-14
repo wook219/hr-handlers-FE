@@ -8,7 +8,9 @@ import {
         excelUploadSalaryAPI,
         excelDownloadSalaryAPI
        } from '../../../api/admin/index.js';
-import Button from 'react-bootstrap/Button';
+import {
+        getDepartmentAPI,
+        } from "../../../api/employee/index";
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -20,7 +22,7 @@ import AdminSalarySearchPage from "./AdminSalarySearchPage";
 import AdminSalaryExcelTypeModalPage from "./AdminSalaryExcelTypeModalPage";
 
 const AdminSalaryPage = () => {
-    const [size, setSize] = useState(15); // 한 페이지에 표시할 게시글 수
+    const [size, setSize] = useState(10); // 한 페이지에 표시할 게시글 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
     const [pageGroupSize] = useState(10); // 한 번에 보여줄 페이지 번호 갯수
     const [totalElements, setTotalElements] = useState(0); // 총 게시글 수
@@ -36,7 +38,6 @@ const AdminSalaryPage = () => {
     const fileInputRef = useRef(null); // 엑셀 업로드 버튼 관련
     const [excelTypeModalShow, setExcelTypeModalShow] = useState(false); // 엑셀 다운로드 설정 모달 사용 여부
 
-
     const positionOptions = [
         { name: '선택', value: '' },
         { name: '사원', value: '사원' },
@@ -45,24 +46,22 @@ const AdminSalaryPage = () => {
         { name: '팀장', value: '팀장' },
         { name: '대표', value: '대표' }
     ];
-    const deptNameOptions = [
-        { name: '선택', value: '' },
-        { name: '개발팀', value: '개발팀' },
-        { name: '재무팀', value: '재무팀' }
-    ];
+    const [deptNameOptions, setDeptNameOptions] = useState([
+        { name: '선택', value: '' }
+    ]);
     const nameOptions = [
         { name: '선택', value: '' },
     ];
     const [searchData, setSearchData] = useState([
         { key: 'startDate', value: '', label: '시작날짜', type: 'inputDate', isDisable: false },
         { key: 'endDate', value: '', label: '종료날짜', type: 'inputDate', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', options: positionOptions, isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'inputText', isDisable: false },
     ]);
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', options: positionOptions, isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', options: positionOptions, isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', options: deptNameOptions, isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'select', options: nameOptions, isDisable: false },
         { key: 'basicSalary', value: '', label: '지급총액', type: 'input', isDisable: false },
@@ -77,8 +76,53 @@ const AdminSalaryPage = () => {
     ]);
 
     useEffect(() => {
-        handleSearch(searchData, currentPage, size)
+        handleSearch(searchData, currentPage, size);
     }, [currentPage, size]);
+
+    useEffect(() => {
+        const fetchDepartments = async () => {
+            try {
+                const response = await getDepartmentAPI({
+                    page: 0,
+                    size: 100,
+                    keyword: "",
+                });
+                
+                const data = response.content;
+                setDeptNameOptions(prevOptions =>
+                    prevOptions.concat(
+                        data.map(item => ({
+                            name: item.deptName,
+                            value: item.deptName
+                        }))
+                    )
+                );
+                console.log("deptNameOptions : ", deptNameOptions);
+            } catch (error) {
+                showToast("부서 데이터를 가져오는 중 오류가 발생했습니다.", "error");
+                return;
+            }
+        };
+        fetchDepartments();
+    }, [showToast]);
+
+    useEffect(() => {
+        setSearchData(prevData =>
+            prevData.map(field =>
+                field.key === 'deptName'
+                    ? { ...field, options: deptNameOptions }
+                    : field
+            )
+        );
+
+        setFormData(prevData =>
+            prevData.map(field =>
+                field.key === 'deptName'
+                    ? { ...field, options: deptNameOptions }
+                    : field
+            )
+        );
+    }, [deptNameOptions]);
 
     // 페이지네이션 핸들러
     const handlePageChange = (newPage) => {
@@ -126,9 +170,6 @@ const AdminSalaryPage = () => {
             ...dateField,
             value: '',
         }));
-
-        console.log("createFormData : ", createFormData);
-        console.log("createSelectedDate : ", createSelectedDate);
     
         setFormData(createFormData);
         setSelectedDate(createSelectedDate);
@@ -143,12 +184,11 @@ const AdminSalaryPage = () => {
             name: salary.name,
             value: salary.employeeId
         }];
-        console.log('nameOptions : ', nameOptions);
         // 폼 데이터 업데이트
         const updatedFormData = formData.map((field) => {
             let updatedValue = salary[field.key];
             
-            // 직위, 부서, 이름 셀렉트 박스 disable로 변경
+            // 직급, 부서, 이름 셀렉트 박스 disable로 변경
             // 실지급액 disable 변경
             const isDisable = ['position', 'deptName', 'name', 'netSalary'].includes(field.key) ? true : field.isDisable;
 
@@ -177,10 +217,6 @@ const AdminSalaryPage = () => {
             return { ...dateField, value };
         });
 
-        console.log("salary : ", salary);
-        console.log("updatedFormData : ", updatedFormData);
-        console.log("updatedSelectedDate : ", updatedSelectedDate);
-    
         setFormData(updatedFormData);
         setSelectedDate(updatedSelectedDate);
     
@@ -200,9 +236,7 @@ const AdminSalaryPage = () => {
     // 조회 api
     const getSalaries = async () => {
         const { response, error } = await getAllSalaryAPI();
-        console.log("response : ", response);
         if (error) {
-            console.log('에러 발생');
             return;
         }
         setSalaries(response.data.data);
@@ -220,13 +254,9 @@ const AdminSalaryPage = () => {
 
         const { response, error } = await searchSalaryAPI(params, page, size);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
-
-        console.log("searchData : ", searchData);
-        console.log("params : ", params);
-        console.log("response : ", response);
 
         // 지급총액, 공제총액, 실지급액 세자리마다 , 붙이는 로직
         const formattedData = response.data.data.content.map((item) => ({
@@ -273,11 +303,6 @@ const AdminSalaryPage = () => {
             }
         });
 
-        console.log('modalType : ', modalType);
-        console.log("data : ", data);
-        console.log("selectedDate : ", selectedDate);
-        console.log("params : ", params);
-
         if(modalType === 'create') {
             const { response, error } = await createSalaryAPI(params);
             if (error) {
@@ -300,9 +325,7 @@ const AdminSalaryPage = () => {
 
     // 삭제 api
     const handleDelete = async () => {
-        console.log('checkItems : ', checkItems);
         const { response, error } = await deleteSalaryAPI(checkItems);
-        console.log("response : ", response);
         if (error) {
             showToast('에러 발생', 'error');
             return;
@@ -360,11 +383,6 @@ const AdminSalaryPage = () => {
             searchParam
         }
 
-        console.log('searchData : ', searchData);
-        console.log('excelTypeData : ', excelTypeData);
-        console.log('params : ', params);
-
-
         const { response, error } = await excelDownloadSalaryAPI(params);
         if (error) {
             showToast('에러 발생', 'error');
@@ -388,13 +406,13 @@ const AdminSalaryPage = () => {
         <div className="salary-container">
             <h2 className="salary-container-h2">급여 목록</h2>
             <div className="mb-3" style={{ textAlign: "right" }}>
-                <Button className="me-2" variant="primary" onClick={handleCreate}>
+                <button className="me-2 admin-salary-primary-btn" onClick={handleCreate}>
                     추가
-                </Button>
-                <Button className="me-2" variant="danger" onClick={handleDelete}>
+                </button>
+                <button className="me-2 admin-salary-secondary-btn" onClick={handleDelete}>
                     삭제
-                </Button>
-                <Button className="me-2" variant="success" onClick={triggerFileInput}>
+                </button>
+                <button className="me-2 admin-salary-primary-btn" onClick={triggerFileInput}>
                     엑셀 업로드
                     <input
                         type="file"
@@ -403,10 +421,10 @@ const AdminSalaryPage = () => {
                         onChange={(e) => handleExcelUpload(e)}
                         style={{ display: "none" }}
                     />
-                </Button>
-                <Button variant="success" onClick={handleExcelDownload}>
+                </button>
+                <button className='admin-salary-primary-btn' onClick={handleExcelDownload}>
                     엑셀 다운로드
-                </Button>
+                </button>
             </div>
             <AdminSalarySearchPage
                 searchData={searchData}
@@ -422,13 +440,14 @@ const AdminSalaryPage = () => {
                             // 데이터 개수와 체크된 아이템의 개수가 다를 경우 선택 해제 (하나라도 해제 시 선택 해제)
                             checked={checkItems.length === salaries.length ? true : false} />
                         </th>
-                        <th>직위</th>
+                        <th>직급</th>
                         <th>부서</th>
                         <th>이름</th>
                         <th>지급총액</th>
                         <th>공제총액</th>
                         <th>실지급액</th>
                         <th>급여일</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -447,6 +466,11 @@ const AdminSalaryPage = () => {
                                 <td>{salary.deduction ? `${salary.deduction}원` : 'N/A'}</td>
                                 <td>{salary.netSalary ? `${salary.netSalary}원` : 'N/A'}</td>
                                 <td>{salary.payDate || 'N/A'}</td>
+                                <td>
+                                    <button className='admin-salary-table-btn' onClick={() => handleRowDoubleClick(salary)}>
+                                        수정
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

@@ -39,6 +39,15 @@ const VacationDetailModal = ({ vacationId, onClose, editable, onModify, onDelete
     };
 
     const handleSubmit = async () => {
+        // 날짜 유효성 검사
+        const startDate = new Date(editData.startDate);
+        const endDate = new Date(editData.endDate);
+        
+        if (endDate < startDate) {
+            showToast('종료일이 시작일보다 빠를 수 없습니다.', 'error');
+            return;
+        }
+        
         try {
             await modifyVacationAPI(vacationId, editData);
             setVacationDetail(editData);
@@ -103,13 +112,17 @@ const VacationDetailModal = ({ vacationId, onClose, editable, onModify, onDelete
     return (
         <div className="vacation-modal-overlay">
             <div className="vacation-modal-content">
-                <button className="vacation-modal-close" onClick={onClose}>
-                    <X size={20} />
-                </button>
+                
                 
                 <div className="vacation-modal-header">
                     {currentConfig.icon}
                     <h2>{currentConfig.title} 상세 정보</h2>
+
+                    <button 
+                        className="vacation-modal-close" 
+                        onClick={onClose}>
+                        ×
+                    </button>
                 </div>
 
                 <div className="vacation-info-section">
@@ -175,13 +188,13 @@ const VacationDetailModal = ({ vacationId, onClose, editable, onModify, onDelete
                     {editable && !isEditMode && (
                         <>
                             <button 
-                                className="vacation-cancel-button"
+                                className="vacation-edit-button"
                                 onClick={() => setIsEditMode(true)}
                             >
                                 수정
                             </button>
                             <button 
-                                className="vacation-submit-button"
+                                className="vacation-delete-button"
                                 onClick={handleDelete}
                             >
                                 삭제
@@ -191,27 +204,20 @@ const VacationDetailModal = ({ vacationId, onClose, editable, onModify, onDelete
                     {isEditMode && (
                         <>
                             <button 
-                                className="vacation-cancel-button"
-                                onClick={() => setIsEditMode(false)}
-                            >
-                                취소
-                            </button>
-                            <button 
                                 className="vacation-submit-button"
                                 onClick={handleSubmit}
                             >
                                 저장
                             </button>
+                            <button 
+                                className="vacation-cancel-button"
+                                onClick={() => setIsEditMode(false)}
+                            >
+                                취소
+                            </button>
                         </>
                     )}
-                    {!isEditMode && (
-                        <button 
-                            className="vacation-cancel-button"
-                            onClick={onClose}
-                        >
-                            닫기
-                        </button>
-                    )}
+                    
                 </div>
             </div>
         </div>

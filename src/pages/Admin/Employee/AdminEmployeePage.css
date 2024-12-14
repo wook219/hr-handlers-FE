@@ -13,7 +13,7 @@
     margin-bottom: 20px;
     padding: 8px 10px;
     border: none;
-    background-color: #4caf50;
+    background-color: #1a2b50;
     color: white;
     border-radius: 5px;
     cursor: pointer;
@@ -35,14 +35,14 @@
     display: flex; 
     margin-top: 60px;
     gap: 10px;
-    justify-content: flex-end; /* 오른쪽 정렬 */
+    justify-content: flex-end; 
     align-items: center; 
 }
 
 .admin-employee-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: auto; /* 가로 길이를 자동으로 조정 */
+    table-layout: auto; 
     white-space: normal;
     word-break: break-word;
 }
@@ -54,10 +54,10 @@
     text-align: left;
     vertical-align: middle;
     line-height: 1.2;
-    height: 40px; /* 고정 높이 설정 */
-    min-width: 100px; /* 각 칸의 최소 너비 */
-    max-width: 300px; /* 선택 사항: 최대 너비 설정 */
-    box-sizing: border-box; /* 크기 계산 시 패딩 포함 */
+    height: 40px; 
+    min-width: 100px; 
+    max-width: 300px; 
+    box-sizing: border-box; 
 }
 
 .admin-employee-update-button {
@@ -69,6 +69,8 @@
     padding: 6px 10px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-right: 10px; 
+    margin-left: 25px;
 }
 
 .admin-employee-update-button:hover {
@@ -170,7 +172,7 @@
     cursor: pointer; 
 }
 
-.search-button-icon {
+.employee-search-button-icon {
     width: 25px; 
     height: 25px; 
 }
@@ -183,79 +185,49 @@
     gap: 10px;
 }
 
-.admin-employee-modal-buttons button{
+.admin-employee-modal-buttons button {
     padding: 6px 20px;
 }
 
-.admin-employee-table td {
-    position: relative;
-    border-top: 1px solid #bdbdbd; 
-    border-bottom: 1px solid #bdbdbd; 
-    border-left: none;
-    border-right: none;
-    box-sizing: border-box; /* 패딩 포함하여 크기 계산 */
-}
-
-.admin-employee-table .admin-employee-edit-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.admin-employee-edit-cell {
-    align-items: center;
-    text-align: center;
-}
-
-.admin-employee-table .admin-employee-edit-cell input {
-    flex-grow: 1;
-    height: 30px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    width: 100%; /* 크기 고정 */
-}
-
-.admin-employee-table .admin-employee-edit-cell input:focus {
-    outline: none;
-}
-
-.admin-employee-table .admin-employee-edit-cell input[readonly] {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
-}
-
 .admin-employee-pagination {
-    margin-top: 100px;
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
     display: flex;
-    justify-content: center; 
+    gap: 5px;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
 }
 
-.admin-employee-pagination button {
-    padding: 5px 10px;
-    border: none;
-    background-color: #1a2b50;
-    color: white;
+.page-item {
     border-radius: 5px;
     cursor: pointer;
 }
 
-.admin-employee-pagination button[disabled] {
-    background-color: #ddd;
-    cursor: not-allowed;
-}
-
-.admin-employee-pagination span {
+.page-item.active .page-link {
+    background-color: #ffffff;
+    color: #1a2b50;
+    border-color: #1a2b50;
+    border-width: 2px;
     font-weight: bold;
+    border-radius: 5px;
 }
 
-.admin-employee-info,
-.admin-employee-edit-cell {
-    word-break: break-word;
-    white-space: normal; 
-    text-align: center;
+.page-link {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    color: #555;
+    cursor: pointer;
+}
+
+.page-link:hover {
+    background-color: #f0f0f0;
+}
+
+.page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
 }

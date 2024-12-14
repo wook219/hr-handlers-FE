@@ -1,8 +1,15 @@
 .App {
   display: flex;
   height: 100vh; /* 화면 전체 높이 */
-  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
   flex-direction: row; /* 사이드바와 콘텐츠를 나란히 배치 */
+  zoom: 0.8;
+  -webkit-transform: scale(0.8);
+  -webkit-transform-origin: 0 0;
+}
+
+body {
+  background-color: #f8f9fa !important;
 }
 
 /* 콘텐츠 영역 */

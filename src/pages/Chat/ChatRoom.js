@@ -4,7 +4,7 @@ import UseWebSocket from './UseWebSocket';
 import ChatMessage from './ChatMessage';
 import ChatRoomHeader from '../../components/Chat/ChatRoomHeader';
 import ActiveChatList from '../../components/Chat/ChatList/ActiveChatList';
-import { getChatMessagesAPI } from '../../api/chat';
+import { getChatMessagesAPI, getJoinedEmployeesCount } from '../../api/chat';
 import { getEmpNoFromToken } from '../../utils/tokenUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SendFill, Calendar2WeekFill } from 'react-bootstrap-icons';
@@ -13,10 +13,13 @@ import ExitChatRoomModal from '../../components/Chat/ChatModals/ExitChatRoomModa
 import ChatParticipantsModal from '../../components/Chat/ChatModals/ChatParticipantsModal';
 import { exitChatRoomAPI } from '../../api/chat';
 import InviteChatRoomModal from '../../components/Chat/ChatModals/InviteChatRoomModal';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 const ChatRoom = () => {
   const [chatRoomId, setChatRoomId] = useState(null);
   const [messages, setMessages] = useState([]); // 메시지 목록
+  const [employeeCount, setEmployeeCount] = useState(0);
   const [selectedMessageId, setSelectedMessageId] = useState(null);
   const [empNo, setEmpNo] = useState('');
   const [messageInput, setMessageInput] = useState([]);
@@ -30,6 +33,24 @@ const ChatRoom = () => {
     showParticipantsModal: false,
     showInviteModal: false,
   });
+
+  const fetchEmployeeCount = async () => {
+    try {
+      const response = await getJoinedEmployeesCount(chatRoomId);
+      setEmployeeCount(response.data);
+    } catch (error) {
+      console.error('직원 수를 가져오는데 실패했습니다.', error);
+    }
+  };
+
+  // 초대 후 참여자 수를 1 증가시키는 함수
+  const handleInviteSuccess = () => {
+    setEmployeeCount((prevCount) => prevCount + 1);
+  };
+
+  useEffect(() => {
+    fetchEmployeeCount();
+  }, [chatRoomId]);
 
   const handleClickMenu = (e) => {
     const mouseX = e.clientX;
@@ -64,7 +85,6 @@ const ChatRoom = () => {
   const handleConfirmExit = async () => {
     const response = await exitChatRoomAPI(chatRoomId);
     setModal((prevState) => ({ ...prevState, showExitModal: false }));
-    console.log('채팅방 퇴장', response);
   };
 
   // 채팅방 참여 목록 모달 컴포넌트
@@ -117,7 +137,6 @@ const ChatRoom = () => {
   }, [messages]);
 
   const handleMessageReceived = useCallback((message) => {
-    console.log('Received message: ', message);
     setMessages((prevMessages) => {
       const tempIndex = prevMessages.findIndex((msg) => msg.isTemp && msg.text === message.message);
 
@@ -175,7 +194,6 @@ const ChatRoom = () => {
     async (roomId) => {
       try {
         const chatMessages = await getChatMessagesAPI(roomId);
-        console.log('Loaded messages: ', chatMessages);
 
         const formattedMessages = chatMessages.data.map((msg) => ({
           id: msg.messageId,
@@ -274,16 +292,9 @@ const ChatRoom = () => {
 
   // 날짜 포맷팅 함수: 2024년 12월 3일 화요일 형식
   const formatDate = (timestamp) => {
-    const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토']; // 요일 배열
-    const messageDate = new Date(timestamp);
+    const messageDate = dayjs(timestamp).locale('ko');
 
-    const year = messageDate.getFullYear();
-    const month = messageDate.getMonth() + 1; // 월은 0부터 시작하므로 +1
-    const day = messageDate.getDate();
-    const weekDay = dayOfWeek[messageDate.getDay()]; // 요일 숫자에 해당하는 이름 가져오기
-
-    // "2024년 12월 3일 화요일" 형태로 포맷팅
-    return `${year}년 ${month}월 ${day}일 ${weekDay}요일`;
+    return messageDate.format('YYYY년 M월 D일 dddd');
   };
 
   // 메시지 불러오기 후 날짜별 그룹화
@@ -292,11 +303,10 @@ const ChatRoom = () => {
   return (
     <div className="chatroom-page">
       <div className="chatroom-list-all-container mt-5">
-        <div className="chatlist-box">참여 중인 메신저</div>
         <ActiveChatList />
       </div>
       <div className="chatroom-entire-container">
-        <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} />
+        <ChatRoomHeader title={title} handleClickMenu={handleClickMenu} employeeCount={employeeCount} />
         <div className="chatroom-page-container">
           <div ref={chatBodyRef} className="chat-body">
             {groupedMessages.map((group, index) => (
@@ -358,7 +368,12 @@ const ChatRoom = () => {
           )}
         </div>
       </div>
-      <InviteChatRoomModal show={modal.showInviteModal} handleClose={handleCloseInvite} chatRoomId={chatRoomId} />
+      <InviteChatRoomModal
+        show={modal.showInviteModal}
+        handleClose={handleCloseInvite}
+        chatRoomId={chatRoomId}
+        onInviteSuccess={handleInviteSuccess}
+      />
 
       <ExitChatRoomModal show={modal.showExitModal} handleClose={handleCloseModal} handleExit={handleConfirmExit} />
 

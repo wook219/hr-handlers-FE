@@ -27,9 +27,6 @@
     width: 100%;  /* 각 아이템이 자신의 영역을 꽉 채우도록 */
 }
 
-.vacation-type-item:last-child {
-    border-right: none;  /* 마지막 아이템의 오른쪽 구분선 제거 */
-}
 
 .vacation-type-item:hover {
     background-color: #fafafa;
@@ -53,6 +50,7 @@
     font-weight: bold;
     color: #1a202c;
     margin: 0;
+    margin-left : 6px;
 }
 
 /* hover 효과 제거 */

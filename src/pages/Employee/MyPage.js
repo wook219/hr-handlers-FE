@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getMyPageAPI, updateMyPageAPI } from "../../api/employee/index";
+import { useToast } from "../../context/ToastContext";
 import "./MyPage.css";
 import { useUser } from "../../context/UserContext";
+import PasswordUpdateModal from "./PasswordUpdateModal";
 
 const MyPage = () => {
     const { login } = useUser();
@@ -11,19 +13,18 @@ const MyPage = () => {
     const [activeTab, setActiveTab] = useState("intro");
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({});
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null); // 업로드할 파일
     const [previewImage, setPreviewImage] = useState(null); // 이미지 미리보기 URL
-    const [showPassword, setShowPassword] = useState(false);
+    const { showToast } = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getMyPageAPI();
-                console.log('API Response:', data); // 여기서 실제 데이터 확인
                 const profileImage = data.data.profileImage || "/profile_image.png"; // 기본값 설정
                 setFormData({
                     email: data.data.email || "",
-                    password: "*********", // 기본값으로 더미 비밀번호 설정
                     phone: data.data.phone || "",
                     birthDate: data.data.birthDate || "",
                     name: data.data.name || "",
@@ -34,12 +35,26 @@ const MyPage = () => {
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
+                showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
                 setLoading(false);
             }
         };
         fetchData();
-    }, []);
+    }, [showToast]);
 
+    const contractTypes = [
+        { value: "PERMANENT", label: "정규직" },
+        { value: "CONTRACT", label: "계약직" },
+        { value: "PART_TIME", label: "시간제 정규직" },
+        { value: "DISPATCH", label: "파견직" },
+        { value: "INDEFINITE", label: "무기계약직" },
+        { value: "INTERNSHIP", label: "인턴십" },
+    ];
+
+    const getContractTypeLabel = (contractType) => {
+        const contract = contractTypes.find((type) => type.value === contractType);
+        return contract ? contract.label : "계약 형태 없음";
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -57,52 +72,10 @@ const MyPage = () => {
         }
     };
 
-
-    // 수정
-    /*
     const handleSave = async () => {
         try {
-            const passwordToSend = formData.password !== "*********"
-                ? formData.password 
-                : undefined;
-    
             const updateRequest = {
                 email: formData.email,
-                password: passwordToSend,
-                phone: formData.phone,
-                introduction: formData.introduction
-            };
-    
-            const formDataToSend = new FormData();
-            // updateRequest를 JSON 문자열로 변환하여 추가
-            formDataToSend.append('updateRequest', new Blob([JSON.stringify(updateRequest)], { 
-                type: 'application/json' 
-            }));
-            
-            // 새 이미지가 선택된 경우에만 추가
-            if (selectedFile) {
-                formDataToSend.append('profileImage', selectedFile);
-            }
-    
-            const response = await updateMyPageAPI(formDataToSend);
-            setUserData((prev) => ({ ...prev, data: { ...prev.data, ...updateRequest } }));
-            setIsEditing(false);
-            alert("프로필이 성공적으로 수정되었습니다!");
-        } catch (error) {
-            alert(`수정 중 오류가 발생했습니다: ${error.message}`);
-        }
-    };*/
-
-
-    const handleSave = async () => {
-        try {
-            const passwordToSend = formData.password !== "*********"
-                ? formData.password
-                : undefined;
-
-            const updateRequest = {
-                email: formData.email,
-                password: passwordToSend,
                 phone: formData.phone,
                 introduction: formData.introduction
             };
@@ -144,9 +117,9 @@ const MyPage = () => {
             }));
 
             setIsEditing(false);
-            alert("프로필이 성공적으로 수정되었습니다!");
+            showToast("프로필이 성공적으로 수정되었습니다!", "success");
         } catch (error) {
-            alert(`수정 중 오류가 발생했습니다: ${error.message}`);
+            showToast("프로필 수정 중 오류가 발생했습니다.", "error");
         }
     };
 
@@ -156,6 +129,7 @@ const MyPage = () => {
         setPreviewImage(userData?.data?.profileImage || "/profile_image.png"); // 기본값 설정
         setSelectedFile(null); // 선택된 파일 초기화
         setFormData(userData?.data || {}); // 원래 데이터로 복원
+        showToast("수정이 취소되었습니다.", "info");
     };
 
 
@@ -170,7 +144,7 @@ const MyPage = () => {
                     <label htmlFor="profileImageInput">
                         <img
                             className="mypage-profile-img"
-                            src={previewImage || formData.profileImage || "/profile_image.png"} // public 폴더 기준 경로
+                            src={previewImage || formData.profileImage || "/profile_image.png"}
                             alt={formData?.name || "프로필 사진"}
                         />
                     </label>
@@ -210,39 +184,10 @@ const MyPage = () => {
                                 <input
                                     type="email"
                                     name="email"
-                                    style={{ width: "200px" }}
                                     value={formData.email || ""}
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="mypage-info-item">
-                                <label>비밀번호</label>
-                                <div className="mypage-password-container">
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        name="password"
-                                        className="mypage-password-input"
-                                        placeholder="*********"
-                                        value={formData.password || ""}
-                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    />
-                                    <div className="mypage-password-toggle">
-                                        <input
-                                            type="checkbox"
-                                            id="showPassword"
-                                            style={{marginleft: "100px"}}
-                                            className="mypage-password-checkbox"
-                                            checked={showPassword}
-                                            onChange={() => setShowPassword((prev) => !prev)}
-                                        />
-                                        <label htmlFor="showPassword" className="mypage-password-label">
-                                            비밀번호 보기
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-
                             <div className="mypage-info-item">
                                 <label>연락처</label>
                                 <input
@@ -258,7 +203,7 @@ const MyPage = () => {
                                     type="date"
                                     name="birthDate"
                                     value={formData.birthDate || ""}
-                                    onChange={handleInputChange}
+                                    disabled 
                                 />
                             </div>
                         </>
@@ -267,10 +212,6 @@ const MyPage = () => {
                             <div className="mypage-info-item">
                                 <span>이메일</span>
                                 <span>{userData?.data.email}</span>
-                            </div>
-                            <div className="mypage-info-item">
-                                <span>비밀번호</span>
-                                <span>***********</span>
                             </div>
                             <div className="mypage-info-item">
                                 <span>연락처</span>
@@ -283,9 +224,27 @@ const MyPage = () => {
                         </>
                     )}
                 </div>
+                <div className="mypage-info-item">
+                    <div className="mypage-info-item">
+                        <span>비밀번호</span>
+                        <span style={{marginLeft: "380px"}}>***********</span>
+                    </div>
+                    <button
+                        className="mypage-change-password-button"
+                        onClick={() => setIsPasswordModalOpen(true)}
+                    >
+                        비밀번호 변경
+                    </button>
+                </div>
+
+                <PasswordUpdateModal
+                    isOpen={isPasswordModalOpen}
+                    onClose={() => setIsPasswordModalOpen(false)}
+                />
+
                 <div className="mypage-department-info">
-                    <h5 style={{ fontWeight: "bold", marginTop: "40px" }}>부서</h5>
-                    <span style={{ marginTop: "10px", marginLeft: "50px" }}>{userData?.data.deptName || "등록된 부서 없음"}</span>
+                    <h5 style={{ fontWeight: "bold", marginTop: "70px" }}>부서</h5>
+                    <div style={{ marginTop: "30px", marginLeft: "30px" }}>{userData?.data.deptName || "등록된 부서 없음"}</div>
                 </div>
                 {isEditing && (
                     <div className="mypage-edit-buttons">
@@ -329,13 +288,15 @@ const MyPage = () => {
                     </div>
                 )}
 
+
+
                 {activeTab === "hr" && (
                     <div className="mypage-hr">
                         <div className="mypage-job-info">
                             <h6 className="mypage-info-title">근무 기본정보</h6>
                             <div className="mypage-info-item-tab">
                                 <span>계약 형태:</span>
-                                <span>{userData?.data.contractType || "계약 형태 없음"}</span>
+                                <span>{getContractTypeLabel(userData?.data.contractType)}</span>
                             </div>
                             <div className="mypage-info-item-tab">
                                 <span>일하는 날:</span>
@@ -353,7 +314,7 @@ const MyPage = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

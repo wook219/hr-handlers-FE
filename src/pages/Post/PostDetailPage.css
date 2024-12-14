@@ -1,6 +1,6 @@
 .post-detail-container {
     margin: 20px auto;
-    max-width: 800px;
+    max-width: 900px;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -98,6 +98,17 @@
     gap: 5px; /* 버튼 간 간격 */
 }
 
+.post-actions .delete-button:hover{
+  background-color: #777777;
+  transition: background-color 0.3s ease;
+}
+
+
+.post-actions .edit-button:hover{
+    background-color: #0f1c3c;
+    transition: background-color 0.3s ease;
+  }
+  
 .comment-form {
     display: flex;
     flex-direction: column;
@@ -126,7 +137,7 @@
     background-color: #fff; /* 포커스 시 배경 색상 변경 */
 }
 
-.comment-submit-button, .delete-button{
+.comment-submit-button, .edit-button{
     align-self: flex-end;
     padding: 5px 10px;
     font-size: small;
@@ -137,11 +148,11 @@
     cursor: pointer;
 }
 
-.comment-cancel-button , .edit-button{
+.comment-cancel-button , .delete-button{
     align-self: flex-end;
     font-size: small;
     padding: 5px 10px;
-    background-color: #a2a2a2;
+    background-color: #999999;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -150,11 +161,12 @@
 
 
 .comment-submit-button:hover {
-    background-color: #162442;
+    background-color: #0f1c3c;
+    transition: background-color 0.3s ease;
 }
 
 .comment-cancel-button:hover {
-    background-color: #979797;
+    background-color: #777777;
 }
 
 .comments-section {
@@ -190,6 +202,7 @@
 
 
 .comment-employeeName {
+    font-size: 15px;
     font-weight: 600;
     color: #2c3e50;
 }
@@ -200,7 +213,7 @@
 }
 
 .comment-content {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
     color: #34495e;
     margin-bottom: 10px;

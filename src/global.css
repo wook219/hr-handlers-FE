@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "Freesentation-9Black";
+    src: url('./fonts/FreesentationVF.ttf') format('woff2');
+    /* font-weight: 900; */
+    font-style: normal;
+}
+
+* {
+  font-family: 'Freesentation-9Black';
+}

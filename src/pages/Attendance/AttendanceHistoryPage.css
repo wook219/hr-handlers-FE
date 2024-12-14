@@ -1,0 +1,111 @@
+.attendance-history-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.attendance-history-title{
+    font-weight: bold;
+}
+
+.date-search-form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pagination-container {
+    margin-top: 20px;
+}
+
+.custon-table-container{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-table {
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.custom-table thead th {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+    padding: 15px 20px;
+    font-weight: 500;
+    color: #333;
+    text-align: left;
+}
+
+.custom-table tbody td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 마지막 행의 border 제거 */
+.custom-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* hover 효과 */
+.custom-table tbody tr:hover {
+    background-color: #fafafa;
+}
+
+.attendance-reset-button{
+    margin-top: 2rem !important;
+    background-color: #1a2b50;
+}
+
+.attendance-reset-button:hover{
+    background-color: #0f1c3c;
+}
+
+/* 페이지네이션 스타일 추가 */
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    margin: 0;
+    border-radius: 5px;
+}
+
+.pagination .page-item .page-link {
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    color: #555;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 38px;
+    text-align: center;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #ffffff;
+    color: #1a2b50;
+    border: 2px solid #1a2b50;
+    font-weight: bold;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f0f0f0;
+    text-decoration: none;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
+}

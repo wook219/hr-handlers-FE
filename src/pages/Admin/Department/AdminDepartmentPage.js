@@ -6,83 +6,174 @@ import {
     deleteDepartmentAPI,
     addDepartmentAPI,
 } from "../../../api/employee/index";
+import { useToast } from '../../../context/ToastContext';
+import { toast } from "react-toastify";
 import './AdminDepartmentPage.css';
 
 const DepartmentManagement = () => {
     const [departments, setDepartments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [editDepartmentId, setEditDepartmentId] = useState(null);
     const [newDepartmentName, setNewDepartmentName] = useState("");
+    const [editDepartmentName, setEditDepartmentName] = useState("");
+    const [showEditModal, setShowEditModal] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     // 부서 데이터를 가져오는 함수
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const data = await getDepartmentAPI();
-                setDepartments(data);
+                const response = await getDepartmentAPI({
+                    page: currentPage,
+                    size: pageSize,
+                    keyword: searchTerm,
+                });
+                setDepartments(response.content || []);
+                setTotalPages(response.totalPages || 0);
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                showToast("부서 데이터를 가져오는 중 오류가 발생했습니다.", "error");
                 setError(error.message);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchDepartments();
-    }, []);
+    }, [currentPage, pageSize, searchTerm, showToast]);
+
+    // 검색 처리
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(0); // 검색 시 첫 페이지로 초기화
+    };
+
+    // 부서 삭제 확인 메시지
+    const confirmDelete = (callback) => {
+        toast.info(
+            <div>
+                <p style={{ textAlign: "center" }}>이 부서를 삭제하시겠습니까?</p>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginRight: "25px" }}>
+                    <button
+                        onClick={() => {
+                            callback(true);
+                            toast.dismiss();
+                        }}
+                        style={{ padding: "5px 10px", backgroundColor: "#1a2b50", color: "white", border: "none", borderRadius: "5px" }}
+                    >
+                        확인
+                    </button>
+                    <button
+                        onClick={() => {
+                            callback(false);
+                            toast.dismiss();
+                        }}
+                        style={{ padding: "5px 10px", backgroundColor: "#999999", color: "white", border: "none", borderRadius: "5px" }}
+                    >
+                        취소
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-center",
+                autoClose: false, // 사용자가 버튼을 누르기 전까지 닫히지 않음
+                closeOnClick: false,
+                draggable: false,
+                closeButton: false, // 닫기 버튼 비활성화
+            }
+        );
+    };
 
     // 부서 추가 처리
     const handleAddDepartment = async () => {
         try {
             if (!newDepartmentName.trim()) {
-                alert("부서 이름을 입력해주세요!");
+                showToast("부서 이름을 입력해주세요.", "warning");
                 return;
             }
             await addDepartmentAPI(newDepartmentName);
-            const updatedDepartments = await getDepartmentAPI();
-            setDepartments(updatedDepartments);
+
+            const response = await getDepartmentAPI({
+                page: currentPage,
+                size: pageSize,
+                keyword: searchTerm,
+            });
+            setDepartments(response.content || []); // 배열로 설정
+            setTotalPages(response.totalPages || 0);
+
             setNewDepartmentName("");
             setShowAddModal(false);
-            alert("새 부서가 추가되었습니다!");
+            showToast("새 부서가 성공적으로 추가되었습니다!", "success");
         } catch (error) {
             console.error("부서 추가 중 오류가 발생했습니다:", error);
-            alert("부서를 추가하는 중 문제가 발생했습니다.");
+            showToast("부서가 이미 존재합니다.", "error");
         }
     };
 
     // 부서 수정 처리
-    const handleEditDepartment = async (departmentId) => {
+    const handleEditDepartment = (departmentId, currentName) => {
+        setEditDepartmentId(departmentId); // 수정할 부서 ID 저장
+        setNewDepartmentName(currentName); // 현재 부서 이름을 입력 필드에 초기화
+        setShowEditModal(true); // 수정 모달 열기
+    };
+
+    const saveEditDepartment = async () => {
         try {
-            const newName = prompt("새 부서 이름을 입력하세요:");
-            if (newName) {
-                const updatedData = { deptName: newName }; // Query String으로 전달할 데이터
-                await updateDepartmentAPI(departmentId, updatedData);
-                const updatedDepartments = await getDepartmentAPI(); // 변경된 데이터 다시 가져오기
-                setDepartments(updatedDepartments);
-                alert("부서 이름이 수정되었습니다!");
+            if (!editDepartmentName || !editDepartmentName.trim()) {
+                showToast("부서 이름을 입력해주세요!", "warning");
+                return;
             }
+            const updatedData = { deptName: editDepartmentName.trim() };
+            await updateDepartmentAPI(editDepartmentId, updatedData);
+
+            const response = await getDepartmentAPI({
+                page: currentPage,
+                size: pageSize,
+                keyword: searchTerm,
+            });
+
+            setDepartments(response.content || []);
+            setTotalPages(response.totalPages || 0);
+
+            setShowEditModal(false); // 수정 모달 닫기
+            setNewDepartmentName(""); // 입력 필드 초기화
+            showToast("부서 이름이 성공적으로 수정되었습니다!", "success");
         } catch (error) {
             console.error("부서 수정 중 오류가 발생했습니다:", error);
-            alert("부서를 수정하는 중 문제가 발생했습니다.");
+            showToast("부서를 수정하는 중 문제가 발생했습니다.", "error");
         }
     };
 
     // 부서 삭제 처리
     const handleDeleteDepartment = async (departmentId) => {
-        try {
-            const confirmDelete = window.confirm("이 부서를 삭제하시겠습니까?");
-            if (confirmDelete) {
-                await deleteDepartmentAPI(departmentId);
-                const updatedDepartments = await getDepartmentAPI();
-                setDepartments(updatedDepartments);
-                alert("부서가 삭제되었습니다!");
+        confirmDelete(async (confirmed) => {
+            if (confirmed) {
+                try {
+                    await deleteDepartmentAPI(departmentId);
+
+                    const response = await getDepartmentAPI({
+                        page: currentPage,
+                        size: pageSize,
+                        keyword: searchTerm,
+                    });
+                    setDepartments(response.content || []); // 새로 가져온 데이터로 설정
+                    setTotalPages(response.totalPages || 0);
+
+                    showToast("부서가 성공적으로 삭제되었습니다!", "success");
+                } catch (error) {
+                    console.error("부서 삭제 중 오류가 발생했습니다:", error);
+                    showToast("부서를 삭제하는 중 문제가 발생했습니다.", "error");
+                }
+            } else {
+                showToast("부서 삭제가 취소되었습니다.", "info");
             }
-        } catch (error) {
-            console.error("부서 삭제 중 오류가 발생했습니다:", error);
-            alert("부서를 삭제하는 중 문제가 발생했습니다.");
-        }
+        });
     };
 
     if (loading) return <div>로딩 중...</div>;
@@ -123,6 +214,17 @@ const DepartmentManagement = () => {
                 </button>
             </div>
 
+            <div className="dept-management-search">
+                <input
+                    type="text"
+                    placeholder="부서 이름 검색..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                />
+                <button className="admin-dept-search-button">
+                    <img src="/search.png" alt="검색" className="dept-search-button-icon" />
+                </button>
+            </div>
             <table className="dept-department-table">
                 <thead>
                     <tr>
@@ -132,14 +234,14 @@ const DepartmentManagement = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {departments.map((department) => (
+                    {Array.isArray(departments) && departments.map((department) => (
                         <tr key={department.id}>
                             <td>{department.id}</td>
                             <td>{department.deptName}</td>
                             <td>
                                 <button
                                     className="dept-edit-button"
-                                    onClick={() => handleEditDepartment(department.id)}
+                                    onClick={() => handleEditDepartment(department.id, department.deptName)}
                                 >
                                     수정
                                 </button>
@@ -153,33 +255,124 @@ const DepartmentManagement = () => {
                         </tr>
                     ))}
                 </tbody>
+
             </table>
+            <div className="dept-pagination-container">
+                <ul className="pagination">
+                    <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(0)}
+                            disabled={currentPage === 0}
+                        >
+                            «
+                        </button>
+                    </li>
+                    <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                            disabled={currentPage === 0}
+                        >
+                            ‹
+                        </button>
+                    </li>
+                    {[...Array(totalPages)].map((_, idx) => (
+                        <li
+                            key={idx}
+                            className={`page-item ${currentPage === idx ? "active" : ""}`}
+                        >
+                            <button className="page-link" onClick={() => setCurrentPage(idx)}>
+                                {idx + 1}
+                            </button>
+                        </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() =>
+                                setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+                            }
+                            disabled={currentPage === totalPages - 1}
+                        >
+                            ›
+                        </button>
+                    </li>
+                    <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                        <button
+                            className="page-link"
+                            onClick={() => setCurrentPage(totalPages - 1)}
+                            disabled={currentPage === totalPages - 1}
+                        >
+                            »
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
             {showAddModal && (
                 <div className="dept-modal-overlay">
                     <div className="dept-modal">
-                        <h5 style={{marginBottom: "20px"}}>부서 등록</h5>
+                        <h5 style={{ marginBottom: "20px" }}>부서 등록</h5>
                         <div style={{ alignItems: "center" }}>
-                        <input
-                            style={{width: '100%', borderRadius: "5px", border: "1px solid #e0e0e0", borderColor: "#bdbdbd" }}
-                            type="text"
-                            placeholder=" 새로운 부서 이름을 입력해주세요."
-                            value={newDepartmentName}
-                            onChange={(e) => setNewDepartmentName(e.target.value)}
-                        />
-                        <button className="dept-save-button" onClick={handleAddDepartment}>
-                            저장
-                        </button>
+                            <input
+                                style={{ width: '80%', borderRadius: "5px", border: "1px solid #e0e0e0", borderColor: "#bdbdbd" }}
+                                type="text"
+                                placeholder="등록할 부서 이름을 입력해주세요."
+                                value={newDepartmentName}
+                                onChange={(e) => setNewDepartmentName(e.target.value)}
+                            />
+                            <button className="dept-save-button" onClick={handleAddDepartment}>
+                                저장
+                            </button>
                         </div>
                         <button
                             className="dept-cancel-button"
                             onClick={() => setShowAddModal(false)}
                         >
-                            X
+                            x
                         </button>
                     </div>
                 </div>
             )}
-        </div>
+
+            {showEditModal && (
+                <div className="dept-modal-overlay">
+                    <div className="dept-modal">
+                        <h5 style={{ marginBottom: "20px" }}>부서 수정</h5>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="새 부서 이름을 입력해주세요."
+                                value={editDepartmentName}
+                                onChange={(e) => setEditDepartmentName(e.target.value)}
+                                style={{
+                                    width: "80%",
+                                    padding: "5px",
+                                    borderRadius: "5px",
+                                    border: "1px solid #ddd",
+                                }}
+                            />
+                            <button
+                                onClick={saveEditDepartment}
+                                className="dept-save-button"
+                            >
+                                저장
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setShowEditModal(false);
+                                setEditDepartmentName("");
+                            }}
+                            className="dept-cancel-button"
+                        >
+                            x
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div >
     );
 };
 

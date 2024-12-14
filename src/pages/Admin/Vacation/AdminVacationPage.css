@@ -1,56 +1,82 @@
-.admin-vacation-page {
-    padding: 20px;
- }
- 
- .admin-section-tabs {
-    margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
- }
- 
- .admin-section-tab {
-    padding: 10px 20px;
-    margin-right: 10px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-size: 16px;
- }
- 
- .admin-section-tab.active {
-    border-bottom: 2px solid #007bff;
-    color: #007bff;
- }
- 
- .admin-section-content {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
- }
- 
- .admin-pending-vacation-section h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
- }
- 
- .admin-vacation-table {
-    width: 100%;
-    border-collapse: collapse;
- }
- 
- .admin-vacation-table th {
-    background-color: #f8f9fa;
-    padding: 12px;
-    text-align: left;
-    font-weight: 600;
- }
- 
- .admin-vacation-table td {
-    padding: 12px;
-    border-bottom: 1px solid #dee2e6;
- }
- 
- .admin-vacation-table tr:hover {
-    background-color: #f8f9fa;
- }
+.vacation-management-container {
+   padding: 20px;
+   background-color: white;
+   border-radius: 4px;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.vacation-management-title{
+   font-weight: bold;
+   margin-bottom: 15px;
+}
+
+.admin-section-tabs {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 20px;
+}
+
+.admin-section-tab {
+   padding: 8px 16px;
+   background: none;
+   border: none;
+   border-bottom: 2px solid transparent;
+   cursor: pointer;
+   font-weight: 500;
+   color: #666;
+}
+
+.admin-section-tab.active {
+   color: #0d6efd;
+   border-bottom-color: #0d6efd;
+}
+
+.vacation-custom-table {
+   margin-top: 20px;
+   background-color: white;
+   border-radius: 4px;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.admin-vacation-table thead th {
+   background-color: white;
+   border-bottom: 1px solid #eee;
+   padding: 15px 20px;
+   font-weight: bold;
+   color: #333;
+   text-align: center;
+}
+
+.admin-vacation-table tbody td {
+   padding: 15px 20px;
+   border-bottom: 1px solid #eee;
+   text-align: center;
+}
+
+.admin-approve-button,
+.admin-reject-button {
+   padding: 6px 12px;
+   border: none;
+   border-radius: 4px;
+   margin-right: 8px;
+   cursor: pointer;
+   font-size: 14px;
+}
+
+.admin-approve-button {
+   background-color: #1a2b50;
+   color: white;
+}
+
+.admin-approve-button:hover{
+   background-color: #0f1c3c;
+}
+
+.admin-reject-button {
+   background-color: #999999;
+   color: white;
+}
+
+.admin-reject-button:hover{
+   background-color: #777777;
+}

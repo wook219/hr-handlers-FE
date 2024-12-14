@@ -3,6 +3,7 @@
   width: 1500px;
   margin: 0 auto;
   position: relative;
+  margin-top: 30px;
 }
 
 /* ===== 2. 캘린더 기본 날짜 스타일 ===== */
@@ -55,6 +56,12 @@
   margin-right: 2px !important;
 }
 
+.fc .fc-toolbar-title {
+  font-size: 1.75em;
+  margin: 0px;
+  font-weight: bold;
+}
+
 /* ===== 4. 일정 이벤트 스타일 ===== */
 /* 일반 일정 */
 .todo-event {
@@ -96,7 +103,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #4a90e2;
+  background-color: #1a2b50;
   border: none;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -109,7 +116,7 @@
 
 /* 버튼 호버 효과 */
 .todo-widget-btn:hover {
-  background-color: #357abd;
+  background-color: 0f1c3c;
   transform: scale(1.05);
 }
 
@@ -138,4 +145,31 @@
 .todo-widget-btn:hover::after {
   opacity: 1;
   visibility: visible;
+}
+
+/* 이전, 다음, 이번달 버튼 기본 스타일 */
+.fc .fc-button-primary,
+.fc .fc-today-button,
+.fc .fc-today-button:disabled {  /* disabled 상태 추가 */
+    background-color: #1a2b50 !important;
+    border-color: #1a2b50 !important;
+    color: white !important;
+    opacity: 1 !important;  /* disabled 상태의 투명도 조정 */
+}
+
+/* 버튼 호버 스타일 */
+.fc .fc-button-primary:hover,
+.fc .fc-today-button:hover,
+.fc .fc-today-button:disabled:hover {  /* disabled 상태의 호버 추가 */
+    background-color: #0f1c3c !important;
+    border-color: #0f1c3c !important;
+}
+
+/* 현재 활성화된 버튼 스타일 */
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-today-button,
+.fc .fc-today-button:disabled {  /* disabled 상태도 동일한 스타일 적용 */
+    background-color: #0f1c3c !important;
+    border-color: #0f1c3c !important;
 }

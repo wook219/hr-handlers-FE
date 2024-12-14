@@ -12,7 +12,7 @@
   border-radius: 8px; /* 둥근 모서리 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
   flex-grow: 1; /* 가로 크기를 더 유연하게 늘림 */
-  max-width: 1200px; /* 최대 너비를 설정 */
+  /* max-width: 1200px; 최대 너비를 설정 */
   width: 100%; /* 가로 크기를 100%로 설정 */
   margin-left: auto;
   margin-right: auto; /* 중앙 정렬 */
@@ -31,4 +31,55 @@
 .chat-secret-icon {
   margin: 5px;
   padding-bottom: 5px;
+}
+
+.no-chatrooms {
+  font-size: 18px;
+  padding: 10px;
+}
+
+.input-group {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.input-group > .chatroom-search-input {
+  border-radius: 10px !important; /* Bootstrap의 기본 스타일을 덮어쓰기 */
+}
+
+.chatroom-search-input {
+  width: 300px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px; /* 둥근 모서리 */
+  border: 1px solid #ccc;
+  outline: none;
+  transition: all 0.3s ease;
+  padding-right: 30px; /* 오른쪽에 충분한 공간을 만들어줌 */
+  position: relative; /* 아이콘을 input 안에 배치하기 위해 필요 */
+}
+
+.chatroom-search-input:focus {
+  border-color: #1a2b50;
+  box-shadow: 0 0 5px #0f1c3c;
+}
+
+.clear-search-icon {
+  position: absolute;
+  right: 15px; /* 오른쪽 끝에 위치 */
+  top: 50%;
+  transform: translateY(-50%); /* 수직 가운데 정렬 */
+  font-size: 20px; /* 아이콘 크기 조절 */
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  background: none; /* 아이콘 배경을 없앰 */
+  border: none; /* 아이콘의 테두리 제거 */
+  margin-right: 3px;
+}
+
+/* X 아이콘 hover 효과 */
+.clear-search-icon:hover {
+  color: #333;
 }

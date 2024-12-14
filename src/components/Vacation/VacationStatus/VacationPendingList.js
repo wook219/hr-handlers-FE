@@ -27,7 +27,7 @@ const VacationPendingList = ({ onVacationUpdate }) => {
         fetchPendingVacations();
     }, []);
 
-    const headers = ['문서 번호', '신청 일자', '제목', '', ''];
+    const headers = ['문서 번호', '신청 일자', '제목', '시작 일자', '종료 일자', ' '];
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -40,6 +40,8 @@ const VacationPendingList = ({ onVacationUpdate }) => {
                 <td>{vacation.docNum}</td>
                 <td>{formatDate(vacation.createdAt)}</td>
                 <td>{vacation.title}</td>
+                <td>{formatDate(vacation.startDate)}</td>
+                <td>{formatDate(vacation.endDate)}</td>
                 <td>
                     <button 
                         className="vacation-detail-button"
@@ -57,7 +59,7 @@ const VacationPendingList = ({ onVacationUpdate }) => {
 
     return (
         <div>
-            <h5>승인 대기 휴가 목록</h5>
+            <h5 className='vacation-section-title'>승인 대기 휴가 목록</h5>
             <VacationTable 
                 headers={headers}
                 data={pendingVacations}

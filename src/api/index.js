@@ -1,4 +1,5 @@
 export {
-    getSalaryAPI
+    getSalaryAPI,
+    excelDownloadSalaryAPI
 }
 from './salary';
