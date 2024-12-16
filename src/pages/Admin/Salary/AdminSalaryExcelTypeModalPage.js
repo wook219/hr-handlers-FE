@@ -18,7 +18,6 @@ const AdminSalaryExcelTypeModalPage = (props) => {
             item.key === key ? { ...item, value, label } : item
           )
         );
-        console.log("excelTypeData : ", excelTypeData);
       };
 
     return (
@@ -79,12 +78,12 @@ const AdminSalaryExcelTypeModalPage = (props) => {
             </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onHide}>
+                <button className='admin-salary-secondary-btn' onClick={props.onHide}>
                     닫기
-                </Button>
-                <Button variant="primary" onClick={() => props.onSubmit(excelTypeData)}>
+                </button>
+                <button className='admin-salary-primary-btn' onClick={() => props.onSubmit(excelTypeData)}>
                     확인
-                </Button>
+                </button>
             </Modal.Footer>
         </Modal>
     );

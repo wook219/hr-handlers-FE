@@ -1,140 +1,183 @@
-/* 전체 컨테이너 스타일 */
+.home-container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-right: 520px;
+  /* max-width: calc(100% - 520px);  TodayTodoList width + gap 고려 */
+}
+
+.notice-board-container {
+  width: 85%;
+  margin-left: 20px;
+}
+
+.team-member-container {
+  width: 85%;
+  margin-left: 20px;
+}
+
+.attendance-button-container {
+  width: 85%;
+  margin-left: 20px;
+}
+
+.notice-board,
+.team-members {
+  width: 100%;
+}
+
 .home-notice-container {
-    margin-left: 20px;
-    width: 50%;
+  margin-left: 20px;
+  width: 100%;
 }
 
 .home-notice-card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 15px;
-    max-width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .home-notice-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.2rem;
-    font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.mb-0 {
+  font-weight: bold;
+}
+
+.home-notice-title {
+  font-size: 25px;
 }
 
 .notice-arrow {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-right: 2px solid #333;
-    border-bottom: 2px solid #333;
-    transform: rotate(45deg);
-    transition: transform 0.3s ease;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid #333;
+  border-bottom: 2px solid #333;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
 }
 
 .notice-arrow.arrow-up {
-    transform: rotate(-135deg);
+  transform: rotate(-135deg);
 }
 
 .notice-arrow.arrow-down {
-    transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .home-notice-body {
-    padding: 10px 0;
-    transition: all 0.3s ease-in-out;
-    font-size: 0.95rem;
+  padding: 10px 0;
+  transition: all 0.3s ease-in-out;
+  font-size: 0.95rem;
 }
 
 .home-notice-item {
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .home-notice-item:hover {
-    background-color: #f0f8ff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #f0f8ff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .notice-icon {
-    font-size: 1.2rem;
-    margin-right: 10px;
-    color: #007bff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  color: #007bff;
 }
 
 .notice-title {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
 }
 
 .notice-content {
-    max-height: none; /* 기존 max-height 값을 제거 */
-    overflow: visible; /* 스크롤이나 잘림 방지 */
-    padding: 0 10px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    margin-top: 10px;
-    font-size: 0.95rem;
-    transition: max-height 0.4s ease, padding 0.3s ease;
+  max-height: none; /* 기존 max-height 값을 제거 */
+  overflow: visible; /* 스크롤이나 잘림 방지 */
+  padding: 0 10px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 0.95rem;
+  transition: max-height 0.4s ease, padding 0.3s ease;
 }
 
 .notice-content.expanded {
-    max-height: 500px;
-    padding: 10px 10px;
+  max-height: 500px;
+  padding: 10px 10px;
 }
 
 .text-muted {
-    font-size: 0.9rem;
-    color: #6c757d;
+  font-size: 0.9rem;
+  color: #6c757d;
 }
 
 /* 작성 버튼 */
 .add-notice-btn button {
-    background-color: #b7b7b7;
-    color: #fff;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease;
+  background-color: #1a2b50;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
 }
 
 .add-notice-btn button:hover {
-    background-color: #1a2b50;
+  background-color: #0f1c3c;
 }
 
 /* 구분선 */
 .divider {
-    margin: 15px 0;
-    border-top: 1px solid #ddd;
+  margin: 15px 0;
+  border-top: 1px solid #ddd;
 }
 
 .pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-  }
-  
-  .pagination-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #007bff;
-    margin: 0 10px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .pagination-btn:disabled {
-    color: #adb5bd;
-    cursor: not-allowed;
-  }
-  
-  .pagination-btn:hover:not(:disabled) {
-    color: #0056b3;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.pagination-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a2b50;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.pagination-btn:disabled {
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  color: #0f1c3c;
+}

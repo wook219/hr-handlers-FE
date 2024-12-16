@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,7 +9,7 @@ import { searchEmployeeAPI } from '../../../api/admin/index.js';
 const AdminSalaryModalPage = (props) => {
     const [formData, setFormData] = useState([
         { key: 'salaryId', value: '', label: '급여Id', type: 'custom', isDisable: false },
-        { key: 'position', value: '', label: '직위', type: 'select', isDisable: false },
+        { key: 'position', value: '', label: '직급', type: 'select', isDisable: false },
         { key: 'deptName', value: '', label: '부서', type: 'select', isDisable: false },
         { key: 'name', value: '', label: '이름', type: 'select', isDisable: false },
         { key: 'basicSalary', value: '', label: '지급총액', type: 'input', isDisable: false },
@@ -134,8 +133,6 @@ const AdminSalaryModalPage = (props) => {
     };
 
     const getUserData = async () => {
-        console.log('formData : ', formData);
-
         // position과 deptName 추출
         const position = formData.find((field) => field.key === "position")?.value || "";
         const deptName = formData.find((field) => field.key === "deptName")?.value || "";
@@ -148,13 +145,9 @@ const AdminSalaryModalPage = (props) => {
 
         const { response, error } = await searchEmployeeAPI(params);
         if (error) {
-            console.log('에러 발생');
+            showToast('에러 발생', 'error');
             return;
         }
-
-        console.log("params : ", params);
-        console.log("response : ", response);
-        console.log("formData : ", formData);
 
         const nameOptions = response.data.data.map(employee => ({
             name: employee.name,
@@ -236,12 +229,12 @@ const AdminSalaryModalPage = (props) => {
                 ))}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={props.onHide}>
+                <button className='admin-salary-secondary-btn' onClick={props.onHide}>
                     닫기
-                </Button>
-                <Button variant="primary" onClick={() => props.handleSubmit(formData, selectedDate, modalType)}>
+                </button>
+                <button className='admin-salary-primary-btn' onClick={() => props.handleSubmit(formData, selectedDate, modalType)}>
                     저장
-                </Button>
+                </button>
             </Modal.Footer>
         </Modal>
     );

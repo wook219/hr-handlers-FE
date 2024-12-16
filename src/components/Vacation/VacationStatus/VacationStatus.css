@@ -57,6 +57,10 @@
     border-radius: 4px;
 }
 
+.vacation-table-container .approved-vacation{
+    height: 290px;
+}
+
 .vacation-table {
     width: 100%;
     border-collapse: collapse;
@@ -85,10 +89,9 @@
 .vacation-table th:nth-child(1), .vacation-table td:nth-child(1) { width: 140px; text-align: center; } /* 문서 번호 */
 .vacation-table th:nth-child(2), .vacation-table td:nth-child(2) { width: 140px; text-align: center; } /* 신청 일자 */
 .vacation-table th:nth-child(3), .vacation-table td:nth-child(3) { width: 300px; text-align: center; }  /* 제목 */
-.vacation-table th:nth-child(4), 
-.vacation-table td:nth-child(4),
-.vacation-table th:nth-child(5), 
-.vacation-table td:nth-child(5) { 
+.vacation-table th:nth-child(4), .vacation-table td:nth-child(4) { width: 140px; text-align: center; }
+.vacation-table th:nth-child(5), .vacation-table td:nth-child(5) { width: 140px; text-align: center; }
+.vacation-table th:nth-child(6), .vacation-table td:nth-child(6) { 
     width: 80px; /* 수정/삭제 버튼 */
     text-align: center;
 }
@@ -111,16 +114,26 @@
 
 .vacation-table.approved th:nth-child(4),
 .vacation-table.approved td:nth-child(4) {
-    width: 100px; /* 승인 상태 */
+    width: 100px; /* 시작 일자 */
 }
 
 .vacation-table.approved th:nth-child(5),
 .vacation-table.approved td:nth-child(5) {
-    width: 100px; /* 확정 일자 */
+    width: 100px; /* 종료 일자 */
 }
 
 .vacation-table.approved th:nth-child(6),
 .vacation-table.approved td:nth-child(6) {
+    width: 100px; /* 승인 상태 */
+}
+
+.vacation-table.approved th:nth-child(7),
+.vacation-table.approved td:nth-child(7) {
+    width: 100px; /* 확정 일자 */
+}
+
+.vacation-table.approved th:nth-child(8),
+.vacation-table.approved td:nth-child(8) {
     width: 100px; /* 결재자 */
 }
 
@@ -157,4 +170,47 @@
 .vacation-table button:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
+}
+
+/* 페이지네이션 스타일 추가 */
+.pagination {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    margin: 0;
+    border-radius: 5px;
+}
+
+.pagination .page-item .page-link {
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    color: #555;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 38px;
+    text-align: center;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #ffffff;
+    color: #1a2b50;
+    border: 2px solid #1a2b50;
+    font-weight: bold;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #f0f0f0;
+    text-decoration: none;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #f9f9f9;
 }

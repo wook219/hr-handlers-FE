@@ -3,6 +3,8 @@ import { registerEmployeeAPI, getAllEmployeesAPI, updateEmployeeAPI, deleteEmplo
 import './AdminEmployeePage.css';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../../context/ToastContext';
+import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 
 const contractTypes = [
@@ -37,6 +39,7 @@ const EmployeeManagement = () => {
         role: 'ROLE_EMPLOYEE',
     });
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -46,19 +49,19 @@ const EmployeeManagement = () => {
                 const role = decodedToken.role;
 
                 if (role !== 'ROLE_ADMIN') {
-                    alert('접근 권한이 없습니다. 관리자만 접근 가능합니다.');
+                    showToast('접근 권한이 없습니다. 관리자만 접근 가능합니다.', 'error');
                     navigate('/');
                 }
             } catch (error) {
                 console.error("토큰을 해석하는 중 오류가 발생했습니다:", error);
-                alert('잘못된 토큰입니다. 다시 로그인해주세요.');
+                showToast('잘못된 토큰입니다. 다시 로그인해주세요.', 'error');
                 navigate('/');
             }
         } else {
-            alert('로그인이 필요합니다.');
+            showToast('로그인이 필요합니다.', 'warning');
             navigate('/login');
         }
-    }, [navigate]);
+    }, [navigate, showToast]);
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -74,40 +77,94 @@ const EmployeeManagement = () => {
                     ...employee,
                     isEditing: false,
                 }));
-                console.log("API 응답 데이터:", data);
                 setEmployees(data);
                 setTotalPages(response.totalPages);
             } catch (error) {
                 console.error("사원 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                showToast('사원 데이터를 가져오는 중 오류가 발생했습니다.', 'error');
             }
         };
         fetchEmployees();
-    }, [currentPage, pageSize, searchTerm]);
+    }, [showToast, currentPage, pageSize, searchTerm]);
 
+    // 부서 데이터 가져오기 
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
                 const response = await getDepartmentAPI(); // API 호출
-                console.log("부서 데이터:", response.data || response); // 응답 확인
-                setDepartments(response.data || response); // 데이터를 department 상태로 설정
+                setDepartments(response);
             } catch (error) {
                 console.error("부서 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                showToast('부서 데이터를 가져오는 중 오류가 발생했습니다.', 'error');
             }
         };
         fetchDepartments();
-    }, []);
+    }, [showToast]);
 
     // 삭제 
     const handleDelete = async (empNo) => {
-        try {
-            await deleteEmployeeAPI(empNo);
-            setEmployees(employees.filter(employee => employee.empNo !== empNo));
-            alert('사원이 삭제되었습니다.');
-        } catch (error) {
-            console.error("사원 삭제 중 오류가 발생했습니다:", error);
-            alert('사원을 삭제하는 중 문제가 발생했습니다.');
-        }
+        toast.info(
+            <div>
+                <p style={{ textAlign: "center" }}>해당 사원을 삭제하시겠습니까?</p>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px" }}>
+                    <button
+                        onClick={async () => {
+                            try {
+                                await deleteEmployeeAPI(empNo); // 사원 삭제 API 호출
+                                // 삭제 후 데이터를 다시 가져오기
+                                const response = await getAllEmployeesAPI({
+                                    page: currentPage,
+                                    size: pageSize,
+                                    sortField: 'createdAt',
+                                    sortDir: 'desc',
+                                    keyword: searchTerm,
+                                });
+                                setEmployees(response.content); // 새로 가져온 데이터를 상태에 설정
+                                setTotalPages(response.totalPages); // 총 페이지 수 업데이트
+                                showToast('사원이 성공적으로 삭제되었습니다.', 'success');
+                            } catch (error) {
+                                console.error("사원 삭제 중 오류가 발생했습니다:", error);
+                                showToast('사원을 삭제하는 중 문제가 발생했습니다.', 'error');
+                            } finally {
+                                toast.dismiss(); // 확인 창 닫기
+                            }
+                        }}
+                        style={{
+                            padding: "5px 10px",
+                            backgroundColor: "#1a2b50",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        확인
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()} // 취소 버튼 클릭 시 창 닫기
+                        style={{
+                            padding: "5px 10px",
+                            backgroundColor: "#999999",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        취소
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-center",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                closeButton: false,
+            }
+        );
     };
+
 
     // 수정 
     const handleEdit = (empNo) => {
@@ -121,19 +178,27 @@ const EmployeeManagement = () => {
     const handleSave = async (empNo) => {
         const employeeToSave = employees.find((employee) => employee.empNo === empNo);
 
+        if (!employeeToSave.position || employeeToSave.position.trim() === "") {
+            showToast('직급을 입력해야 합니다.', 'error');
+            return;
+        }
+
+        const updatedDeptName =
+            employeeToSave.deptName === "--부서 선택--" || !employeeToSave.deptName
+                ? null
+                : employeeToSave.deptName;
+
         const updateData = {
             position: employeeToSave.position,
             contractType: employeeToSave.contractType,
             leaveBalance: employeeToSave.leaveBalance,
-            deptName: employeeToSave.deptName || null,
+            deptName: updatedDeptName,
         };
 
         try {
 
             // API 호출 및 응답 받기
             const response = await updateEmployeeAPI(empNo, updateData);
-
-            console.log("API 응답 데이터:", response);
 
             // 업데이트 후 상태 반영
             setEmployees((prevEmployees) =>
@@ -144,13 +209,12 @@ const EmployeeManagement = () => {
                 )
             );
 
-            alert(`사원 ID ${empNo} 정보가 성공적으로 수정되었습니다.`);
+            showToast(`사원 번호 ${empNo}님의 정보가 성공적으로 수정되었습니다.`, 'success');
         } catch (error) {
             console.error("사원 수정 중 오류가 발생했습니다:", error);
-            alert('사원 정보를 수정하는 중 문제가 발생했습니다.');
+            showToast('사원 정보를 수정하는 중 문제가 발생했습니다.', 'error');
         }
     };
-
 
     const handleAddEmployee = () => {
         setIsModalOpen(true);
@@ -192,7 +256,6 @@ const EmployeeManagement = () => {
                 sortDir: 'desc',
                 keyword: searchTerm,
             });
-            console.log("API 응답 데이터:", response.content);
             setEmployees(response.content); // 전체 리스트 업데이트
             setTotalPages(response.totalPages);
         } catch (error) {
@@ -204,15 +267,15 @@ const EmployeeManagement = () => {
     const handleSaveNewEmployee = async () => {
         try {
             if (!newEmployee.contractType) {
-                alert("계약 형태를 선택해주세요.");
+                showToast("계약 형태를 선택해주세요.", 'warning');
                 return;
             }
             if (!newEmployee.joinDate || isNaN(new Date(newEmployee.joinDate))) {
-                alert("입사일을 올바르게 입력해주세요.");
+                showToast("입사일을 올바르게 입력해주세요.", 'warning');
                 return;
             }
             if (!newEmployee.birthDate || isNaN(new Date(newEmployee.birthDate))) {
-                alert("생년월일을 올바르게 입력해주세요.");
+                showToast("생년월일을 올바르게 입력해주세요.", 'warning');
                 return;
             }
 
@@ -261,10 +324,10 @@ const EmployeeManagement = () => {
 
             // 모달 닫기
             setIsModalOpen(false);
-            alert('사원이 추가되었습니다.');
+            showToast('사원이 성공적으로 추가되었습니다.', 'success');
         } catch (error) {
             console.error("사원 등록 중 오류가 발생했습니다:", error);
-            alert('사원을 등록하는 중 문제가 발생했습니다.');
+            showToast('사원을 등록하는 중 문제가 발생했습니다.', 'error');
         }
     };
 
@@ -300,12 +363,12 @@ const EmployeeManagement = () => {
                 <div className="admin-employee-table-search">
                     <input
                         type="text"
-                        placeholder="이름으로 검색..."
+                        placeholder="사원 이름 검색..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <button className="admin-employee-search-button">
-                        <img src="/search.png" alt="검색" className="search-button-icon" />
+                        <img src="/search.png" alt="검색" className="employee-search-button-icon" />
                     </button>
                 </div>
                 <table className="admin-employee-table">
@@ -349,16 +412,20 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
                                                 <select
-                                                    value={employee.deptName || ""}
-                                                    onChange={(e) => handleInputChange(employee.empNo, "deptName", e.target.value)}
+                                                    value={employee.deptName || "--부서 선택--"} // 기본값 설정
+                                                    onChange={(e) => {
+                                                        const selectedValue = e.target.value;
+                                                        handleInputChange(employee.empNo, "deptName", selectedValue === "--부서 선택--" ? null : selectedValue);
+                                                    }}
                                                     style={{ width: "100px" }}
                                                 >
-                                                    <option value="">-- 부서 선택 --</option>
-                                                    {department.map((dept) => (
-                                                        <option key={dept.id} value={dept.deptName}>
-                                                            {dept.deptName}
-                                                        </option>
-                                                    ))}
+                                                    <option value="--부서 선택--">--부서 선택--</option> {/* 기본 옵션 */}
+                                                    {Array.isArray(department.content) &&
+                                                        department.content.map((dept) => (
+                                                            <option key={dept.id} value={dept.deptName}>
+                                                                {dept.deptName}
+                                                            </option>
+                                                        ))}
                                                 </select>
                                             ) : (
                                                 employee.deptName || "부서 없음"// 부서 이름이 없으면 "부서 없음"으로 표시
@@ -370,7 +437,7 @@ const EmployeeManagement = () => {
                                             {employee.isEditing ? (
                                                 <input
                                                     type="text"
-                                                    style={{ width: "30px" }}
+                                                    style={{ width: "70px" }}
                                                     value={employee.position}
                                                     onChange={(e) => handleInputChange(employee.empNo, "position", e.target.value)}
                                                 />
@@ -383,22 +450,23 @@ const EmployeeManagement = () => {
                                         <div className="admin-employee-edit-cell">
                                             {employee.isEditing ? (
                                                 <select
-                                                value={contractTypes.find((type) => type.label === employee.contractType)?.value || ""}
-                                                onChange={(e) => {
-                                                    const selectedValue = e.target.value; // 영어 값
-                                                    const selectedLabel = contractTypes.find((type) => type.value === selectedValue)?.label; // 한글 값
-                                                    handleInputChange(employee.empNo, "contractType", selectedLabel); // label(한글)을 저장
-                                                }}
-                                                style={{ width: "100px" }}
-                                            >
-                                                <option value="">-- 계약 형태 선택 --</option>
-                                                {contractTypes.map((type) => (
-                                                    <option key={type.value} value={type.value}>
-                                                        {type.label}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            
+                                                    value={contractTypes.find((type) => type.label === employee.contractType)?.value || ""}
+                                                    onChange={(e) => {
+                                                        const selectedValue = e.target.value; // 영어 값
+                                                        if (selectedValue === "") return;
+                                                        const selectedLabel = contractTypes.find((type) => type.value === selectedValue)?.label; // 한글 값
+                                                        handleInputChange(employee.empNo, "contractType", selectedLabel); // label(한글)을 저장
+                                                    }}
+                                                    style={{ width: "100px" }}
+                                                >
+                                                    <option value="">-- 계약 형태 선택 --</option>
+                                                    {contractTypes.map((type) => (
+                                                        <option key={type.value} value={type.value}>
+                                                            {type.label}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
                                             ) : (
                                                 employee.contractType || "계약형태 없음"
                                             )}
@@ -426,20 +494,72 @@ const EmployeeManagement = () => {
                 </table>
 
                 <div className="admin-employee-pagination">
-                    <button
-                        onClick={() => setCurrentPage(prevPage => Math.max(prevPage - 1, 0))}
-                        disabled={currentPage === 0}
-                    >
-                        이전
-                    </button>
-                    <span>{`페이지 ${currentPage + 1} / ${totalPages}`}</span>
-                    <button
-                        onClick={() => setCurrentPage(prevPage => prevPage + 1)}
-                        disabled={currentPage + 1 >= totalPages}
-                    >
-                        다음
-                    </button>
+                    <ul className="pagination">
+                        {/* 첫 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(0)}
+                                disabled={currentPage === 0}
+                            >
+                                «
+                            </button>
+                        </li>
+
+                        {/* 이전 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                disabled={currentPage === 0}
+                            >
+                                ‹
+                            </button>
+                        </li>
+
+                        {/* 페이지 번호 표시 */}
+                        {[...Array(5)].map((_, idx) => {
+                            const pageIndex = Math.floor(currentPage / 5) * 5 + idx;
+                            if (pageIndex >= totalPages) return null;
+                            return (
+                                <li
+                                    key={pageIndex}
+                                    className={`page-item ${currentPage === pageIndex ? "active" : ""}`}
+                                >
+                                    <button
+                                        className="page-link"
+                                        onClick={() => setCurrentPage(pageIndex)}
+                                    >
+                                        {pageIndex + 1}
+                                    </button>
+                                </li>
+                            );
+                        })}
+
+                        {/* 다음 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages - 1))}
+                                disabled={currentPage === totalPages - 1}
+                            >
+                                ›
+                            </button>
+                        </li>
+
+                        {/* 마지막 페이지로 이동 */}
+                        <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                            <button
+                                className="page-link"
+                                onClick={() => setCurrentPage(totalPages - 1)}
+                                disabled={currentPage === totalPages - 1}
+                            >
+                                »
+                            </button>
+                        </li>
+                    </ul>
                 </div>
+
             </div>
             <Modal
                 isOpen={isModalOpen}
@@ -481,10 +601,15 @@ const EmployeeManagement = () => {
                     <label>부서</label>
                     <select
                         value={newEmployee.department || ''}
-                        onChange={(e) => setNewEmployee({ ...newEmployee, department: e.target.value })}
+                        onChange={(e) =>
+                            setNewEmployee({
+                                ...newEmployee,
+                                department: e.target.value === "부서 없음" ? null : e.target.value,
+                            })
+                        }
                     >
                         <option value="">-- 부서 선택 --</option>
-                        {department.map((dept) => (
+                        {Array.isArray(department.content) && department.content.map((dept) => (
                             <option key={dept.id} value={dept.deptName}>
                                 {dept.deptName}
                             </option>

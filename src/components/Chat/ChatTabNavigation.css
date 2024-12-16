@@ -1,6 +1,5 @@
 .chat-tabs {
   display: flex;
-  margin-bottom: 3px;
   font-size: 18px;
 }
 
@@ -33,7 +32,7 @@
 }
 
 .create-chatroom-container {
-  margin-bottom: 10px; /* 버튼과 탭 간격 */
+  margin-bottom: 40px; /* 버튼과 탭 간격 */
   display: flex;
   justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
 }
@@ -42,10 +41,17 @@
   display: flex;
   justify-content: space-between; /* 왼쪽 탭들과 오른쪽 버튼을 양쪽 끝에 배치 */
   align-items: center; /* 세로 정렬 */
+  margin-bottom: -10px;
 }
 
 .chat-tabs-header {
   display: flex;
   flex-direction: column; /* 세로로 배치 */
   align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+@media (max-width: 1100px) {
+  .chat-tabs {
+    display: none; /* 탭 내용 숨기기 */
+  }
 }

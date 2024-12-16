@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import "./AdminSalaryPage.css";
 
 const AdminSalarySearchPage = (props) => {
     const [searchData, setSearchData] = useState(props.searchData || []);
+
+    useEffect(() => {
+        setSearchData(props.searchData);
+    }, [props.searchData]);
     
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -15,7 +18,6 @@ const AdminSalarySearchPage = (props) => {
                 field.key === name ? { ...field, value } : field
             )
         );
-        console.log('searchData : ', searchData)
     };
 
     return (
@@ -37,7 +39,7 @@ const AdminSalarySearchPage = (props) => {
                     ))}
             </div>
 
-            {/* 직위, 부서, 이름, 조회 버튼 그룹 */}
+            {/* 직급, 부서, 이름, 조회 버튼 그룹 */}
             <div className="row align-items-end">
                 {searchData
                     .filter(
@@ -75,9 +77,9 @@ const AdminSalarySearchPage = (props) => {
                     ))}
                 {/* 조회 버튼 */}
                 <div className="col-md-3">
-                    <Button style={{ backgroundColor: "#1a2b50", borderRadius: "7px", border: "none"}} className="w-10" onClick={() => props.handleSearch(searchData)}>
+                    <button className="admin-salary-primary-btn" onClick={() => props.handleSearch(searchData)}>
                         조회
-                    </Button>
+                    </button>
                 </div>
             </div>
         </div>

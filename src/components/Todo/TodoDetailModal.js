@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './TodoModal.css'
+import { useToast } from '../../context/ToastContext';
 
 const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
+  const { showToast } = useToast();
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDataChanged, setIsDataChanged] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,7 +67,7 @@ const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
     
     // 종료 시간이 시작 시간보다 이전인지 체크
     if (new Date(formData.endTime) < new Date(formData.startTime)) {
-      alert('종료 시간은 시작 시간보다 이후여야 합니다.');
+      showToast('종료 시간은 시작 시간보다 이후여야 합니다.', 'error');
       return;
     }
 
@@ -128,6 +130,13 @@ const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
             일정 {isEditMode ? '수정' : '상세'}
             {isEditMode && <span className="edit-badge">수정 중</span>}
           </h2>
+          <button 
+            type="button" 
+            className="todo-modal-close" 
+            onClick={handleClose}
+          >
+            ×
+          </button>
         </div>
         
         <form onSubmit={handleSubmit}>
@@ -204,7 +213,6 @@ const TodoDetailModal = ({ isOpen, onClose, event, onDelete, onModify }) => {
                     >
                     삭제
                 </button>
-                <button type="button" onClick={handleClose}>닫기</button>
               </>
             )}
           </div>

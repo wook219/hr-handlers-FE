@@ -5,12 +5,15 @@ export const PATHS = {
   LOGIN: '/login',
   BOARD: '/post',
   CHATROOM: '/chatroom',
-  SALARY: '/admin/salary',
+  SALARY: '/salary',
   VACATION : '/vacation',
+  ATTENDANCE : '/attendance',
 };
 
 export const ADMINPATHS = {
   HOME: '/admin/home',
   EMP: '/admin/emp', 
-  VACATION : '/admin/vacation'
+  VACATION : '/admin/vacation',
+  ATTENDANCE : '/admin/attendance',
+  SALARY: '/admin/salary'
 };

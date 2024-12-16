@@ -1,113 +1,164 @@
 .sidebar {
-    width: 300px;
-    background-color: #1a2b50; /* 네이비 색상 */
-    color: #fff;
-    padding: 20px;
-    padding-top: 40px; /* 최상단 간격 추가 */
-    height: 100vh;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* 하단 로그아웃 버튼 포함 */
-    box-sizing: border-box;
-    box-shadow: 3px 0 7px rgba(0, 0, 0, 0.3); /* 오른쪽 그림자 추가 */
-  }
-  
-  .sidebar .profile {
-    text-align: center;
-    margin-bottom: 20px; /* 메뉴와 간격 조정 */
-  }
-  
-  .sidebar .profile-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-  }
-  
-  .sidebar .profile-name {
-    font-size: 20px; /* 이름 글씨 크기 확대 */
-    font-weight: bold;
-  }
-  
-  .sidebar .profile-team {
-    font-size: 16px; /* 팀명 글씨 크기 확대 */
-    color: #d1d1d1;
-  }
-  
-  /* 구분선 추가 */
-  .sidebar .divider {
-    height: 1px;
-    background-color: #fff; /* 구분선 색상 */
-    margin: 20px 0; /* 위아래 간격 */
-    opacity: 0.5; /* 투명도 추가 */
-  }
-  
-  .sidebar nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar nav ul li {
-    display: flex;
-    align-items: center; /* 아이콘과 텍스트를 중앙 정렬 */
-    cursor: pointer;
-    padding: 10px 15px; /* 내부 공간을 더 넉넉하게 */
-    margin: 25px 0; /* 각 항목 사이의 간격 */
-    transition: background-color 0.3s ease;
-  }
-  
-  .sidebar nav ul li:hover {
-    background-color: #0f1c3c; /* hover 시 배경색 */
-    border-radius: 5px;
-  }
-  
-  .sidebar nav ul li .icon {
-    margin-right: 15px; /* 아이콘과 텍스트 간격 확대 */
-    font-size: 22px; /* 아이콘 크기 확대 */
-  }
-  
-  .sidebar nav ul li span {
-    font-size: 18px; /* 메뉴 글씨 크기 확대 */
+  width: 300px;
+  background-color: #1a2b50; /* 네이비 색상 */
+  color: #fff;
+  padding: 20px;
+  padding-top: 40px; /* 최상단 간격 추가 */
+  height: 100vh;
+  position: fixed;
+  flex-direction: column;
+  justify-content: space-between; /* 하단 로그아웃 버튼 포함 */
+  box-sizing: border-box;
+  box-shadow: 3px 0 7px rgba(0, 0, 0, 0.3); /* 오른쪽 그림자 추가 */
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.sidebar .profile {
+  text-align: center;
+  margin-bottom: 20px; /* 메뉴와 간격 조정 */
+}
+
+.sidebar .profile-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.sidebar .profile-name {
+  font-size: 22px; /* 이름 글씨 크기 확대 */
+  font-weight: bold;
+}
+
+.sidebar .profile-team {
+  font-size: 18px; /* 팀명 글씨 크기 확대 */
+  color: #d1d1d1;
+}
+
+/* 구분선 추가 */
+.sidebar .divider {
+  height: 1px;
+  background-color: #fff; /* 구분선 색상 */
+  margin: 40px 0; /* 위아래 간격 */
+  opacity: 0.5; /* 투명도 추가 */
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  display: flex;
+  align-items: center; /* 아이콘과 텍스트를 중앙 정렬 */
+  cursor: pointer;
+  padding: 10px 15px; /* 내부 공간을 더 넉넉하게 */
+  margin: 25px 0; /* 각 항목 사이의 간격 */
+  transition: background-color 0.3s ease;
+}
+
+.sidebar nav ul li:hover {
+  background-color: #0f1c3c; /* hover 시 배경색 */
+  border-radius: 5px;
+}
+
+.sidebar nav ul li .icon {
+  margin-right: 15px; /* 아이콘과 텍스트 간격 확대 */
+  font-size: 22px; /* 아이콘 크기 확대 */
+}
+
+.sidebar nav ul li span {
+  font-size: 20px; /* 메뉴 글씨 크기 확대 */
+}
+
+.sidebar-link {
+  text-decoration: 'none';
+  color: 'inherit';
+}
+
+.sidebar .logout {
+  text-align: center;
+  margin-top: auto;
+  font-size: 16px;
+}
+
+.sidebar .logout a {
+  color: #ffffff; /* 로그아웃 버튼 색상 */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.sidebar .logout a:hover {
+  text-decoration: underline;
+}
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* 작은 화면에서 사이드바 너비 축소 */
   }
 
-  .sidebar-link {
-    text-decoration : 'none';
-    color : 'inherit'
+  .sidebar nav ul li span {
+    font-size: 14px; /* 텍스트 크기 축소 */
   }
-  
-  .sidebar .logout {
-    text-align: center;
-    margin-top: auto;
-    font-size: 16px;
+
+  .sidebar nav ul li .icon {
+    font-size: 18px; /* 아이콘 크기 축소 */
   }
-  
-  .sidebar .logout a {
-    color: #ffffff; /* 로그아웃 버튼 색상 */
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .sidebar .logout a:hover {
-    text-decoration: underline;
-  }
-  
-  /* 반응형 설정 */
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 200px; /* 작은 화면에서 사이드바 너비 축소 */
-    }
-  
-    .sidebar nav ul li span {
-      font-size: 14px; /* 텍스트 크기 축소 */
-    }
-  
-    .sidebar nav ul li .icon {
-      font-size: 18px; /* 아이콘 크기 축소 */
-    }
-  }
-  
-  .logout-button:hover {
-    background-color: #b02a37;
-  }
+}
+
+.logout-button:hover {
+  background-color: #b02a37;
+}
+
+/* TreeMenuItem 관련 추가 스타일 */
+.tree-menu-children > div {
+  margin-bottom: 25px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tree-menu-children > div:hover {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+  padding: 10px 15px;
+  margin-left: -15px;
+}
+
+.tree-menu-children > div:last-child {
+  margin-bottom: 0;
+}
+
+.active-menu-item {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+  font-weight: 500;
+}
+
+/* hover 효과와 함께 사용할 경우 */
+.sidebar nav ul li:hover,
+.active-menu-item:hover {
+  background-color: #0f1c3c;
+  border-radius: 5px;
+}

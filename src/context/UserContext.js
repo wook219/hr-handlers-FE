@@ -7,7 +7,6 @@ export const UserProvider = ({ children }) => {
   // 초기 상태를 localStorage에서 가져옴
   const getUserFromLocalStorage = () => {
     const storedUser = localStorage.getItem("user");
-    console.log("user 정보"+storedUser)
     return storedUser ? JSON.parse(storedUser) : { empNo: null, role: null, name: null, deptName: null }; // 초기값
   };
 

@@ -20,7 +20,7 @@
 }
 
 .post-modal-footer .post-modal-cancel {
-    background-color: #b7b7b7; /* 취소 버튼 색상 */
+    background-color: #999999; /* 취소 버튼 색상 */
     color: #fff;
     border: none;
 }
@@ -31,7 +31,15 @@
     border: none;
 }
 
-.post-modal-footer .post-modal-cancel:hover,
-.post-modal-footer .post-modal-submit:hover {
-    opacity: 0.9; 
+
+
+.post-modal-footer .post-modal-cancel:hover{
+    background-color: #777777;
+    transition: background-color 0.3s ease; /* 호버 애니메이션 */
 }
+
+.post-modal-footer .post-modal-submit:hover {
+    background-color: #0f1c3c;
+    transition: background-color 0.3s ease; /* 호버 애니메이션 */
+}
+

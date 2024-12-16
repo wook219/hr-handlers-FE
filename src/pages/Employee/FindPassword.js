@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { matchEmailAndEmpNoAPI, sendResetPasswordAPI } from "../../api/employee"; // 불러온 API
+import { matchEmailAndEmpNoAPI, sendResetPasswordAPI } from "../../api/employee";
+import { useToast } from "../../context/ToastContext"; 
 import "./FindPassword.css";
 
 const PasswordResetModal = ({ isOpen, onClose }) => {
@@ -7,6 +8,7 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const { showToast } = useToast();
 
   // 모달이 열리지 않은 경우 모달을 렌더링하지 않음
   if (!isOpen) return null;
@@ -27,24 +29,20 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
       // Step 1: 사원 번호와 이메일 일치 여부 확인
       const checkResponse = await matchEmailAndEmpNoAPI(empNo, email);
 
-      console.log("checkResponse:", checkResponse); // 응답 로그 확인
-
       if (checkResponse && checkResponse.data) {
         // Step 2: 메일 전송
         const sendMailResponse = await sendResetPasswordAPI(empNo, email);
-        console.log("sendMailResponse:", sendMailResponse);
 
         if (sendMailResponse && sendMailResponse.data) {
           setIsSubmitted(true);
         } else {
-          setErrorMessage("메일 전송에 실패했습니다. 다시 시도해주세요.");
+          showToast("메일 전송에 실패했습니다. 다시 시도해주세요.", "error");
         }
       } else {
-        setErrorMessage("사원 번호와 이메일이 일치하지 않거나 오류가 발생했습니다. 다시 시도해주세요.");
+        showToast("사원 번호와 이메일이 일치하지 않습니다. 다시 확인해주세요.", "warning");
       }
     } catch (error) {
-      console.error("비밀번호 찾기 요청 중 오류가 발생했습니다:", error);
-      setErrorMessage("오류가 발생했습니다. 다시 시도해주세요.");
+      showToast("오류가 발생했습니다. 다시 시도해주세요.", "error");
     }
   };
   

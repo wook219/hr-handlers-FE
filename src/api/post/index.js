@@ -168,7 +168,6 @@ export const deleteCommentAPI = async (commentId) => {
         if (!token) {
             throw new Error("JWT 토큰이 없습니다. 로그인을 해주세요.");
         }
-
         const response = await axios.delete(`/comment/${commentId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,

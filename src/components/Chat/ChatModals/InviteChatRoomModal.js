@@ -5,10 +5,9 @@ import './ChatRoomModal.css';
 import InviteChatRoomButton from '../ChatButtons/InviteChatRoomButton';
 import { getInvitedEmployeesAPI } from '../../../api/chat';
 
-const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
+const InviteChatRoomModal = ({ show, handleClose, chatRoomId, onInviteSuccess }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [employeeList, setEmployeeList] = useState([]);
-  const loadMoreRef = useRef(null);
 
   const fetchEmployees = async (search = '') => {
     try {
@@ -18,23 +17,6 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
       console.error('직원 목록 가져오기를 실패했습니다.', error);
     }
   };
-
-  // 무한 스크롤 - 페이지네이션 적용 필요
-  // useEffect(() => {
-  //   // handleScroll을 이 내부에서 할 것
-  //   // IntersectionObserver 실행
-  //   // 모달 최하위 위치한 element가 있을 것 그게 보일 때 (처음에 content가 있으면 안 보이다가) 호출되는 게 옵저버
-  //   // 보일 때 페이지 수를 하나 올리고 API를 호출하면 됨
-  //   const observer = new IntersectionObserver((entries) => {
-  //     entries.forEach((entry) => {
-  //       if (entry.isIntersecting) {
-  //         fetchEmployees(searchKeyword, page + 1);
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     });
-  //   });
-  //   observer.observe(target); // target은 useRef로 설정 -> useRef로 최하위에 있는 element를 담으면 됨.
-  // }, []);
 
   // 모달이 열릴 때 직원 목록을 가지고 옴
   useEffect(() => {
@@ -69,8 +51,9 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
   };
 
   // 초대 후 참여자 목록 갱신
-  const handleInviteSuccess = () => {
-    fetchEmployees();
+  const handleInviteSuccess = (empNo) => {
+    // 초대 후 부모 컴포넌트의 함수 호출
+    onInviteSuccess();
   };
 
   // 검색 결과가 없을 때와 초대할 직원이 없을 때 구분
@@ -113,12 +96,16 @@ const InviteChatRoomModal = ({ show, handleClose, chatRoomId }) => {
                 <div className="chat-employee-name">{employee.empName}</div>
                 <div className="chat-employee-details">
                   <div className="chat-employee-dept">{employee.deptName}</div>
-                  <div className="chat-employee-position">{employee.position}</div>
+                  <div className="chat-employee-position">{employee.empPosition}</div>
                 </div>
               </div>
 
               <div className="chat-employee-button-container">
-                <InviteChatRoomButton chatRoomId={chatRoomId} empNo={employee.empNo} onInvite={handleInviteSuccess} />
+                <InviteChatRoomButton
+                  chatRoomId={chatRoomId}
+                  empNo={employee.empNo}
+                  onInvite={() => handleInviteSuccess(employee.empNo)}
+                />
               </div>
             </div>
           ))}
